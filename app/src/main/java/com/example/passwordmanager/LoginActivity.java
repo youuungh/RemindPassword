@@ -105,10 +105,8 @@ public class LoginActivity extends AppCompatActivity {
     void loginChangeInProgress(boolean inProgress) {
         if (inProgress) {
             progressBar.setVisibility(View.VISIBLE);
-            button_login.setVisibility(View.GONE);
         } else {
             progressBar.setVisibility(View.GONE);
-            button_login.setVisibility(View.VISIBLE);
         }
     }
 
