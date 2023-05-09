@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText login_email, login_password;
     ProgressBar progressBar;
     FirebaseAuth fAuth;
-    Toolbar toolbar;
+    MaterialToolbar mToolbar;
     Button button_login;
 
     @Override
@@ -36,10 +37,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("");
-        toolbar.setNavigationOnClickListener(view -> {
+        mToolbar = findViewById(R.id.topAppbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(view -> {
             this.finish();
         });
 
