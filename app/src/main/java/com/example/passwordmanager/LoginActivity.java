@@ -1,9 +1,11 @@
 package com.example.passwordmanager;
 
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -83,7 +85,8 @@ public class LoginActivity extends AppCompatActivity {
                             Utility.showToast(LoginActivity.this, "이메일 인증이 필요합니다");
                         }
                     } else {
-                        Utility.showToast(LoginActivity.this, "비밀번호가 일치하지 않습니다");
+                        //Utility.showToast(LoginActivity.this, "비밀번호가 일치하지 않습니다");
+                        Snackbar.make(getWindow().getDecorView().getRootView(), "비밀번호가 일치하지 않습니다.", Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }
