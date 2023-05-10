@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
@@ -23,10 +24,12 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
+    TextInputLayout layout_email, layout_password;
     TextInputEditText login_email, login_password;
     ProgressBar progressBar;
     FirebaseAuth fAuth;
@@ -44,8 +47,11 @@ public class LoginActivity extends AppCompatActivity {
             this.finish();
         });
 
+        layout_email = findViewById(R.id.layout_email);
+        layout_password = findViewById(R.id.layout_password);
         login_email = findViewById(R.id.login_email);
         login_password = findViewById(R.id.login_password);
+
         progressBar = findViewById(R.id.progressBar);
 
         button_login = findViewById(R.id.button_login);
@@ -114,15 +120,15 @@ public class LoginActivity extends AppCompatActivity {
     boolean loginValidateData(String email, String password) {
         // 데이터 유효성 검사
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            login_email.setError("유효하지 않은 이메일입니다");
+            login_email.setError("유효하지 않은 이메일입니다", null);
             return false;
         }
         if(password.isEmpty()) {
-            login_password.setError("비밀번호를 입력하세요");
+            login_password.setError("비밀번호를 입력하세요", null);
             return false;
         }
         if(password.length() < 6 || password.length() > 15) {
-            login_password.setError("비밀번호는 8글자 이상 15자 이하여야 합니다");
+            login_password.setError("비밀번호는 8글자 이상 15자 이하여야 합니다", null);
             return false;
         }
         return true;
