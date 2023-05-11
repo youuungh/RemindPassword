@@ -42,20 +42,23 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="25dp"
                 android:padding="0dp"
-                android:theme="@style/Theme.MaterialComponents.Light"
+                android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+                android:focusableInTouchMode="true"
                 app:endIconMode="clear_text"
+                app:endIconDrawable="@drawable/ic_clear_text"
                 app:boxStrokeColor="@color/black"
                 app:boxStrokeWidthFocused="1dp"
                 app:boxStrokeErrorColor="?attr/colorError"
-                app:hintEnabled="false">
+                app:hintEnabled="false"
+                app:errorEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/login_email"
                     style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="이메일 입력"
                     android:fontFamily="@font/dm_sans"
                     android:inputType="textEmailAddress"
@@ -69,22 +72,24 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:padding="0dp"
                 android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+                android:focusableInTouchMode="true"
                 app:endIconMode="password_toggle"
                 app:endIconDrawable="@drawable/custom_password_toggle"
                 app:endIconCheckable="true"
                 app:boxStrokeColor="@color/black"
                 app:boxStrokeWidthFocused="1dp"
                 app:boxStrokeErrorColor="?attr/colorError"
-                app:hintEnabled="false">
+                app:hintEnabled="false"
+                app:errorEnabled="false">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/login_password"
                     style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="비밀번호 입력"
                     android:fontFamily="@font/dm_sans"
                     android:inputType="textPassword"
@@ -122,6 +127,36 @@
                     android:layout_marginEnd="15dp"
                     android:layout_alignParentRight="true"/>
             </RelativeLayout>
+            
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal">
+                
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center|end"
+                    android:layout_marginEnd="15dp"
+                    android:text="비밀번호 재설정"/>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="15dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#ADA4A5"/>
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="15dp"
+                    android:layout_gravity="center"
+                    android:text="이메일 계정생성"/>
+            </LinearLayout>
         </LinearLayout>
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

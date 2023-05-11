@@ -1,36 +1,30 @@
 package com.example.passwordmanager;
 
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Build;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Patterns;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.view.inputmethod.InputMethod;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.util.regex.Pattern;
+
 public class LoginActivity extends AppCompatActivity {
+    static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
     TextInputLayout layout_email, layout_password;
     TextInputEditText login_email, login_password;
     ProgressBar progressBar;
@@ -51,8 +45,22 @@ public class LoginActivity extends AppCompatActivity {
 
         layout_email = findViewById(R.id.layout_email);
         layout_password = findViewById(R.id.layout_password);
+
         login_email = findViewById(R.id.login_email);
+        login_email.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus) {
+                layout_email.setError(null);
+                layout_email.setErrorEnabled(false);
+            }
+        });
+
         login_password = findViewById(R.id.login_password);
+        login_password.setOnFocusChangeListener((v, hasFocus) -> {
+            if(hasFocus) {
+                layout_password.setError(null);
+                layout_password.setErrorEnabled(false);
+            }
+        });
 
         progressBar = findViewById(R.id.progressBar);
 
@@ -68,6 +76,7 @@ public class LoginActivity extends AppCompatActivity {
         if(!isValidated) {
             return;
         }
+
         loginAccountInFirebase(email, password);
     }
 
@@ -91,6 +100,31 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
+    boolean loginValidateData(String email, String password) {
+        // 데이터 유효성 검사
+        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            layout_email.setError("올바른 형식의 이메일 주소를 입력해 주세요");
+            return false;
+        }
+        if(password.isEmpty()) {
+            layout_password.setError("비밀번호를 입력해 주세요");
+            return false;
+        }
+        if(!PASSWORD.matcher(password).matches()) {
+            layout_password.setError("숫자/영문/특수문자 8자~15자로 입력해 주세요");
+            return false;
+        }
+        return true;
+    }
+
+    void loginChangeInProgress(boolean inProgress) {
+        if (inProgress) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         View focusView = getCurrentFocus();
@@ -110,30 +144,5 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
         return super.dispatchTouchEvent(ev);
-    }
-
-    void loginChangeInProgress(boolean inProgress) {
-        if (inProgress) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    boolean loginValidateData(String email, String password) {
-        // 데이터 유효성 검사
-        if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            login_email.setError("유효하지 않은 이메일입니다", null);
-            return false;
-        }
-        if(password.isEmpty()) {
-            login_password.setError("비밀번호를 입력하세요", null);
-            return false;
-        }
-        if(password.length() < 6 || password.length() > 15) {
-            login_password.setError("비밀번호는 8글자 이상 15자 이하여야 합니다", null);
-            return false;
-        }
-        return true;
     }
 }
