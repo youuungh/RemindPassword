@@ -119,8 +119,6 @@ public class LoginActivity extends AppCompatActivity {
                             Utility.showToast(LoginActivity.this, "이메일 인증이 필요합니다");
                         }
                     } else {
-                        //Utility.showToast(LoginActivity.this, "비밀번호가 일치하지 않습니다");
-                        //Snackbar.make(getWindow().getDecorView().getRootView(), "비밀번호가 일치하지 않습니다.", Snackbar.LENGTH_SHORT).show();
                         Snackbar.make(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다. 다시 시도하세요.", Snackbar.LENGTH_SHORT).show();
                     }
                 });
