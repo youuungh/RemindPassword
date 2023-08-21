@@ -113,10 +113,10 @@ public class LoginActivity extends AppCompatActivity {
                     loginChangeInProgress(false);
                     if(task.isSuccessful()) {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                            Utility.showToast(LoginActivity.this, "로그인 성공");
+                            startActivity(new Intent(this, MainActivity.class));
+                            Utility.showToast(this, "로그인 성공");
                         } else {
-                            Utility.showToast(LoginActivity.this, "이메일 인증이 필요합니다");
+                            Utility.showToast(this, "이메일 인증이 필요합니다");
                         }
                     } else {
                         Snackbar.make(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다. 다시 시도하세요.", Snackbar.LENGTH_SHORT).show();
