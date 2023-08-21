@@ -35,15 +35,15 @@ public class HomeActivity extends AppCompatActivity {
         // 가입하기
         home_register = findViewById(R.id.home_register);
         home_register.setOnClickListener(view -> {
-            Intent intent_register = new Intent(HomeActivity.this, CreateAccountActivity.class);
-            startActivity(intent_register);
+            Intent intent = new Intent(this, CreateAccountActivity.class);
+            startActivity(intent);
         });
 
         // 로그인
         home_login = findViewById(R.id.home_login);
         home_login.setOnClickListener(view -> {
-            Intent intent_login = new Intent(HomeActivity.this, LoginActivity.class);
-            startActivity(intent_login);
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         });
     }
 }

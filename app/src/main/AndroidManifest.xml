@@ -46,7 +46,7 @@
         <activity
             android:name=".SettingActivity"
             android:exported="true"
-            android:theme="@style/settingTheme"
+            android:theme="@style/mainTheme"
             android:windowSoftInputMode="adjustUnspecified">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

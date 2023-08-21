@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/rounded_register_button" android:state_enabled="true"></item>
+    <item android:state_enabled="false">
+        <shape>
+            <solid
+                android:color="#E0E0E0"/>
+            <corners
+                android:radius="5dp"/>
+        </shape>
+    </item>
+</selector>

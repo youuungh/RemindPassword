@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="homeTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="homeTheme" parent="Theme.Material3.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -18,13 +18,13 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="loginRegisterTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="loginRegisterTheme" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/white</item>
         <item name="android:navigationBarColor">@android:color/white</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
 
-    <style name="mainTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="mainTheme" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
@@ -32,13 +32,6 @@
         <item name="actionOverflowButtonStyle">@style/actionButtonOverflow</item>
         <item name="colorControlHighlight">#F0F1F1</item>
         <item name="android:listDivider">@android:color/transparent</item>
-    </style>
-
-    <style name="settingTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
-        <item name="colorControlHighlight">#F0F1F1</item>
     </style>
 
     <style name="buttonRipple">
