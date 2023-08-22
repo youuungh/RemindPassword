@@ -54,7 +54,6 @@
             android:background="@drawable/rounded_login_button"
             android:text="로그인"
             android:textColor="#7B6F72"
-            android:textSize="18sp"
-            style="?android:attr/borderlessButtonStyle"/>
+            android:textSize="18sp"/>
     </LinearLayout>
 </LinearLayout>

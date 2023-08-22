@@ -114,7 +114,6 @@
             app:elevation="3dp"
             android:src="@drawable/ic_check"
             android:tint="#92A3FD"
-            app:theme="@style/buttonRipple"
             app:pressedTranslationZ="0dp"/>
 
     </FrameLayout>

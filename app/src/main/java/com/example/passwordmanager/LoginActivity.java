@@ -2,15 +2,12 @@ package com.example.passwordmanager;
 
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Patterns;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -29,36 +26,37 @@ public class LoginActivity extends AppCompatActivity {
     static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
     MaterialToolbar mToolbar;
     TextInputLayout layout_email, layout_password;
-    TextInputEditText login_email, login_password;
+    TextInputEditText edt_email, edt_password;
     ProgressBar progressBar;
     FirebaseAuth fAuth;
-    Button button_login;
-    TextView tvCreateAccount;
+    Button button;
+    TextView tv_createAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mToolbar = findViewById(R.id.topAppbar);
+        mToolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(view -> {
             this.finish();
         });
 
-        layout_email = findViewById(R.id.layout_email);
-        layout_password = findViewById(R.id.layout_password);
+        layout_email = findViewById(R.id.login_layout_email);
+        layout_password = findViewById(R.id.login_layout_password);
 
-        login_email = findViewById(R.id.login_email);
-        login_password = findViewById(R.id.login_password);
-        login_email.addTextChangedListener(loginTextWatcher);
-        login_password.addTextChangedListener(loginTextWatcher);
+        edt_email = findViewById(R.id.login_email);
+        edt_password = findViewById(R.id.login_password);
+        edt_email.addTextChangedListener(loginTextWatcher);
+        edt_password.addTextChangedListener(loginTextWatcher);
 
-        progressBar = findViewById(R.id.progressBar);
-        button_login = findViewById(R.id.button_login);
-        tvCreateAccount = findViewById(R.id.tvCreateAccount);
-        tvCreateAccount.setOnClickListener(v -> {
-            Intent intent = new Intent(this, CreateAccountActivity.class);
+        progressBar = findViewById(R.id.login_progressBar);
+        button = findViewById(R.id.login_button);
+
+        tv_createAccount = findViewById(R.id.tv_createAccount);
+        tv_createAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(this, SignUpActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
@@ -71,14 +69,14 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String emailInput = login_email.getText().toString().trim();
-            String passwordInput = login_password.getText().toString().trim();
+            String emailInput = edt_email.getText().toString().trim();
+            String passwordInput = edt_password.getText().toString().trim();
 
-            button_login.setEnabled(!emailInput.isEmpty()
+            button.setEnabled(!emailInput.isEmpty()
                     && Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()
                     && !passwordInput.isEmpty());
 
-            button_login.setOnClickListener(view -> {
+            button.setOnClickListener(view -> {
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
@@ -94,8 +92,8 @@ public class LoginActivity extends AppCompatActivity {
     };
 
     void loginUser() {
-        String email = login_email.getText().toString().trim();
-        String password = login_password.getText().toString().trim();
+        String email = edt_email.getText().toString().trim();
+        String password = edt_password.getText().toString().trim();
 
         boolean isValidated = loginValidateData(email, password);
         if(!isValidated) {
@@ -119,13 +117,12 @@ public class LoginActivity extends AppCompatActivity {
                             Utility.showToast(this, "이메일 인증이 필요합니다");
                         }
                     } else {
-                        Snackbar.make(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다. 다시 시도하세요.", Snackbar.LENGTH_SHORT).show();
+                        Snackbar.make(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다", Snackbar.LENGTH_SHORT).show();
                     }
                 });
     }
 
     boolean loginValidateData(String email, String password) {
-        // 데이터 유효성 검사
         if(!PASSWORD.matcher(password).matches()) {
             layout_password.setError("숫자/영문/특수문자 8자~15자로 입력해 주세요");
             return false;

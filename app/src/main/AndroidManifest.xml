@@ -34,7 +34,7 @@
             android:theme="@style/loginRegisterTheme"
             android:windowSoftInputMode="adjustUnspecified" />
         <activity
-            android:name=".CreateAccountActivity"
+            android:name=".SignUpActivity"
             android:exported="true"
             android:theme="@style/loginRegisterTheme"
             android:windowSoftInputMode="adjustUnspecified" />
@@ -44,6 +44,10 @@
             android:theme="@style/mainTheme"
             android:windowSoftInputMode="adjustUnspecified" />
         <activity
+            android:name=".AddContentActivity"
+            android:exported="true"
+            android:theme="@style/mainTheme" />
+        <activity
             android:name=".SettingActivity"
             android:exported="true"
             android:theme="@style/mainTheme"
@@ -52,10 +56,6 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-        <activity
-            android:name=".AddContentActivity"
-            android:exported="true"
-            android:theme="@style/mainTheme" />
     </application>
 
 </manifest>
