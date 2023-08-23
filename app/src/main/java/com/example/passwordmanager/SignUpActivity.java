@@ -32,8 +32,8 @@ public class SignUpActivity extends AppCompatActivity {
     TextInputLayout layout_email, layout_password, layout_passCheck;
     TextInputEditText edt_email, edt_password, edt_passCheck;
     MaterialToolbar mToolbar;
-    ProgressBar progressBar;
     Button button;
+    ProgressBar progressBar;
     TextView tv_login;
     FirebaseAuth fAuth;
 
@@ -56,7 +56,7 @@ public class SignUpActivity extends AppCompatActivity {
         edt_password = findViewById(R.id.signup_password);
         edt_passCheck = findViewById(R.id.signup_passCheck);
 
-        edt_email.addTextChangedListener(signUpTextWatcher);
+        //edt_email.addTextChangedListener(signUpTextWatcher);
 
         tv_login = findViewById(R.id.tv_login);
         tv_login.setPaintFlags(tv_login.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -67,34 +67,12 @@ public class SignUpActivity extends AppCompatActivity {
             finish();
         });
 
-        progressBar = findViewById(R.id.signup_progressBar);
-
         button = findViewById(R.id.signup_button);
         button.setOnClickListener(view -> signUp());
+
+        progressBar = findViewById(R.id.signup_progressBar);
     }
 
-    TextWatcher signUpTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String emailInput = edt_email.getText().toString().trim();
-            String passwordInput = edt_password.getText().toString().trim();
-            String passCheckInput = edt_passCheck.getText().toString().trim();
-
-            if(!Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()) {
-                layout_email.setError("올바른 형식의 이메일 주소를 입력해 주세요.");
-            } else {
-                layout_email.setError(null);
-                layout_email.setErrorEnabled(false);
-                layout_email.setBoxStrokeColor(Color.parseColor("#3B9B70"));
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) { }
-    };
 
     void signUp() {
         String email = edt_email.getText().toString().trim();
