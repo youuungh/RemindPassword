@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    android:background="@android:color/white"
+    android:id="@+id/myConstraintLayout">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/login_layout_appbar"
@@ -50,7 +51,7 @@
                 app:endIconMode="clear_text"
                 app:endIconDrawable="@drawable/ic_clear_text"
                 app:boxStrokeColor="@color/black"
-                app:boxStrokeWidthFocused="1dp"
+                app:boxStrokeWidthFocused="2dp"
                 app:boxStrokeErrorColor="?attr/colorError"
                 app:hintEnabled="false"
                 app:errorEnabled="false">
@@ -81,7 +82,7 @@
                 app:endIconDrawable="@drawable/custom_password_toggle"
                 app:endIconCheckable="true"
                 app:boxStrokeColor="@color/black"
-                app:boxStrokeWidthFocused="1dp"
+                app:boxStrokeWidthFocused="2dp"
                 app:boxStrokeErrorColor="?attr/colorError"
                 app:hintEnabled="false"
                 app:errorEnabled="false">
@@ -110,7 +111,7 @@
                     android:layout_height="60dp"
                     android:gravity="center_horizontal|center_vertical"
                     app:backgroundTint="@null"
-                    android:background="@drawable/flag_loginbutton"
+                    android:background="@drawable/flag_login_button"
                     android:text="로그인"
                     android:textColor="#FFFFFF"
                     android:textSize="18sp"

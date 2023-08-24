@@ -4,6 +4,7 @@ package com.example.passwordmanager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,9 +48,9 @@ public class LoginActivity extends AppCompatActivity {
         layout_password = findViewById(R.id.login_layout_password);
 
         edt_email = findViewById(R.id.login_email);
+        edt_email.addTextChangedListener(new LoginTextWatcher(edt_email));
         edt_password = findViewById(R.id.login_password);
-        edt_email.addTextChangedListener(loginTextWatcher);
-        edt_password.addTextChangedListener(loginTextWatcher);
+        edt_password.addTextChangedListener(new LoginTextWatcher(edt_password));
 
         progressBar = findViewById(R.id.login_progressBar);
         button = findViewById(R.id.login_button);
@@ -61,46 +62,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-    }
-
-    TextWatcher loginTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String emailInput = edt_email.getText().toString().trim();
-            String passwordInput = edt_password.getText().toString().trim();
-
-            button.setEnabled(!emailInput.isEmpty()
-                    && Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()
-                    && !passwordInput.isEmpty());
-
-            button.setOnClickListener(view -> {
-                InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
-                layout_email.setErrorEnabled(false);
-                layout_password.setErrorEnabled(false);
-
-                loginUser();
-            });
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) { }
-    };
-
-    void loginUser() {
-        String email = edt_email.getText().toString().trim();
-        String password = edt_password.getText().toString().trim();
-
-        boolean isValidated = loginValidateData(email, password);
-        if(!isValidated) {
-            return;
-        }
-
-        loginAccountInFirebase(email, password);
     }
 
     void loginAccountInFirebase(String email, String password) {
@@ -122,12 +83,74 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    boolean loginValidateData(String email, String password) {
-        if(!PASSWORD.matcher(password).matches()) {
-            layout_password.setError("숫자/영문/특수문자 8자~15자로 입력해 주세요");
-            return false;
+    private class LoginTextWatcher implements TextWatcher {
+        private View v;
+
+        private LoginTextWatcher(View v) {
+            this.v = v;
         }
-        return true;
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            String emailInput = edt_email.getText().toString().trim();
+            String passwordInput = edt_password.getText().toString().trim();
+
+            switch (v.getId()) {
+                case R.id.login_email:
+                    validateEmail(emailInput);
+                    break;
+                case R.id.login_password:
+                    validatePassword(passwordInput);
+                    break;
+            }
+
+            button.setEnabled(Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()
+                    && PASSWORD.matcher(passwordInput).matches());
+            button.setOnClickListener(view -> {
+                InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
+                loginAccountInFirebase(emailInput, passwordInput);
+            });
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) { }
+    };
+
+    void validateEmail(String emailInput) {
+        boolean isValid = Patterns.EMAIL_ADDRESS.matcher(emailInput).matches();
+
+        if (emailInput.isEmpty()) {
+            layout_email.setErrorEnabled(false);
+            layout_email.setBoxStrokeColor(Color.BLACK);
+        } else {
+            if (!isValid) {
+                layout_email.setError("올바른 형식의 이메일 주소를 입력해 주세요.");
+                layout_email.setErrorIconDrawable(null);
+            } else {
+                layout_email.setErrorEnabled(false);
+            }
+        }
+    }
+
+    void validatePassword(String passwordInput) {
+        boolean isValid = PASSWORD.matcher(passwordInput).matches();
+
+        if (passwordInput.isEmpty()) {
+            layout_password.setErrorEnabled(false);
+            layout_password.setBoxStrokeColor(Color.BLACK);
+        } else {
+            if (!isValid) {
+                layout_password.setError("숫자/영문/특수문자 8자~15자로 입력해 주세요");
+                layout_password.setErrorIconDrawable(null);
+            } else {
+                layout_password.setErrorEnabled(false);
+            }
+        }
     }
 
     void loginChangeInProgress(boolean inProgress) {
