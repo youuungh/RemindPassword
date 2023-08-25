@@ -29,9 +29,8 @@ public class LoginActivity extends AppCompatActivity {
     TextInputLayout layout_email, layout_password;
     TextInputEditText edt_email, edt_password;
     ProgressBar progressBar;
-    FirebaseAuth fAuth;
     Button button;
-    TextView tv_createAccount;
+    TextView tv_signup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +54,8 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.login_progressBar);
         button = findViewById(R.id.login_button);
 
-        tv_createAccount = findViewById(R.id.tv_createAccount);
-        tv_createAccount.setOnClickListener(v -> {
+        tv_signup = findViewById(R.id.tv_signup);
+        tv_signup.setOnClickListener(v -> {
             Intent intent = new Intent(this, SignUpActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -64,23 +63,33 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    void loginAccountInFirebase(String email, String password) {
-        fAuth = FirebaseAuth.getInstance();
+    private void loginAccountInFirebase(String email, String password) {
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
         loginChangeInProgress(true);
         fAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     loginChangeInProgress(false);
                     if(task.isSuccessful()) {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
-                            startActivity(new Intent(this, MainActivity.class));
-                            Utility.showToast(this, "로그인 성공");
+                            Intent intent = new Intent(this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                            finish();
                         } else {
-                            Utility.showToast(this, "이메일 인증이 필요합니다");
+                            Utility.showSnack(findViewById(R.id.loginScreen), "이메일 인증이 필요합니다");
                         }
                     } else {
-                        Snackbar.make(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다", Snackbar.LENGTH_SHORT).show();
+                        Utility.showSnack(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다");
                     }
                 });
+    }
+
+    void loginChangeInProgress(boolean inProgress) {
+        if (inProgress) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.GONE);
+        }
     }
 
     private class LoginTextWatcher implements TextWatcher {
@@ -121,7 +130,7 @@ public class LoginActivity extends AppCompatActivity {
         public void afterTextChanged(Editable s) { }
     };
 
-    void validateEmail(String emailInput) {
+    private void validateEmail(String emailInput) {
         boolean isValid = Patterns.EMAIL_ADDRESS.matcher(emailInput).matches();
 
         if (emailInput.isEmpty()) {
@@ -137,7 +146,7 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
-    void validatePassword(String passwordInput) {
+    private void validatePassword(String passwordInput) {
         boolean isValid = PASSWORD.matcher(passwordInput).matches();
 
         if (passwordInput.isEmpty()) {
@@ -150,14 +159,6 @@ public class LoginActivity extends AppCompatActivity {
             } else {
                 layout_password.setErrorEnabled(false);
             }
-        }
-    }
-
-    void loginChangeInProgress(boolean inProgress) {
-        if (inProgress) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
         }
     }
 }

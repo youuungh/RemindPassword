@@ -1,6 +1,7 @@
 package com.example.passwordmanager;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -9,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.core.View;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -17,6 +17,10 @@ import java.util.Locale;
 public class Utility {
     static void showToast(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
+
+    static void showSnack(View v, String msg) {
+        Snackbar.make(v, msg, Snackbar.LENGTH_SHORT).show();
     }
 
     public static String timeStampToString(Timestamp timestamp) {

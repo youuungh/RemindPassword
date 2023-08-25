@@ -36,7 +36,6 @@ public class SignUpActivity extends AppCompatActivity {
     Button button;
     ProgressBar progressBar;
     TextView tv_login;
-    FirebaseAuth fAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,14 +72,9 @@ public class SignUpActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.signup_progressBar);
     }
 
-    void signUp(String email, String password) {
-
-        signUpInFirebase(email, password);
-    }
-
-    void signUpInFirebase(String email, String password) {
+    private void signUpInFirebase(String email, String password) {
         signUpChangeInProgress(true);
-        fAuth = FirebaseAuth.getInstance();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
         fAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -92,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity {
                             fAuth.signOut();
                             onBackPressed();
                         } else {
-                            Toast.makeText(SignUpActivity.this, "다시 시도하세요", Toast.LENGTH_SHORT).show();
+                            Utility.showSnack(findViewById(R.id.signupScreen), "이미 존재하는 계정입니다");
                         }
                     }
                 });
@@ -101,10 +95,8 @@ public class SignUpActivity extends AppCompatActivity {
     void signUpChangeInProgress(boolean inProgress) {
         if (inProgress) {
             progressBar.setVisibility(View.VISIBLE);
-            button.setVisibility(View.GONE);
         } else {
             progressBar.setVisibility(View.GONE);
-            button.setVisibility(View.VISIBLE);
         }
     }
 
@@ -145,9 +137,8 @@ public class SignUpActivity extends AppCompatActivity {
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
-                Snackbar.make(findViewById(R.id.signupScreen), "성공", Snackbar.LENGTH_SHORT).show();
+                signUpInFirebase(emailInput, passwordInput);
             });
-            //button.setOnClickListener(view -> signUpInFirebase(emailInput, passwordInput));
         }
 
         @Override
@@ -156,7 +147,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    void validateEmail(String emailInput) {
+    private void validateEmail(String emailInput) {
         boolean isValid = Patterns.EMAIL_ADDRESS.matcher(emailInput).matches();
 
         if (emailInput.isEmpty()) {
@@ -173,7 +164,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    void validatePassword(String passwordInput, String passCheckInput) {
+    private void validatePassword(String passwordInput, String passCheckInput) {
         boolean isValid = PASSWORD.matcher(passwordInput).matches();
 
         if (passwordInput.isEmpty()) {
@@ -198,7 +189,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    void validatePassCheck(String passwordInput, String passCheckInput) {
+    private void validatePassCheck(String passwordInput, String passCheckInput) {
         boolean isValid = passCheckInput.equals(passwordInput);
 
         if (passCheckInput.isEmpty()) {
