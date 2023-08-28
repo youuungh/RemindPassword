@@ -12,7 +12,7 @@ import android.view.Window;
 import android.widget.Button;
 
 public class HomeActivity extends AppCompatActivity {
-    Button home_register, home_login;
+    Button home_signup, home_login;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -27,18 +27,14 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Sign up
-        home_register = findViewById(R.id.home_register);
-        home_register.setOnClickListener(view -> {
-            Intent intent = new Intent(this, SignUpActivity.class);
-            startActivity(intent);
+        home_signup = findViewById(R.id.home_signup);
+        home_signup.setOnClickListener(view -> {
+            startActivity(new Intent(this, SignUpActivity.class));
         });
 
-        // Sign in
         home_login = findViewById(R.id.home_login);
         home_login.setOnClickListener(view -> {
-            Intent intent = new Intent(this, LoginActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(this, LoginActivity.class));
         });
     }
 }
