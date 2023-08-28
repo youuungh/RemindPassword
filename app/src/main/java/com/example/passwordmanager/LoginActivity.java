@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     TextInputEditText edt_email, edt_password;
     ProgressBar progressBar;
     Button button;
-    TextView tv_signup;
+    TextView tv_signup, tv_reset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,12 +54,14 @@ public class LoginActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.login_progressBar);
         button = findViewById(R.id.login_button);
 
+        tv_reset  = findViewById(R.id.tv_reset);
+        tv_reset.setOnClickListener(v -> {
+            startActivity(new Intent(this, ResetPasswordActivity.class));
+        });
+
         tv_signup = findViewById(R.id.tv_signup);
         tv_signup.setOnClickListener(v -> {
-            Intent intent = new Intent(this, SignUpActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-            finish();
+            startActivity(new Intent(this, SignUpActivity.class));
         });
     }
 
@@ -84,12 +86,18 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    void loginChangeInProgress(boolean inProgress) {
+    private void loginChangeInProgress(boolean inProgress) {
         if (inProgress) {
             progressBar.setVisibility(View.VISIBLE);
+            clearFocus();
         } else {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    private void clearFocus() {
+        edt_email.clearFocus();
+        edt_password.clearFocus();
     }
 
     private class LoginTextWatcher implements TextWatcher {

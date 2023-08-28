@@ -44,8 +44,8 @@ public class SignUpActivity extends AppCompatActivity {
 
         mToolbar = findViewById(R.id.signup_toolbar);
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(view -> {
-            this.finish();
+        mToolbar.setNavigationOnClickListener(v -> {
+            onBackPressed();
         });
 
         layout_email = findViewById(R.id.signup_layout_email);
@@ -76,28 +76,31 @@ public class SignUpActivity extends AppCompatActivity {
         signUpChangeInProgress(true);
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         fAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(SignUpActivity.this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        signUpChangeInProgress(false);
-                        if (task.isSuccessful()) {
-                            Toast.makeText(SignUpActivity.this, "등록 성공, 이메일을 발송했습니다", Toast.LENGTH_LONG).show();
-                            fAuth.getCurrentUser().sendEmailVerification();
-                            fAuth.signOut();
-                            onBackPressed();
-                        } else {
-                            Utility.showSnack(findViewById(R.id.signupScreen), "이미 존재하는 계정입니다");
-                        }
+                .addOnCompleteListener(SignUpActivity.this, task -> {
+                    signUpChangeInProgress(false);
+                    if (task.isSuccessful()) {
+                        Utility.showToast(SignUpActivity.this, "등록 성공, 이메일을 발송했습니다");
+                        fAuth.getCurrentUser().sendEmailVerification();
+                        finish();
+                    } else {
+                        Utility.showSnack(findViewById(R.id.signupScreen), "이미 존재하는 계정입니다");
                     }
                 });
     }
 
-    void signUpChangeInProgress(boolean inProgress) {
+    private void signUpChangeInProgress(boolean inProgress) {
         if (inProgress) {
             progressBar.setVisibility(View.VISIBLE);
+            clearFocus();
         } else {
             progressBar.setVisibility(View.GONE);
         }
+    }
+
+    private void clearFocus() {
+        edt_email.clearFocus();
+        edt_password.clearFocus();
+        edt_passCheck.clearFocus();
     }
 
     private class SignUpTextWatcher implements TextWatcher {
