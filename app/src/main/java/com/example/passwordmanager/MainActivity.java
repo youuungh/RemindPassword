@@ -16,61 +16,49 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle toggle;
-    NavigationView nav_view;
-    Toolbar toolbar;
+    NavigationView main_nav;
+    MaterialToolbar mToolbar;
+    MaterialButton button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // 액션바
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(mToolbar);
 
-        // 네비게이션
         drawerLayout = findViewById(R.id.layout_drawer);
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
+        toggle = new ActionBarDrawerToggle(this, drawerLayout, mToolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
 
-        nav_view = findViewById(R.id.nav_view);
-        nav_view.setNavigationItemSelectedListener(this);
-        nav_view.setCheckedItem(R.id.nav_main);
+        main_nav = findViewById(R.id.main_nav);
+        main_nav.setNavigationItemSelectedListener(this);
+        main_nav.setCheckedItem(R.id.nav_main);
         showFragments(new MainFragment());
+
+        button = findViewById(R.id.nav_button);
+        button.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Utility.showToast(this, "로그아웃 되었습니다");
+            startActivity(new Intent(MainActivity.this, HomeActivity.class));
+            finish();
+        });
     }
 
     public void setActionBarTitle(String title) {
         if(getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(title);
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_option, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_edit:
-                Toast.makeText(this, "편집", Toast.LENGTH_SHORT).show();
-                return true;
-            case R.id.menu_view:
-                Toast.makeText(this, "보기방식", Toast.LENGTH_SHORT).show();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 
@@ -89,11 +77,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.nav_setting:
                 Intent intent = new Intent(MainActivity.this, SettingActivity.class);
                 startActivity(intent);
-                break;
-            case R.id.nav_logout:
-                FirebaseAuth.getInstance().signOut();
-                startActivity(new Intent(MainActivity.this, HomeActivity.class));
-                Utility.showToast(getApplicationContext(), "로그아웃 되었습니다");
                 break;
         }
         return true;

@@ -14,20 +14,41 @@
         layout="@layout/content_main"/>
 
     <com.google.android.material.navigation.NavigationView
-        android:id="@+id/nav_view"
+        android:id="@+id/main_nav"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="@drawable/rounded_drawer"
         android:fitsSystemWindows="true"
-        android:paddingTop="23dp"
+        android:paddingTop="25dp"
         app:menu="@menu/menu_navigation"
-        app:itemHorizontalPadding="70dp"
+        app:itemHorizontalPadding="40dp"
         app:itemVerticalPadding="20dp"
+        app:itemIconPadding="30dp"
         app:itemBackground="@drawable/menu_item_padding"
         app:itemTextColor="@color/black"
-        app:itemIconTint="@color/black">
-        
-    </com.google.android.material.navigation.NavigationView>
+        app:itemIconTint="@color/black"
+        app:itemTextAppearance="?android:attr/textAppearanceMedium">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:padding="20dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/nav_button"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:gravity="center"
+                app:backgroundTint="@null"
+                app:icon="@drawable/ic_sign_out"
+                app:iconGravity="textStart"
+                app:iconPadding="10dp"
+                android:background="@drawable/rounded_sign_out_button"
+                android:text="로그아웃"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"/>
+        </LinearLayout>
+    </com.google.android.material.navigation.NavigationView>
 </androidx.drawerlayout.widget.DrawerLayout>

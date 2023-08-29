@@ -138,8 +138,10 @@ public class SignUpActivity extends AppCompatActivity {
                     && passCheckInput.equals(passwordInput));
             button.setOnClickListener(v -> {
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
+                View focusedView = getCurrentFocus();
+                if (focusedView != null) {
+                    manager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
                 signUpInFirebase(emailInput, passwordInput);
             });
         }

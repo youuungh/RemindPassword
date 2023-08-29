@@ -64,8 +64,7 @@ public class MainFragment extends Fragment {
         button_fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), AddContentActivity.class);
-                startActivity(intent);
+                startActivity(new Intent(getActivity(), AddContentActivity.class));
             }
         });
         return view;

@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class HomeActivity extends AppCompatActivity {
     Button home_signup, home_login;
 
@@ -26,6 +28,12 @@ public class HomeActivity extends AppCompatActivity {
         );
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        if (fAuth.getCurrentUser() != null) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+        }
 
         home_signup = findViewById(R.id.home_signup);
         home_signup.setOnClickListener(view -> {

@@ -73,9 +73,7 @@ public class LoginActivity extends AppCompatActivity {
                     loginChangeInProgress(false);
                     if(task.isSuccessful()) {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
-                            Intent intent = new Intent(this, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
+                            startActivity(new Intent(this, MainActivity.class));
                             finish();
                         } else {
                             Utility.showSnack(findViewById(R.id.loginScreen), "이메일 인증이 필요합니다");
@@ -128,8 +126,10 @@ public class LoginActivity extends AppCompatActivity {
                     && PASSWORD.matcher(passwordInput).matches());
             button.setOnClickListener(view -> {
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                manager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-
+                View focusedView = getCurrentFocus();
+                if (focusedView != null) {
+                    manager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                }
                 loginAccountInFirebase(emailInput, passwordInput);
             });
         }

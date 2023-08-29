@@ -30,7 +30,6 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="actionOverflowMenuStyle">@style/popupOverflowMenu</item>
         <item name="actionOverflowButtonStyle">@style/actionButtonOverflow</item>
-        <item name="android:listDivider">@android:color/transparent</item>
     </style>
 
     <style name="popupOverflowMenu" parent="@style/Widget.Material3.PopupMenu.Overflow">
