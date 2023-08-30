@@ -22,13 +22,12 @@
         android:fitsSystemWindows="true"
         android:paddingTop="25dp"
         app:menu="@menu/menu_navigation"
-        app:itemHorizontalPadding="40dp"
+        app:itemHorizontalPadding="30dp"
         app:itemVerticalPadding="20dp"
         app:itemIconPadding="30dp"
-        app:itemBackground="@drawable/menu_item_padding"
         app:itemTextColor="@color/black"
-        app:itemIconTint="@color/black"
-        app:itemTextAppearance="?android:attr/textAppearanceMedium">
+        app:itemTextAppearance="?android:attr/textAppearanceMedium"
+        app:itemShapeFillColor="@drawable/menu_ripple">
 
         <LinearLayout
             android:layout_width="match_parent"

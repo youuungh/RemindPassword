@@ -45,7 +45,6 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ((MainActivity)getActivity()).setActionBarTitle("모든 항목");
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         fStore = FirebaseFirestore.getInstance();

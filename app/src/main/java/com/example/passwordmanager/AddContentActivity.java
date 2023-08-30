@@ -134,7 +134,7 @@ public class AddContentActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
                     Utility.showToast(AddContentActivity.this, "저장됨");
-                    onBackPressed();
+                    finish();
                 } else {
                     Utility.showToast(AddContentActivity.this, "다시 시도하세요");
                     progressBar.setVisibility(View.VISIBLE);
