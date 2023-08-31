@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainFragment extends Fragment {
-    FloatingActionButton button_fab;
     RecyclerView recyclerView;
     FirebaseFirestore fStore;
     Adapter adapter;
@@ -49,7 +48,6 @@ public class MainFragment extends Fragment {
 
         fStore = FirebaseFirestore.getInstance();
         recyclerView = view.findViewById(R.id.contents_list);
-        button_fab = view.findViewById(R.id.button_fab);
 
         Query query = Utility.getCollectionReference().orderBy("timestamp", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Content> options = new FirestoreRecyclerOptions.Builder<Content>()
@@ -59,13 +57,6 @@ public class MainFragment extends Fragment {
         adapter = new Adapter(options, this);
         recyclerView.setAdapter(adapter);
 
-        // 플로팅 버튼
-        button_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddContentActivity.class));
-            }
-        });
         return view;
     }
 

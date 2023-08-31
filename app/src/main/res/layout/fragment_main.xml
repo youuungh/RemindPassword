@@ -11,17 +11,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="25dp"
-        app:backgroundTint="@color/white"
-        app:elevation="3dp"
-        android:src="@drawable/ic_create"
-        android:tint="#92A3FD"
-        app:pressedTranslationZ="0dp"/>
-
 </RelativeLayout>

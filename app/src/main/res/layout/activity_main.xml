@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout_drawer"
-    android:background="@color/white"
-    tools:openDrawer="start">
+    tools:openDrawer="end">
 
     <include
         android:layout_width="match_parent"
@@ -45,7 +44,7 @@
                 app:iconGravity="textStart"
                 app:iconPadding="10dp"
                 android:background="@drawable/rounded_sign_out_button"
-                android:text="로그아웃"
+                android:text="@string/logout"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"/>
         </LinearLayout>

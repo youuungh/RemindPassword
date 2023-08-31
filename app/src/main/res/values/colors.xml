@@ -14,4 +14,6 @@
     <color name="skyBlue">#9EDFFF</color>
     <color name="gray">#E0E0E0</color>
     <color name="lightGreen">#96D162</color>
+    <color name="alertButton">#5c6c6d</color>
+    <color name="alertButtonRipple">#bbebeb</color>
 </resources>

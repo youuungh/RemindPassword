@@ -87,33 +87,30 @@ public class AddContentActivity extends AppCompatActivity {
 
         // 플로팅 버튼
         add_finish_fab = findViewById(R.id.add_finish_fab);
-        add_finish_fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String title = toolbar_add_title.getText().toString();
-                String id = content_edit_id.getText().toString();
-                String pw = content_edit_pw.getText().toString();
-                String memo = content_edit_memo.getText().toString();
-                Timestamp timestamp = Timestamp.now();
+        add_finish_fab.setOnClickListener(view -> {
+            String title = toolbar_add_title.getText().toString();
+            String id = content_edit_id.getText().toString();
+            String pw = content_edit_pw.getText().toString();
+            String memo = content_edit_memo.getText().toString();
+            Timestamp timestamp = Timestamp.now();
 
-                if (title.isEmpty()) {
-                    Toast.makeText(AddContentActivity.this, "제목을 입력하세요", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                // 프로그래스바
-                progressBar.setVisibility(View.VISIBLE);
-
-                // firebase 데이터 저장
-                Content content = new Content();
-                content.setTitle(title);
-                content.setId(id);
-                content.setPw(pw);
-                content.setMemo(memo);
-                content.setTimestamp(Timestamp.now());
-
-                saveToFirebase(content);
+            if (title.isEmpty()) {
+                Toast.makeText(AddContentActivity.this, "제목을 입력하세요", Toast.LENGTH_SHORT).show();
+                return;
             }
+
+            // 프로그래스바
+            progressBar.setVisibility(View.VISIBLE);
+
+            // firebase 데이터 저장
+            Content content = new Content();
+            content.setTitle(title);
+            content.setId(id);
+            content.setPw(pw);
+            content.setMemo(memo);
+            content.setTimestamp(Timestamp.now());
+
+            saveToFirebase(content);
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

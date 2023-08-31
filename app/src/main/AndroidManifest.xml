@@ -14,13 +14,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/homeTheme"
+        android:theme="@style/BaseTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="31" >
         <activity
             android:name=".HomeActivity"
             android:exported="true"
-            android:theme="@style/homeTheme"
+            android:theme="@style/BaseTheme"
             android:windowSoftInputMode="adjustUnspecified" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,30 +31,30 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true"
-            android:theme="@style/loginRegisterTheme"
+            android:theme="@style/BaseTheme"
             android:windowSoftInputMode="adjustUnspecified" />
         <activity
             android:name=".SignUpActivity"
             android:exported="true"
-            android:theme="@style/loginRegisterTheme"
+            android:theme="@style/BaseTheme"
             android:windowSoftInputMode="adjustUnspecified" />
         <activity
             android:name=".ResetPasswordActivity"
             android:exported="false"
-            android:theme="@style/loginRegisterTheme"/>
+            android:theme="@style/BaseTheme"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/mainTheme"
+            android:theme="@style/BaseTheme"
             android:windowSoftInputMode="adjustUnspecified" />
         <activity
             android:name=".AddContentActivity"
             android:exported="true"
-            android:theme="@style/mainTheme" />
+            android:theme="@style/BaseTheme" />
         <activity
             android:name=".SettingActivity"
             android:exported="true"
-            android:theme="@style/mainTheme"
+            android:theme="@style/BaseTheme"
             android:windowSoftInputMode="adjustUnspecified" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
