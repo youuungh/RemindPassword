@@ -22,6 +22,7 @@
             android:background="@color/white"
             app:title="로그인"
             app:titleCentered="true"
+            app:titleTextColor="#49454f"
             app:navigationIcon="@drawable/ic_arrow_left"/>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -145,7 +146,8 @@
                     android:layout_marginEnd="15dp"
                     android:gravity="center|end"
                     android:textSize="15sp"
-                    android:text="비밀번호 재설정"/>
+                    android:text="비밀번호 재설정"
+                    android:textColor="#49454f"/>
 
                 <View
                     android:layout_width="1dp"
@@ -162,7 +164,8 @@
                     android:layout_marginStart="15dp"
                     android:textSize="15sp"
                     android:layout_gravity="center|start"
-                    android:text="이메일 계정생성"/>
+                    android:text="이메일 계정생성"
+                    android:textColor="#49454f"/>
 
             </LinearLayout>
         </LinearLayout>

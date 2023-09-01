@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/layout_drawer"
-    tools:openDrawer="end">
+    tools:openDrawer="start">
 
     <include
         android:layout_width="match_parent"
@@ -20,12 +20,13 @@
         android:background="@drawable/rounded_drawer"
         android:fitsSystemWindows="true"
         android:paddingTop="25dp"
+        app:headerLayout="@layout/nav_header"
         app:menu="@menu/menu_navigation"
         app:itemHorizontalPadding="30dp"
         app:itemVerticalPadding="20dp"
         app:itemIconPadding="30dp"
-        app:itemTextColor="@color/black"
-        app:itemTextAppearance="?android:attr/textAppearanceMedium"
+        app:itemTextColor="#49454f"
+        app:itemTextAppearance="@style/TextAppearance.Material3.TitleMedium"
         app:itemShapeFillColor="@drawable/menu_ripple">
 
         <LinearLayout

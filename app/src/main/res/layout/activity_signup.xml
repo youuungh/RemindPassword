@@ -21,6 +21,7 @@
             android:background="@color/white"
             app:title="계정생성"
             app:titleCentered="true"
+            app:titleTextColor="#49454f"
             app:navigationIcon="@drawable/ic_arrow_left"/>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -152,6 +153,7 @@
                     android:layout_marginStart="10dp"
                     android:text="로그인"
                     android:textSize="15sp"
+                    android:textColor="#49454f"
                     android:textStyle="bold"/>
             </LinearLayout>
 
