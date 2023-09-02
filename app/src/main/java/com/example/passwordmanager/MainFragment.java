@@ -49,7 +49,7 @@ public class MainFragment extends Fragment {
         fStore = FirebaseFirestore.getInstance();
         recyclerView = view.findViewById(R.id.contents_list);
 
-        Query query = Utility.getCollectionReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        Query query = Utility.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Content> options = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(query, Content.class).build();
 

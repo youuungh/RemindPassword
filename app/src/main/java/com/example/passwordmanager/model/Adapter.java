@@ -46,8 +46,8 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
                 intent.putExtra("id", content.id);
                 intent.putExtra("pw", content.pw);
                 intent.putExtra("memo", content.memo);
-                String documentId = getSnapshots().getSnapshot(position).getId();
-                intent.putExtra("documentId", documentId);
+                String label = getSnapshots().getSnapshot(position).getId();
+                intent.putExtra("label", label);
                 view.getContext().startActivity(intent);
             }
         });

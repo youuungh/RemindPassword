@@ -12,6 +12,7 @@ import android.view.Window;
 import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
     Button home_signup, home_login;
@@ -31,8 +32,9 @@ public class HomeActivity extends AppCompatActivity {
 
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         if (fAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         }
 
         home_signup = findViewById(R.id.home_signup);

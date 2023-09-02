@@ -32,12 +32,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AddContentActivity extends AppCompatActivity {
-    FirebaseFirestore fStore;
     MaterialToolbar toolbar;
     FloatingActionButton add_finish_fab;
     EditText toolbar_add_title, content_edit_id, content_edit_pw, content_edit_memo;
     ProgressBar progressBar;
-    String title, id, pw, memo, documentId;
+    String title, id, pw, memo, label;
     boolean isEdit = false;
 
     @Override
@@ -45,7 +44,6 @@ public class AddContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
 
-        fStore = FirebaseFirestore.getInstance();
         progressBar = findViewById(R.id.progressBar);
 
         toolbar_add_title = findViewById(R.id.toolbar_add_title);
@@ -66,14 +64,14 @@ public class AddContentActivity extends AppCompatActivity {
         id = getIntent().getStringExtra("id");
         pw = getIntent().getStringExtra("pw");
         memo = getIntent().getStringExtra("memo");
-        documentId = getIntent().getStringExtra("documentId");
+        label = getIntent().getStringExtra("label");
 
         toolbar_add_title.setText(title);
         content_edit_id.setText(id);
         content_edit_pw.setText(pw);
         content_edit_memo.setText(memo);
 
-        if(documentId != null && !documentId.isEmpty()) {
+        if(label != null && !label.isEmpty()) {
             isEdit = true;
         }
 
@@ -120,10 +118,10 @@ public class AddContentActivity extends AppCompatActivity {
 
         if(isEdit) {
             // 컨텐츠 업데이트
-            documentReference = Utility.getCollectionReference().document(documentId);
+            documentReference = Utility.getContentReference().document(label);
         } else {
             // 컨텐츠 생성
-            documentReference = Utility.getCollectionReference().document();
+            documentReference = Utility.getContentReference().document();
         }
 
         documentReference.set(content).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -155,7 +153,7 @@ public class AddContentActivity extends AppCompatActivity {
             case R.id.menu_delete:
 
                 DocumentReference documentReference;
-                documentReference = Utility.getCollectionReference().document(documentId);
+                documentReference = Utility.getContentReference().document(label);
 
                 documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override

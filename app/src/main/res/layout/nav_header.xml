@@ -10,16 +10,20 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <TextView
+            android:id="@+id/tv_userId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="10dp"
             android:text="test"
-            android:textSize="24sp"/>
+            android:textSize="24sp"
+            android:textColor="@color/customTextColor"/>
         <TextView
+            android:id="@+id/tv_userMail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingStart="10dp"
             android:text="\@email.com"
-            android:textSize="16sp"/>
+            android:textSize="16sp"
+            android:textColor="@color/customTextColor"/>
     </LinearLayout>
 </LinearLayout>

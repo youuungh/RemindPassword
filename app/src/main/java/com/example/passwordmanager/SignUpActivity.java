@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +18,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.passwordmanager.model.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -25,11 +27,19 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
     static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
+    FirebaseAuth fAuth;
     TextInputLayout layout_email, layout_password, layout_passCheck;
     TextInputEditText edt_email, edt_password, edt_passCheck;
     MaterialToolbar mToolbar;
@@ -74,13 +84,17 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUpInFirebase(String email, String password) {
         signUpChangeInProgress(true);
-        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        fAuth = FirebaseAuth.getInstance();
         fAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignUpActivity.this, task -> {
                     signUpChangeInProgress(false);
                     if (task.isSuccessful()) {
-                        Utility.showToast(SignUpActivity.this, "등록 성공, 이메일을 발송했습니다");
                         fAuth.getCurrentUser().sendEmailVerification();
+                        DocumentReference docRef = Utility.getUserReference().document();
+                        Map<String, Object> user = new HashMap<>();
+                        user.put("email", email);
+                        docRef.set(user);
+                        Utility.showToast(SignUpActivity.this, "등록 성공, 이메일을 발송했습니다");
                         finish();
                     } else {
                         Utility.showSnack(findViewById(R.id.signupScreen), "이미 존재하는 계정입니다");

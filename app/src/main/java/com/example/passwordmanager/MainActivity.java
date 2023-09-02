@@ -1,6 +1,7 @@
 package com.example.passwordmanager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -8,11 +9,19 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import com.example.passwordmanager.model.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
@@ -22,23 +31,52 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.search.SearchView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    FirebaseAuth fAuth;
+    FirebaseFirestore fStore;
     DrawerLayout drawerLayout;
     NavigationView main_nav;
     MaterialButton button;
     SearchBar searchBar;
     FloatingActionButton button_fab;
+    TextView tv_userId, tv_userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        showFragments(new MainFragment());
-
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(null);
+        showFragments(new MainFragment());
+
+        fAuth = FirebaseAuth.getInstance();
+        fStore = FirebaseFirestore.getInstance();
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        DocumentReference docRef = fStore.collection("Users").document("user_data");
+        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null && document.exists()) {
+                        Log.d("TAG", document.getString("email"));
+                    } else {
+                        Log.d("TAG", "정보 없음");
+                    }
+                } else {
+                    Log.d("TAG", "실패", task.getException());
+                }
+            }
+        });
 
         drawerLayout = findViewById(R.id.layout_drawer);
         searchBar = findViewById(R.id.main_searchbar);
@@ -61,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         button.setOnClickListener(v -> {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.CustomAlertDialog)
                     .setMessage("로그아웃 하시겠습니까?")
+                    .setCancelable(false)
                     .setPositiveButton("확인", (dialog, which) -> {
                         FirebaseAuth.getInstance().signOut();
                         Utility.showToast(this, "로그아웃 되었습니다");

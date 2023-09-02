@@ -27,11 +27,19 @@ public class Utility {
         return new SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREAN).format(timestamp.toDate());
     }
 
-    static CollectionReference getCollectionReference() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+    static CollectionReference getUserReference() {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         return FirebaseFirestore.getInstance()
-                .collection("contents")
-                .document(currentUser.getUid())
-                .collection("my_contents");
+                .collection("Users")
+                .document(fUser.getUid())
+                .collection("user_data");
+    }
+
+    static CollectionReference getContentReference() {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        return FirebaseFirestore.getInstance()
+                .collection("Users")
+                .document(fUser.getUid())
+                .collection("user_data");
     }
 }
