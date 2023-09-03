@@ -14,22 +14,11 @@ import android.widget.Toast;
 
 import com.example.passwordmanager.model.Content;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.Timestamp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import org.checkerframework.checker.units.qual.C;
-
-import java.net.IDN;
-import java.util.HashMap;
-import java.util.Map;
 
 public class AddContentActivity extends AppCompatActivity {
     MaterialToolbar toolbar;
@@ -118,20 +107,20 @@ public class AddContentActivity extends AppCompatActivity {
 
         if(isEdit) {
             // 컨텐츠 업데이트
-            documentReference = Utility.getContentReference().document(label);
+            documentReference = Utils.getContentReference().document(label);
         } else {
             // 컨텐츠 생성
-            documentReference = Utility.getContentReference().document();
+            documentReference = Utils.getContentReference().document();
         }
 
         documentReference.set(content).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 if(task.isSuccessful()) {
-                    Utility.showToast(AddContentActivity.this, "저장됨");
+                    Utils.showToast(AddContentActivity.this, "저장됨");
                     finish();
                 } else {
-                    Utility.showToast(AddContentActivity.this, "다시 시도하세요");
+                    Utils.showToast(AddContentActivity.this, "다시 시도하세요");
                     progressBar.setVisibility(View.VISIBLE);
                 }
             }
@@ -153,21 +142,20 @@ public class AddContentActivity extends AppCompatActivity {
             case R.id.menu_delete:
 
                 DocumentReference documentReference;
-                documentReference = Utility.getContentReference().document(label);
+                documentReference = Utils.getContentReference().document(label);
 
                 documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if(task.isSuccessful()) {
                             // 삭제
-                            Utility.showToast(AddContentActivity.this, "삭제됨");
+                            Utils.showToast(AddContentActivity.this, "삭제됨");
                             onBackPressed();
                         } else {
-                            Utility.showToast(AddContentActivity.this, "다시 시도하세요");
+                            Utils.showToast(AddContentActivity.this, "다시 시도하세요");
                         }
                     }
                 });
-
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -1,6 +1,5 @@
 package com.example.passwordmanager;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -12,10 +11,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
@@ -57,10 +53,10 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, task -> {
                     resetChangeInProgress(false);
                     if (task.isSuccessful()) {
-                        Utility.showToast(ResetPasswordActivity.this, "이메일을 발송했습니다");
+                        Utils.showToast(ResetPasswordActivity.this, "이메일을 발송했습니다");
                         finish();
                     } else {
-                        Utility.showSnack(findViewById(R.id.resetScreen), "계정 정보를 찾을 수 없습니다");
+                        Utils.showSnack(findViewById(R.id.resetScreen), "계정 정보를 찾을 수 없습니다");
                     }
                 });
     }

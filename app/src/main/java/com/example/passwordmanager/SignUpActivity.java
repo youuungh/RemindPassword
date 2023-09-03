@@ -1,6 +1,5 @@
 package com.example.passwordmanager;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,32 +8,18 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.passwordmanager.model.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
@@ -54,9 +39,9 @@ public class SignUpActivity extends AppCompatActivity {
 
         mToolbar = findViewById(R.id.signup_toolbar);
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        mToolbar.setNavigationOnClickListener(v -> { onBackPressed(); });
+
+        fAuth = FirebaseAuth.getInstance();
 
         layout_email = findViewById(R.id.signup_layout_email);
         layout_password = findViewById(R.id.signup_layout_password);
@@ -84,20 +69,16 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void signUpInFirebase(String email, String password) {
         signUpChangeInProgress(true);
-        fAuth = FirebaseAuth.getInstance();
         fAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignUpActivity.this, task -> {
+                    clearFocus();
                     signUpChangeInProgress(false);
                     if (task.isSuccessful()) {
                         fAuth.getCurrentUser().sendEmailVerification();
-                        DocumentReference docRef = Utility.getUserReference().document();
-                        Map<String, Object> user = new HashMap<>();
-                        user.put("email", email);
-                        docRef.set(user);
-                        Utility.showToast(SignUpActivity.this, "등록 성공, 이메일을 발송했습니다");
+                        Utils.showToast(SignUpActivity.this, "등록 성공, 이메일을 발송했습니다");
                         finish();
                     } else {
-                        Utility.showSnack(findViewById(R.id.signupScreen), "이미 존재하는 계정입니다");
+                        Utils.showSnack(findViewById(R.id.signupScreen), "이미 존재하는 계정입니다");
                     }
                 });
     }
@@ -105,7 +86,6 @@ public class SignUpActivity extends AppCompatActivity {
     private void signUpChangeInProgress(boolean inProgress) {
         if (inProgress) {
             progressBar.setVisibility(View.VISIBLE);
-            clearFocus();
         } else {
             progressBar.setVisibility(View.GONE);
         }

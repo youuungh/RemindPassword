@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.passwordmanager.AddContentActivity;
 import com.example.passwordmanager.MainFragment;
 import com.example.passwordmanager.R;
-import com.example.passwordmanager.Utility;
+import com.example.passwordmanager.Utils;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
@@ -36,7 +36,7 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") final int position, Content content) {
         holder.content_title.setText(content.title);
         holder.content_id.setText(content.id);
-        holder.content_timestamp.setText(Utility.timeStampToString(content.timestamp));
+        holder.content_timestamp.setText(Utils.timeStampToString(content.timestamp));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

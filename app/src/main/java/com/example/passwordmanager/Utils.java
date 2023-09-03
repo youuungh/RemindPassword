@@ -14,7 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class Utility {
+public class Utils {
     static void showToast(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
@@ -27,19 +27,11 @@ public class Utility {
         return new SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREAN).format(timestamp.toDate());
     }
 
-    static CollectionReference getUserReference() {
-        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
-        return FirebaseFirestore.getInstance()
-                .collection("Users")
-                .document(fUser.getUid())
-                .collection("user_data");
-    }
-
     static CollectionReference getContentReference() {
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         return FirebaseFirestore.getInstance()
                 .collection("Users")
-                .document(fUser.getUid())
-                .collection("user_data");
+                .document("contents")
+                .collection(fUser.getUid());
     }
 }

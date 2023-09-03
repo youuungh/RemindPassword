@@ -16,8 +16,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.elevation.SurfaceColors;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,6 +24,7 @@ import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
     static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
+    FirebaseAuth fAuth;
     MaterialToolbar mToolbar;
     TextInputLayout layout_email, layout_password;
     TextInputEditText edt_email, edt_password;
@@ -40,9 +39,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mToolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(view -> {
-            this.finish();
-        });
+        mToolbar.setNavigationOnClickListener(view -> { this.finish(); });
+
+        fAuth = FirebaseAuth.getInstance();
 
         layout_email = findViewById(R.id.login_layout_email);
         layout_password = findViewById(R.id.login_layout_password);
@@ -67,20 +66,20 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginAccountInFirebase(String email, String password) {
-        FirebaseAuth fAuth = FirebaseAuth.getInstance();
         loginChangeInProgress(true);
         fAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
+                    clearFocus();
                     loginChangeInProgress(false);
                     if(task.isSuccessful()) {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
                             startActivity(new Intent(this, MainActivity.class));
                             finish();
                         } else {
-                            Utility.showSnack(findViewById(R.id.loginScreen), "이메일 인증이 필요합니다");
+                            Utils.showSnack(findViewById(R.id.loginScreen), "이메일 인증이 필요합니다");
                         }
                     } else {
-                        Utility.showSnack(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다");
+                        Utils.showSnack(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다");
                     }
                 });
     }
@@ -88,7 +87,6 @@ public class LoginActivity extends AppCompatActivity {
     private void loginChangeInProgress(boolean inProgress) {
         if (inProgress) {
             progressBar.setVisibility(View.VISIBLE);
-            clearFocus();
         } else {
             progressBar.setVisibility(View.GONE);
         }
