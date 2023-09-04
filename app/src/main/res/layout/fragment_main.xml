@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -7,8 +7,26 @@
     android:layout_height="match_parent">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/contents_list"
+        android:id="@+id/recycler_contents"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:nestedScrollingEnabled="true"/>
 
-</RelativeLayout>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/write"
+        android:src="@drawable/ic_write"
+        android:scaleType="center"
+        app:maxImageSize="16dp"
+        app:tint="@null"
+        app:backgroundTint="@color/white"
+        app:rippleColor="?attr/colorControlHighlight"
+        app:elevation="5dp"
+        app:pressedTranslationZ="1dp"/>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

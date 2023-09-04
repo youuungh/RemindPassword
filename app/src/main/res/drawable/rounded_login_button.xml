@@ -2,11 +2,11 @@
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
 android:color="?colorControlHighlight">
 <item>
-    <shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <shape>
         <solid
             android:color="@color/white"/>
         <corners
-            android:radius="5dp"/>
+            android:radius="30dp"/>
     </shape>
 </item>
 </ripple>

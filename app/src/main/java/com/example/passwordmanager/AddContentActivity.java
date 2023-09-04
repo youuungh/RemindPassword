@@ -120,7 +120,7 @@ public class AddContentActivity extends AppCompatActivity {
                     Utils.showToast(AddContentActivity.this, "저장됨");
                     finish();
                 } else {
-                    Utils.showToast(AddContentActivity.this, "다시 시도하세요");
+                    Utils.showSnack(findViewById(R.id.layout_content_add), "다시 시도하세요");
                     progressBar.setVisibility(View.VISIBLE);
                 }
             }

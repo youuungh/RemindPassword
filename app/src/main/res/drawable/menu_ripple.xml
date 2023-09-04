@@ -4,6 +4,6 @@
     <item android:color="@android:color/transparent"
         android:state_checked="false"/>
     <item
-        android:color="?colorControlHighlight"
+        android:color="@color/md_blue_grey_50"
         android:state_checked="true"/>
 </selector>

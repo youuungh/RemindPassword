@@ -21,7 +21,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
-            android:backgroundTint="#ededed"
+            android:backgroundTint="@color/md_blue_grey_50"
             android:hint="@string/search"
             app:menu="@menu/menu_searchbar"
             app:navigationIcon="@drawable/ic_menu"
@@ -37,17 +37,5 @@
         android:background="@color/white"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
     </FrameLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:backgroundTint="@color/white"
-        android:contentDescription="@string/add"
-        android:src="@drawable/ic_create"
-        app:elevation="3dp"
-        app:pressedTranslationZ="0dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

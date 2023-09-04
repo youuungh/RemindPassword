@@ -28,16 +28,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView main_nav;
     MaterialButton button;
     SearchBar searchBar;
-    FloatingActionButton button_fab;
     TextView tv_userEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        showFragments(new MainFragment());
+
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(null);
-        showFragments(new MainFragment());
 
         fAuth = FirebaseAuth.getInstance();
         fUser = fAuth.getCurrentUser();
@@ -59,11 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (fUser != null) {
             tv_userEmail.setText(fUser.getEmail());
         }
-
-        button_fab = findViewById(R.id.button_fab);
-        button_fab.setOnClickListener(v ->
-                startActivity(new Intent(MainActivity.this, AddContentActivity.class))
-        );
 
         button = findViewById(R.id.nav_button);
         button.setOnClickListener(v -> {

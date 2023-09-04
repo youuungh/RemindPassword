@@ -18,6 +18,27 @@
     <color name="alertButtonRipple">#ededed</color>
     <color name="customTextColor">#49454f</color>
 
+    <integer-array name="cv_colors">
+        <item>@color/md_red_50</item>
+        <item>@color/md_pink_50</item>
+        <item>@color/md_purple_50</item>
+        <item>@color/md_deep_purple_50</item>
+        <item>@color/md_indigo_50</item>
+        <item>@color/md_blue_50</item>
+        <item>@color/md_light_blue_50</item>
+        <item>@color/md_cyan_50</item>
+        <item>@color/md_teal_50</item>
+        <item>@color/md_green_50</item>
+        <item>@color/md_light_green_50</item>
+        <item>@color/md_lime_50</item>
+        <item>@color/md_yellow_50</item>
+        <item>@color/md_amber_50</item>
+        <item>@color/md_orange_50</item>
+        <item>@color/md_deep_orange_50</item>
+        <item>@color/md_brown_50</item>
+        <item>@color/md_grey_50</item>
+    </integer-array>
+
     <!--reds-->
     <color name="md_red_50">#FFEBEE</color>
     <color name="md_red_100">#FFCDD2</color>
