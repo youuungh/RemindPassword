@@ -2,6 +2,7 @@ package com.example.passwordmanager.model;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.View;
@@ -64,6 +65,11 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
         holder.content_option.setOnClickListener(v -> {
             Toast.makeText(v.getContext(), "클릭", Toast.LENGTH_SHORT).show();
         });
+    }
+
+    @Override
+    public int getItemCount() {
+        return getSnapshots().size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

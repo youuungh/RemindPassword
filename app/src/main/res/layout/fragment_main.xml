@@ -13,7 +13,7 @@
         android:nestedScrollingEnabled="true"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/button_fab"
+        android:id="@+id/fab_write"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
@@ -21,12 +21,26 @@
         android:layout_marginBottom="16dp"
         android:contentDescription="@string/write"
         android:src="@drawable/ic_write"
-        android:scaleType="center"
         app:maxImageSize="16dp"
         app:tint="@null"
         app:backgroundTint="@color/white"
         app:rippleColor="?attr/colorControlHighlight"
         app:elevation="5dp"
         app:pressedTranslationZ="1dp"/>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="@string/top"
+        android:src="@drawable/ic_arrow_up"
+        app:fabCustomSize="46dp"
+        app:backgroundTint="@color/transparent_grey"
+        app:rippleColor="?attr/colorControlHighlight"
+        app:shapeAppearanceOverlay="@style/CircleFloatingActionButton"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

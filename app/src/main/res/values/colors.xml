@@ -17,6 +17,7 @@
     <color name="alertButton">#006064</color>
     <color name="alertButtonRipple">#ededed</color>
     <color name="customTextColor">#49454f</color>
+    <color name="transparent_grey">#55A0A0A0</color>
 
     <integer-array name="cv_colors">
         <item>@color/md_red_50</item>

@@ -1,6 +1,7 @@
 package com.example.passwordmanager;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -9,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -20,6 +22,11 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.search.SearchBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     FirebaseAuth fAuth;
@@ -28,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView main_nav;
     MaterialButton button;
     SearchBar searchBar;
-    TextView tv_userEmail;
+    TextView tv_userEmail, main_count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         main_nav.setCheckedItem(R.id.nav_main);
         main_nav.getMenu().getItem(0).setActionView(R.layout.menu_main_counter);
         main_nav.getMenu().getItem(1).setActionView(R.layout.menu_trash_counter);
+
+        main_count = main_nav.getMenu().getItem(0).getActionView().findViewById(R.id.tv_main_count);
+        //main_count.setText();
 
         View header = main_nav.getHeaderView(0);
         tv_userEmail = header.findViewById(R.id.tv_userMail);
@@ -102,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void showFragments(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.layout_fragment, fragment);
+        ft.addToBackStack(null);
         ft.commit();
     }
 

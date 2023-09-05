@@ -5,6 +5,6 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:layout_marginEnd="16dp"
-    android:text="12"
+    android:text="0"
     android:textAppearance="?android:attr/textAppearanceMedium">
 </TextView>

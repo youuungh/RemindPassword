@@ -7,10 +7,13 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,37 +26,23 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class MainFragment extends Fragment {
-    MainActivity mainActivity;
     RecyclerView recyclerView;
     FirebaseFirestore fStore;
     Adapter adapter;
-    FloatingActionButton button_fab;
-
-    public MainFragment() {
-        // Required empty public constructor
-    }
-
+    FloatingActionButton fab_write, fab_top;
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mainActivity = (MainActivity) getActivity();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        recyclerView = view.findViewById(R.id.recycler_contents);
         fStore = FirebaseFirestore.getInstance();
+        recyclerView = view.findViewById(R.id.recycler_contents);
 
         Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Content> options = new FirestoreRecyclerOptions.Builder<Content>()
@@ -62,23 +51,44 @@ public class MainFragment extends Fragment {
         adapter = new Adapter(options, this);
         recyclerView.setAdapter(adapter);
 
-        button_fab = view.findViewById(R.id.button_fab);
-        button_fab.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContentActivity.class)) );
+        fab_write = view.findViewById(R.id.fab_write);
+        fab_write.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContentActivity.class)));
+
+        fab_top = view.findViewById(R.id.fab_top);
+        fab_top.hide();
+        fab_top.setOnClickListener(v -> recyclerView.smoothScrollToPosition(0));
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                Handler handler = new Handler();
+                Runnable runnable = () -> fab_top.hide();
+
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    button_fab.show();
+                    fab_write.show();
+                    handler.removeCallbacks(runnable);
+                    handler.postDelayed(runnable, 3000);
                 } else {
-                    button_fab.hide();
+                    fab_top.show();
+                    fab_write.hide();
                 }
                 super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    fab_top.show();
+                } else if (dy < 0) {
+                    fab_top.show();
+                }
+                super.onScrolled(recyclerView, dx, dy);
             }
         });
 
         return view;
     }
+
 
     @Override
     public void onStart() {

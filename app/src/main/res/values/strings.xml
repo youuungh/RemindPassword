@@ -7,4 +7,5 @@
     <string name="write">작성</string>
     <string name="search">검색</string>
     <string name="logout">로그아웃</string>
+    <string name="top">상단으로</string>
 </resources>
