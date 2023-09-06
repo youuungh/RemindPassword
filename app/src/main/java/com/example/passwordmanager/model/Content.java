@@ -9,6 +9,10 @@ public class Content {
     String memo;
     Timestamp timestamp;
 
+    public Content() {
+
+    }
+
     public String getTitle() {
         return title;
     }
@@ -47,9 +51,5 @@ public class Content {
 
     public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public Content() {
-
     }
 }

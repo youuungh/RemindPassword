@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.passwordmanager.AddContentActivity;
+import com.example.passwordmanager.MainActivity;
 import com.example.passwordmanager.MainFragment;
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.Utils;

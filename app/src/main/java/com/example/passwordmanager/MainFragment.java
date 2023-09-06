@@ -17,19 +17,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.passwordmanager.model.Adapter;
 import com.example.passwordmanager.model.Content;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 public class MainFragment extends Fragment {
     RecyclerView recyclerView;
-    FirebaseFirestore fStore;
     Adapter adapter;
     FloatingActionButton fab_write, fab_top;
+    TextView empty_title, empty_subtitle;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -41,14 +52,26 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        fStore = FirebaseFirestore.getInstance();
-        recyclerView = view.findViewById(R.id.recycler_contents);
+        empty_title = view.findViewById(R.id.empty_title);
+        empty_subtitle = view.findViewById(R.id.empty_subtitle);
 
         Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Content> options = new FirestoreRecyclerOptions.Builder<Content>()
-                .setQuery(query, Content.class).build();
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                .setQuery(query, Content.class)
+                .build();
+
         adapter = new Adapter(options, this);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
+                recyclerView.smoothScrollToPosition(0);
+                super.onItemRangeInserted(positionStart, itemCount);
+            }
+        });
+        recyclerView = view.findViewById(R.id.recycler_contents);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
 
         fab_write = view.findViewById(R.id.fab_write);
@@ -88,7 +111,6 @@ public class MainFragment extends Fragment {
 
         return view;
     }
-
 
     @Override
     public void onStart() {

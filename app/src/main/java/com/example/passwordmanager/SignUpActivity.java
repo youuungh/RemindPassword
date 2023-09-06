@@ -91,7 +91,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
     }
 
-    private void clearFocus() {
+    public void clearFocus() {
         edt_email.clearFocus();
         edt_password.clearFocus();
         edt_passCheck.clearFocus();

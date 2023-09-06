@@ -43,4 +43,30 @@
         app:elevation="0dp"
         app:pressedTranslationZ="0dp"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/empty_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:text="항목이 없습니다"
+            android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/empty_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/empty_title"
+            android:layout_marginTop="5dp"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            android:hint="작성하려면 추가 버튼을 누르세요"
+            android:textAppearance="@style/TextAppearance.Material3.BodySmall"
+            android:visibility="invisible"/>
+    </RelativeLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

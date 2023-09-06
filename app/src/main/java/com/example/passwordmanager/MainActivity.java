@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView main_nav;
     MaterialButton button;
     SearchBar searchBar;
-    TextView tv_userEmail, main_count;
+    TextView tv_userEmail, main_count, trash_count;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         main_nav.getMenu().getItem(1).setActionView(R.layout.menu_trash_counter);
 
         main_count = main_nav.getMenu().getItem(0).getActionView().findViewById(R.id.tv_main_count);
-        //main_count.setText();
+        trash_count = main_nav.getMenu().getItem(1).getActionView().findViewById(R.id.tv_trash_count);
 
         View header = main_nav.getHeaderView(0);
         tv_userEmail = header.findViewById(R.id.tv_userMail);
@@ -114,6 +115,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ft.replace(R.id.layout_fragment, fragment);
         ft.addToBackStack(null);
         ft.commit();
+    }
+
+    public void mainCounterChanged(String count) {
+        main_count.setText(count);
     }
 
     @Override

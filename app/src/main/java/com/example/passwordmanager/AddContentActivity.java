@@ -113,16 +113,13 @@ public class AddContentActivity extends AppCompatActivity {
             documentReference = Utils.getContentReference().document();
         }
 
-        documentReference.set(content).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if(task.isSuccessful()) {
-                    Utils.showToast(AddContentActivity.this, "저장됨");
-                    finish();
-                } else {
-                    Utils.showSnack(findViewById(R.id.layout_content_add), "다시 시도하세요");
-                    progressBar.setVisibility(View.VISIBLE);
-                }
+        documentReference.set(content).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                Utils.showToast(AddContentActivity.this, "저장됨");
+                finish();
+            } else {
+                Utils.showSnack(findViewById(R.id.layout_content_add), "다시 시도하세요");
+                progressBar.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -138,28 +135,21 @@ public class AddContentActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.menu_delete:
+        if (item.getItemId() == R.id.menu_delete) {
+            DocumentReference documentReference;
+            documentReference = Utils.getContentReference().document(label);
 
-                DocumentReference documentReference;
-                documentReference = Utils.getContentReference().document(label);
-
-                documentReference.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        if(task.isSuccessful()) {
-                            // 삭제
-                            Utils.showToast(AddContentActivity.this, "삭제됨");
-                            onBackPressed();
-                        } else {
-                            Utils.showToast(AddContentActivity.this, "다시 시도하세요");
-                        }
-                    }
-                });
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+            documentReference.delete().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Utils.showToast(AddContentActivity.this, "삭제됨");
+                    finish();
+                } else {
+                    Utils.showSnack(findViewById(R.id.layout_content_add), "다시 시도하세요");
+                }
+            });
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
 }
