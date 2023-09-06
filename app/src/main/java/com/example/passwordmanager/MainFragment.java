@@ -2,6 +2,7 @@ package com.example.passwordmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.nfc.Tag;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -67,6 +68,12 @@ public class MainFragment extends Fragment {
                 ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
                 recyclerView.smoothScrollToPosition(0);
                 super.onItemRangeInserted(positionStart, itemCount);
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
+                recyclerView.smoothScrollToPosition(0);
+                super.onItemRangeRemoved(positionStart, itemCount);
             }
         });
         recyclerView = view.findViewById(R.id.recycler_contents);
