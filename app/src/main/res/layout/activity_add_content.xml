@@ -1,30 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminateDrawable="@drawable/custom_progressbar"
-        android:translationZ="2dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    android:background="@color/white">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/layout_appbar"
+        android:id="@+id/content_layout_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:elevation="0dp">
+        android:fitsSystemWindows="true">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/content_add_toolbar"
@@ -33,89 +19,97 @@
             android:background="@color/white"
             app:navigationIcon="@drawable/ic_arrow_left"
             android:paddingEnd="10dp">
-
-            <EditText
-                android:id="@+id/toolbar_add_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="제목"
-                android:textSize="22dp"
-                android:textStyle="bold"
-                android:maxLines="1"
-                android:ellipsize="end"
-                android:ems="20"
-                android:background="@android:color/transparent"/>
-
         </com.google.android.material.appbar.MaterialToolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <FrameLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_appbar">
+        android:layout_height="match_parent"
+        android:layout_below="@id/content_layout_appbar"
+        android:padding="30dp">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:id="@+id/content_layout_title"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/content_edit_id"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="10dp"
-                android:hint="이메일"
-                android:padding="15dp"
-                android:background="@drawable/rounded_text_bg"
-                android:elevation="5dp"/>
-
-            <EditText
-                android:id="@+id/content_edit_pw"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="10dp"
-                android:hint="비밀번호"
-                android:padding="15dp"
-                android:background="@drawable/rounded_text_bg"
-                android:elevation="5dp"/>
-
-            <EditText
-                android:id="@+id/content_edit_memo"
-                android:layout_width="match_parent"
-                android:layout_height="260dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="top|left"
-                android:hint="메모"
-                android:padding="15dp"
-                android:background="@drawable/rounded_text_bg"
-                android:scrollbars="vertical"
-                android:isScrollContainer="true"
-                android:elevation="5dp"/>
-
-        </LinearLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/add_finish_fab"
-            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="25dp"
-            app:backgroundTint="@color/white"
-            app:elevation="3dp"
-            android:src="@drawable/ic_check"
-            android:tint="#92A3FD"
-            app:pressedTranslationZ="0dp"/>
+            app:boxBackgroundColor="@android:color/transparent"
+            app:boxStrokeColor="@android:color/transparent"
+            app:boxStrokeWidth="0dp"
+            app:placeholderText="무제"
+            app:placeholderTextColor="@color/customTextColor">
 
-    </FrameLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/edt_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="30sp"
+                android:hint="제목"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:id="@+id/edt_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/content_layout_title"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:hint="이메일"
+            android:padding="15dp"
+            android:background="@drawable/rounded_text_bg"
+            android:elevation="5dp"/>
+
+        <EditText
+            android:id="@+id/edt_pw"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edt_id"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:hint="비밀번호"
+            android:padding="15dp"
+            android:background="@drawable/rounded_text_bg"
+            android:elevation="5dp"/>
+
+        <EditText
+            android:id="@+id/edt_memo"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_below="@id/edt_pw"
+            android:layout_marginTop="5dp"
+            android:gravity="top|left"
+            android:hint="메모"
+            android:padding="15dp"
+            android:background="@drawable/rounded_text_bg"
+            android:scrollbars="vertical"
+            android:isScrollContainer="true"
+            android:elevation="5dp"/>
+    </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_finish"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/write"
+        android:src="@drawable/ic_check"
+        app:tint="@null"
+        app:backgroundTint="@color/md_blue_grey_50"
+        app:rippleColor="?attr/colorControlHighlight"
+        app:elevation="5dp"
+        app:pressedTranslationZ="1dp">
+    </com.google.android.material.floatingactionbutton.FloatingActionButton>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:indeterminateDrawable="@drawable/custom_progressbar"
+        android:translationZ="2dp"
+        android:visibility="invisible"/>
+</RelativeLayout>

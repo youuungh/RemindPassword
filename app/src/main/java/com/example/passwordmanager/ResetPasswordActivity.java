@@ -63,12 +63,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
     private void resetChangeInProgress(boolean inProgress) {
-        if (inProgress) {
-            progressBar.setVisibility(View.VISIBLE);
-            edt_reset.clearFocus();
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
+        progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
     private class fPasswordTextWatcher implements TextWatcher {
@@ -89,6 +84,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
             button.setEnabled(Patterns.EMAIL_ADDRESS.matcher(fPasswordInput).matches());
             button.setOnClickListener(v -> {
+                edt_reset.clearFocus();
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();
                 if (focusedView != null) {

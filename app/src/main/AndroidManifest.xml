@@ -45,16 +45,16 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/BaseTheme"
+            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustUnspecified" />
         <activity
             android:name=".AddContentActivity"
             android:exported="true"
-            android:theme="@style/BaseTheme" />
+            android:theme="@style/ContentTheme" />
         <activity
             android:name=".SettingActivity"
             android:exported="true"
-            android:theme="@style/BaseTheme"
+            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustUnspecified" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

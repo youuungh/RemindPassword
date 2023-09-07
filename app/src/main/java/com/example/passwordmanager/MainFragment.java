@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.passwordmanager.model.Adapter;
@@ -41,7 +42,7 @@ public class MainFragment extends Fragment {
     RecyclerView recyclerView;
     Adapter adapter;
     FloatingActionButton fab_write, fab_top;
-    TextView empty_title, empty_subtitle;
+    RelativeLayout emptyView;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -53,24 +54,26 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        empty_title = view.findViewById(R.id.empty_title);
-        empty_subtitle = view.findViewById(R.id.empty_subtitle);
-
         Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Content> options = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(query, Content.class)
                 .build();
 
+        emptyView = view.findViewById(R.id.view_empty);
+        showEmptyView(options.getSnapshots().isEmpty());
+
         adapter = new Adapter(options, this);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
+                showEmptyView(options.getSnapshots().isEmpty());
                 ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
                 recyclerView.smoothScrollToPosition(0);
                 super.onItemRangeInserted(positionStart, itemCount);
             }
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
+                showEmptyView(options.getSnapshots().isEmpty());
                 ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
                 recyclerView.smoothScrollToPosition(0);
                 super.onItemRangeRemoved(positionStart, itemCount);
@@ -83,7 +86,6 @@ public class MainFragment extends Fragment {
 
         fab_write = view.findViewById(R.id.fab_write);
         fab_write.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContentActivity.class)));
-
         fab_top = view.findViewById(R.id.fab_top);
         fab_top.hide();
         fab_top.setOnClickListener(v -> recyclerView.smoothScrollToPosition(0));
@@ -117,6 +119,10 @@ public class MainFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showEmptyView(boolean flag) {
+        emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
     }
 
     @Override

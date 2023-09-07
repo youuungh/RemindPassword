@@ -87,11 +87,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginChangeInProgress(boolean inProgress) {
-        if (inProgress) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
+        progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
     public void clearFocus() {

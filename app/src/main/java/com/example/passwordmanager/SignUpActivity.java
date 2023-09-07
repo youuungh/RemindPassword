@@ -71,7 +71,6 @@ public class SignUpActivity extends AppCompatActivity {
         signUpChangeInProgress(true);
         fAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignUpActivity.this, task -> {
-                    clearFocus();
                     signUpChangeInProgress(false);
                     if (task.isSuccessful()) {
                         fAuth.getCurrentUser().sendEmailVerification();
@@ -84,11 +83,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void signUpChangeInProgress(boolean inProgress) {
-        if (inProgress) {
-            progressBar.setVisibility(View.VISIBLE);
-        } else {
-            progressBar.setVisibility(View.GONE);
-        }
+        progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
     public void clearFocus() {
@@ -131,6 +126,7 @@ public class SignUpActivity extends AppCompatActivity {
                     && PASSWORD.matcher(passwordInput).matches()
                     && passCheckInput.equals(passwordInput));
             button.setOnClickListener(v -> {
+                clearFocus();
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();
                 if (focusedView != null) {

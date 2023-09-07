@@ -66,6 +66,8 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
         holder.content_option.setOnClickListener(v -> {
             Toast.makeText(v.getContext(), "클릭", Toast.LENGTH_SHORT).show();
         });
+
+
     }
 
     @Override

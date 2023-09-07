@@ -17,15 +17,17 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
 public class AddContentActivity extends AppCompatActivity {
     MaterialToolbar toolbar;
-    FloatingActionButton add_finish_fab;
-    EditText toolbar_add_title, content_edit_id, content_edit_pw, content_edit_memo;
+    TextInputEditText edt_title;
+    EditText edt_id, edt_pw, edt_memo;
     ProgressBar progressBar;
     String title, id, pw, memo, label;
+    FloatingActionButton fab_finish;
     boolean isEdit = false;
 
     @Override
@@ -35,10 +37,10 @@ public class AddContentActivity extends AppCompatActivity {
 
         progressBar = findViewById(R.id.progressBar);
 
-        toolbar_add_title = findViewById(R.id.toolbar_add_title);
-        content_edit_id = findViewById(R.id.content_edit_id);
-        content_edit_pw = findViewById(R.id.content_edit_pw);
-        content_edit_memo = findViewById(R.id.content_edit_memo);
+        edt_title = findViewById(R.id.edt_title);
+        edt_id = findViewById(R.id.edt_id);
+        edt_pw = findViewById(R.id.edt_pw);
+        edt_memo = findViewById(R.id.edt_memo);
 
         // 액션바
         toolbar = findViewById(R.id.content_add_toolbar);
@@ -55,10 +57,10 @@ public class AddContentActivity extends AppCompatActivity {
         memo = getIntent().getStringExtra("memo");
         label = getIntent().getStringExtra("label");
 
-        toolbar_add_title.setText(title);
-        content_edit_id.setText(id);
-        content_edit_pw.setText(pw);
-        content_edit_memo.setText(memo);
+        edt_title.setText(title);
+        edt_id.setText(id);
+        edt_pw.setText(pw);
+        edt_memo.setText(memo);
 
         if(label != null && !label.isEmpty()) {
             isEdit = true;
@@ -73,12 +75,12 @@ public class AddContentActivity extends AppCompatActivity {
         });
 
         // 플로팅 버튼
-        add_finish_fab = findViewById(R.id.add_finish_fab);
-        add_finish_fab.setOnClickListener(view -> {
-            String title = toolbar_add_title.getText().toString();
-            String id = content_edit_id.getText().toString();
-            String pw = content_edit_pw.getText().toString();
-            String memo = content_edit_memo.getText().toString();
+        fab_finish = findViewById(R.id.fab_finish);
+        fab_finish.setOnClickListener(view -> {
+            String title = edt_title.getText().toString();
+            String id = edt_id.getText().toString();
+            String pw = edt_pw.getText().toString();
+            String memo = edt_memo.getText().toString();
             Timestamp timestamp = Timestamp.now();
 
             if (title.isEmpty()) {
