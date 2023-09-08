@@ -166,7 +166,6 @@
                     android:layout_gravity="center|start"
                     android:text="이메일 계정생성"
                     android:textColor="#49454f"/>
-
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>

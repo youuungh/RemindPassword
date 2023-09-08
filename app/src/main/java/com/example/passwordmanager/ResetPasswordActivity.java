@@ -52,11 +52,11 @@ public class ResetPasswordActivity extends AppCompatActivity {
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         fAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(this, task -> {
-                    resetChangeInProgress(false);
                     if (task.isSuccessful()) {
                         Utils.showToast(ResetPasswordActivity.this, "이메일을 발송했습니다");
                         finish();
                     } else {
+                        resetChangeInProgress(false);
                         Utils.showSnack(findViewById(R.id.resetScreen), "계정 정보를 찾을 수 없습니다");
                     }
                 });

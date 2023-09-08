@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
-                        Utils.showToast(this, "로그아웃 되었습니다");
                         finish();
                     })
                     .setNegativeButton("취소", (dialog, which) -> {

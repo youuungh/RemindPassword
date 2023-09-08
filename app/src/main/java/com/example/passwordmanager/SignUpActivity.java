@@ -71,12 +71,12 @@ public class SignUpActivity extends AppCompatActivity {
         signUpChangeInProgress(true);
         fAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(SignUpActivity.this, task -> {
-                    signUpChangeInProgress(false);
                     if (task.isSuccessful()) {
                         fAuth.getCurrentUser().sendEmailVerification();
                         Utils.showToast(SignUpActivity.this, "등록 성공, 이메일을 발송했습니다");
                         finish();
                     } else {
+                        signUpChangeInProgress(false);
                         Utils.showSnack(findViewById(R.id.signupScreen), "이미 존재하는 계정입니다");
                     }
                 });

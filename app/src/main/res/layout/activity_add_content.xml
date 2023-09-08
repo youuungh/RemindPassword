@@ -15,101 +15,168 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/content_add_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="@color/white"
-            app:navigationIcon="@drawable/ic_arrow_left"
-            android:paddingEnd="10dp">
+            app:navigationIcon="@drawable/ic_arrow_left">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="24dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_save"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textColor="@color/customTextColor"
+                    app:icon="@drawable/ic_check_bold"
+                    app:iconTint="@color/customTextColor"
+                    app:iconPadding="0dp"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="@color/md_blue_grey_50"
+                    app:rippleColor="?attr/colorControlHighlight">
+                </com.google.android.material.button.MaterialButton>
+
+                <ProgressBar
+                    android:id="@+id/add_progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="30dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="27dp"
+                    android:indeterminateTint="@color/customTextColor"
+                    android:progressDrawable="@drawable/custom_progressbar"
+                    android:translationZ="2dp"
+                    android:visibility="invisible"/>
+            </FrameLayout>
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
     <RelativeLayout
+        android:id="@+id/contentScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/content_layout_appbar"
         android:padding="30dp">
 
+        <View
+            android:layout_width="5dp"
+            android:layout_height="0dp"
+            android:layout_alignTop="@id/content_layout_title"
+            android:layout_alignBottom="@id/content_layout_title"
+            android:background="@drawable/bg_text_indicator"/>
+
         <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:id="@+id/content_layout_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxStrokeColor="@android:color/transparent"
             app:boxStrokeWidth="0dp"
-            app:placeholderText="무제"
-            app:placeholderTextColor="@color/customTextColor">
+            app:boxStrokeWidthFocused="0dp"
+            app:placeholderText="Untitled"
+            app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+            app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edt_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="30sp"
-                android:hint="제목"/>
+                android:backgroundTint="@android:color/transparent"
+                android:hint="제목"
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/edt_id"
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
             android:layout_below="@id/content_layout_title"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:hint="이메일"
-            android:padding="15dp"
-            android:background="@drawable/rounded_text_bg"
-            android:elevation="5dp"/>
+            android:backgroundTint="@color/md_blue_grey_50">
 
-        <EditText
-            android:id="@+id/edt_pw"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:id="@+id/content_layout_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:startIconDrawable="@drawable/ic_user"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:boxBackgroundColor="@color/md_blue_grey_50"
+                    app:placeholderText="Email address"
+                    app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+                    app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="이메일"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:id="@+id/content_layout_pw"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/content_layout_id"
+                    android:layout_marginTop="10dp"
+                    app:startIconDrawable="@drawable/ic_key"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:boxBackgroundColor="@color/md_blue_grey_50"
+                    app:placeholderText="Password"
+                    app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+                    app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall"
+                    app:endIconMode="password_toggle"
+                    app:endIconDrawable="@drawable/custom_password_toggle"
+                    app:endIconCheckable="true">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edt_pw"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="비밀번호"
+                        android:inputType="textPassword"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                </com.google.android.material.textfield.TextInputLayout>
+            </RelativeLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cv_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/edt_id"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:hint="비밀번호"
-            android:padding="15dp"
-            android:background="@drawable/rounded_text_bg"
-            android:elevation="5dp"/>
+            android:layout_marginTop="16dp"
+            android:layout_below="@id/cv_1"
+            android:backgroundTint="@color/md_blue_grey_50">
 
-        <EditText
-            android:id="@+id/edt_memo"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_below="@id/edt_pw"
-            android:layout_marginTop="5dp"
-            android:gravity="top|left"
-            android:hint="메모"
-            android:padding="15dp"
-            android:background="@drawable/rounded_text_bg"
-            android:scrollbars="vertical"
-            android:isScrollContainer="true"
-            android:elevation="5dp"/>
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:id="@+id/content_layout_memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                app:startIconDrawable="@drawable/ic_memo"
+                app:boxStrokeWidth="0dp"
+                app:boxStrokeWidthFocused="0dp"
+                app:boxBackgroundColor="@color/md_blue_grey_50"
+                app:placeholderText="Memo"
+                app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+                app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_memo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="메모"
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </com.google.android.material.card.MaterialCardView>
     </RelativeLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_finish"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:contentDescription="@string/write"
-        android:src="@drawable/ic_check"
-        app:tint="@null"
-        app:backgroundTint="@color/md_blue_grey_50"
-        app:rippleColor="?attr/colorControlHighlight"
-        app:elevation="5dp"
-        app:pressedTranslationZ="1dp">
-    </com.google.android.material.floatingactionbutton.FloatingActionButton>
-
-    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:indeterminateDrawable="@drawable/custom_progressbar"
-        android:translationZ="2dp"
-        android:visibility="invisible"/>
 </RelativeLayout>

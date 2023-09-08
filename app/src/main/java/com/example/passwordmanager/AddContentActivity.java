@@ -1,33 +1,28 @@
 package com.example.passwordmanager;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.example.passwordmanager.model.Content;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
 public class AddContentActivity extends AppCompatActivity {
+    DocumentReference documentReference;
     MaterialToolbar toolbar;
     TextInputEditText edt_title;
     EditText edt_id, edt_pw, edt_memo;
+    MaterialButton button_save;
     ProgressBar progressBar;
     String title, id, pw, memo, label;
-    FloatingActionButton fab_finish;
     boolean isEdit = false;
 
     @Override
@@ -35,20 +30,16 @@ public class AddContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
 
-        progressBar = findViewById(R.id.progressBar);
+        toolbar = findViewById(R.id.content_add_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setTitle(null);
 
         edt_title = findViewById(R.id.edt_title);
         edt_id = findViewById(R.id.edt_id);
         edt_pw = findViewById(R.id.edt_pw);
         edt_memo = findViewById(R.id.edt_memo);
-
-        // 액션바
-        toolbar = findViewById(R.id.content_add_toolbar);
-        setSupportActionBar(toolbar);
-        if(getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
 
         // 데이터 받아오기
         title = getIntent().getStringExtra("title");
@@ -66,17 +57,11 @@ public class AddContentActivity extends AppCompatActivity {
             isEdit = true;
         }
 
-        // 뒤로가기
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        progressBar = findViewById(R.id.add_progressBar);
 
-        // 플로팅 버튼
-        fab_finish = findViewById(R.id.fab_finish);
-        fab_finish.setOnClickListener(view -> {
+        button_save = findViewById(R.id.button_save);
+        button_save.setIcon(isEdit ? ContextCompat.getDrawable(this, R.drawable.ic_trash_bold) : ContextCompat.getDrawable(this, R.drawable.ic_check_bold));
+        button_save.setOnClickListener(view -> {
             String title = edt_title.getText().toString();
             String id = edt_id.getText().toString();
             String pw = edt_pw.getText().toString();
@@ -84,12 +69,9 @@ public class AddContentActivity extends AppCompatActivity {
             Timestamp timestamp = Timestamp.now();
 
             if (title.isEmpty()) {
-                Toast.makeText(AddContentActivity.this, "제목을 입력하세요", Toast.LENGTH_SHORT).show();
+                Utils.showSnack(findViewById(R.id.contentScreen), "제목을 입력하세요");
                 return;
             }
-
-            // 프로그래스바
-            progressBar.setVisibility(View.VISIBLE);
 
             // firebase 데이터 저장
             Content content = new Content();
@@ -99,14 +81,21 @@ public class AddContentActivity extends AppCompatActivity {
             content.setMemo(memo);
             content.setTimestamp(Timestamp.now());
 
-            saveToFirebase(content);
+            if (isEdit) {
+                deleteFromFirebase();
+            } else {
+                saveToFirebase(content);
+            }
         });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    void saveToFirebase(Content content) {
-        DocumentReference documentReference;
+    private void addChangeInProgress(boolean inProgress) {
+        button_save.setIcon(inProgress ? null : ContextCompat.getDrawable(this, R.drawable.ic_check_bold));
+        progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
+    }
 
+    private void saveToFirebase(Content content) {
+        addChangeInProgress(true);
         if(isEdit) {
             // 컨텐츠 업데이트
             documentReference = Utils.getContentReference().document(label);
@@ -117,41 +106,22 @@ public class AddContentActivity extends AppCompatActivity {
 
         documentReference.set(content).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
-                Utils.showToast(AddContentActivity.this, "저장됨");
                 finish();
             } else {
-                Utils.showSnack(findViewById(R.id.layout_content_add), "다시 시도하세요");
-                progressBar.setVisibility(View.VISIBLE);
+                addChangeInProgress(false);
+                Utils.showSnack(findViewById(R.id.contentScreen), "다시 시도하세요");
             }
         });
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        if(isEdit) {
-            inflater.inflate(R.menu.menu_option_delete, menu);
-        }
-        return true;
+    private void deleteFromFirebase() {
+        documentReference = Utils.getContentReference().document(label);
+        documentReference.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                finish();
+            } else {
+                Utils.showSnack(findViewById(R.id.contentScreen), "다시 시도하세요");
+            }
+        });
     }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_delete) {
-            DocumentReference documentReference;
-            documentReference = Utils.getContentReference().document(label);
-
-            documentReference.delete().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Utils.showToast(AddContentActivity.this, "삭제됨");
-                    finish();
-                } else {
-                    Utils.showSnack(findViewById(R.id.layout_content_add), "다시 시도하세요");
-                }
-            });
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }

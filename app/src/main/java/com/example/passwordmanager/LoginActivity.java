@@ -72,15 +72,16 @@ public class LoginActivity extends AppCompatActivity {
         fAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     clearFocus();
-                    loginChangeInProgress(false);
                     if(task.isSuccessful()) {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
                             startActivity(new Intent(this, MainActivity.class));
                             finish();
                         } else {
+                            loginChangeInProgress(false);
                             Utils.showSnack(findViewById(R.id.loginScreen), "이메일 인증이 필요합니다");
                         }
                     } else {
+                        loginChangeInProgress(false);
                         Utils.showSnack(findViewById(R.id.loginScreen), "계정 혹은 비밀번호가 일치하지 않습니다");
                     }
                 });
