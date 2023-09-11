@@ -15,7 +15,7 @@
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/content_add_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
             app:navigationIcon="@drawable/ic_arrow_left">
 
@@ -31,11 +31,12 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
                     android:textColor="@color/customTextColor"
+                    android:background="@drawable/rounded_sign_out_button"
                     app:icon="@drawable/ic_check_bold"
-                    app:iconTint="@color/customTextColor"
+                    app:iconTint="@color/white"
                     app:iconPadding="0dp"
                     app:iconGravity="textStart"
-                    app:backgroundTint="@color/md_blue_grey_50"
+                    app:backgroundTint="@null"
                     app:rippleColor="?attr/colorControlHighlight">
                 </com.google.android.material.button.MaterialButton>
 
@@ -45,7 +46,7 @@
                     android:layout_width="30dp"
                     android:layout_height="48dp"
                     android:layout_marginStart="27dp"
-                    android:indeterminateTint="@color/customTextColor"
+                    android:indeterminateTint="@color/white"
                     android:progressDrawable="@drawable/custom_progressbar"
                     android:translationZ="2dp"
                     android:visibility="invisible"/>
@@ -58,93 +59,100 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/content_layout_appbar"
-        android:padding="30dp">
-
-        <View
-            android:layout_width="5dp"
-            android:layout_height="0dp"
-            android:layout_alignTop="@id/content_layout_title"
-            android:layout_alignBottom="@id/content_layout_title"
-            android:background="@drawable/bg_text_indicator"/>
-
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:id="@+id/content_layout_title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="0dp"
-            app:placeholderText="Untitled"
-            app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
-            app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edt_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:hint="제목"
-                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
-        </com.google.android.material.textfield.TextInputLayout>
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cv_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:layout_below="@id/content_layout_title"
-            android:backgroundTint="@color/md_blue_grey_50">
+            android:backgroundTint="@color/md_grey_50"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
             <RelativeLayout
+                android:id="@+id/layout_title"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="16dp">
+                android:layout_height="match_parent">
 
                 <com.google.android.material.textfield.TextInputLayout
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                    android:id="@+id/content_layout_id"
+                    android:id="@+id/content_layout_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:startIconDrawable="@drawable/ic_user"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp"
-                    app:boxBackgroundColor="@color/md_blue_grey_50"
-                    app:placeholderText="Email address"
+                    app:placeholderText="Untitled"
                     app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
                     app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
+
                     <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_id"
+                        android:id="@+id/edt_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="이메일"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                        android:backgroundTint="@color/md_grey_200"
+                        android:hint="제목"
+                        android:fontFamily="@font/dm_sans"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                    android:id="@+id/content_layout_pw"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/content_layout_id"
-                    android:layout_marginTop="10dp"
-                    app:startIconDrawable="@drawable/ic_key"
-                    app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="0dp"
-                    app:boxBackgroundColor="@color/md_blue_grey_50"
-                    app:placeholderText="Password"
-                    app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
-                    app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall"
-                    app:endIconMode="password_toggle"
-                    app:endIconDrawable="@drawable/custom_password_toggle"
-                    app:endIconCheckable="true">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/edt_pw"
+                    android:layout_below="@id/content_layout_title"
+                    android:orientation="vertical"
+                    android:padding="8dp">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:id="@+id/content_layout_id"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="비밀번호"
-                        android:inputType="textPassword"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
-                </com.google.android.material.textfield.TextInputLayout>
+                        app:startIconDrawable="@drawable/ic_user"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:boxBackgroundColor="@color/md_blue_grey_50"
+                        app:placeholderText="Email address"
+                        app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+                        app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_id"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:hint="이메일"
+                            android:fontFamily="@font/dm_sans"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                        android:id="@+id/content_layout_pw"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:startIconDrawable="@drawable/ic_key"
+                        app:boxStrokeWidth="0dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        app:boxBackgroundColor="@color/md_blue_grey_50"
+                        app:placeholderText="Password"
+                        app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+                        app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall"
+                        app:endIconMode="password_toggle"
+                        app:endIconDrawable="@drawable/custom_password_toggle"
+                        app:endIconCheckable="true">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/edt_pw"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@android:color/transparent"
+                            android:hint="비밀번호"
+                            android:fontFamily="@font/dm_sans"
+                            android:inputType="textPassword"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                </LinearLayout>
             </RelativeLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -154,18 +162,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_below="@id/cv_1"
-            android:backgroundTint="@color/md_blue_grey_50">
+            android:backgroundTint="@color/md_grey_50"
+            app:cardElevation="0dp"
+            app:strokeWidth="0dp">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                 android:id="@+id/content_layout_memo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
+                android:padding="8dp"
                 app:startIconDrawable="@drawable/ic_memo"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp"
-                app:boxBackgroundColor="@color/md_blue_grey_50"
                 app:placeholderText="Memo"
                 app:placeholderTextAppearance="@style/TextAppearance.Material3.TitleLarge"
                 app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
@@ -173,10 +182,11 @@
                     android:id="@+id/edt_memo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
                     android:hint="메모"
+                    android:fontFamily="@font/dm_sans"
                     android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
             </com.google.android.material.textfield.TextInputLayout>
 
         </com.google.android.material.card.MaterialCardView>
-    </RelativeLayout>
-</RelativeLayout>
+    </RelativeLayout></RelativeLayout>

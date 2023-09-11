@@ -3,13 +3,16 @@ package com.example.passwordmanager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import com.example.passwordmanager.model.Content;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
@@ -60,7 +63,7 @@ public class AddContentActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.add_progressBar);
 
         button_save = findViewById(R.id.button_save);
-        button_save.setIcon(isEdit ? ContextCompat.getDrawable(this, R.drawable.ic_trash_bold) : ContextCompat.getDrawable(this, R.drawable.ic_check_bold));
+        button_save.setIcon(isEdit ? ContextCompat.getDrawable(this, R.drawable.ic_dot_horizon_bold) : ContextCompat.getDrawable(this, R.drawable.ic_check_bold));
         button_save.setOnClickListener(view -> {
             String title = edt_title.getText().toString();
             String id = edt_id.getText().toString();
@@ -82,7 +85,14 @@ public class AddContentActivity extends AppCompatActivity {
             content.setTimestamp(Timestamp.now());
 
             if (isEdit) {
-                deleteFromFirebase();
+                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+                View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.bs_container));
+                bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v -> {
+                    bottomSheetDialog.dismiss();
+                    deleteFromFirebase();
+                });
+                bottomSheetDialog.setContentView(bottomSheetView);
+                bottomSheetDialog.show();
             } else {
                 saveToFirebase(content);
             }
