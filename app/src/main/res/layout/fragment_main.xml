@@ -36,6 +36,7 @@
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/top"
         android:src="@drawable/ic_arrow_up"
+        android:visibility="invisible"
         app:fabCustomSize="46dp"
         app:backgroundTint="@color/transparent_grey"
         app:rippleColor="?attr/colorControlHighlight"

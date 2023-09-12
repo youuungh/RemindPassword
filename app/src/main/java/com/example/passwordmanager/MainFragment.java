@@ -96,7 +96,6 @@ public class MainFragment extends Fragment {
         fab_write = view.findViewById(R.id.fab_write);
         fab_write.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContentActivity.class)));
         fab_top = view.findViewById(R.id.fab_top);
-        fab_top.hide();
         fab_top.setOnClickListener(v -> recyclerView.smoothScrollToPosition(0));
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
