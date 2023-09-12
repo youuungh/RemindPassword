@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -25,6 +26,8 @@ import com.example.passwordmanager.model.Adapter;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,12 +40,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainFragment extends Fragment {
     RecyclerView recyclerView;
     Adapter adapter;
     FloatingActionButton fab_write, fab_top;
     RelativeLayout emptyView;
+    ProgressBar progressBar;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -54,13 +59,17 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        emptyView = view.findViewById(R.id.view_empty);
+        progressBar = view.findViewById(R.id.main_progressBar);
+
         Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         FirestoreRecyclerOptions<Content> options = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(query, Content.class)
                 .build();
-
-        emptyView = view.findViewById(R.id.view_empty);
-        showEmptyView(options.getSnapshots().isEmpty());
+        query.get().addOnCompleteListener(task -> {
+            progressBar.setVisibility(View.GONE);
+            showEmptyView(options.getSnapshots().isEmpty());
+        });
 
         adapter = new Adapter(options, this);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -97,12 +106,9 @@ public class MainFragment extends Fragment {
                 Runnable runnable = () -> fab_top.hide();
 
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    fab_write.show();
+                    new Handler().postDelayed(() -> fab_write.show(), 500);
                     handler.removeCallbacks(runnable);
                     handler.postDelayed(runnable, 3000);
-                } else {
-                    fab_top.show();
-                    fab_write.hide();
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -111,6 +117,7 @@ public class MainFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
                     fab_top.show();
+                    fab_write.hide();
                 } else if (dy < 0) {
                     fab_top.show();
                 }

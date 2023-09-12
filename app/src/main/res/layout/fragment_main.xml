@@ -43,6 +43,16 @@
         app:elevation="0dp"
         app:pressedTranslationZ="0dp"/>
 
+    <ProgressBar
+        android:id="@+id/main_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="visible"
+        android:indeterminateTint="@color/customTextColor"
+        android:progressDrawable="@drawable/custom_progressbar"/>
+
     <RelativeLayout
         android:id="@+id/view_empty"
         android:layout_width="match_parent"

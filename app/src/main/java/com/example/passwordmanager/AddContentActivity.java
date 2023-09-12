@@ -116,9 +116,11 @@ public class AddContentActivity extends AppCompatActivity {
 
         documentReference.set(content).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
+                button_save.setEnabled(false);
                 finish();
             } else {
                 addChangeInProgress(false);
+                button_save.setEnabled(true);
                 Utils.showSnack(findViewById(R.id.contentScreen), "다시 시도하세요");
             }
         });
