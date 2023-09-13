@@ -38,27 +38,27 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_view_layout, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_view_layout, parent, false);
         int[] colorList = context.getResources().getIntArray(R.array.cv_colors);
         int randomColor = colorList[new Random().nextInt(colorList.length)];
-        CardView cv_content = view.findViewById(R.id.cv_content);
+        CardView cv_content = v.findViewById(R.id.cv_content);
         cv_content.setCardBackgroundColor(randomColor);
 
-        return new ViewHolder(view);
+        return new ViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") final int position, Content content) {
-        holder.content_title.setText(content.title);
-        holder.content_id.setText(content.id);
-        holder.content_timestamp.setText(Utils.timeStampToString(content.timestamp));
+        holder.content_title.setText(content.getTitle());
+        holder.content_id.setText(content.getId());
+        holder.content_timestamp.setText(Utils.timeStampToString(content.getTimestamp()));
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), AddContentActivity.class);
-            intent.putExtra("title", content.title);
-            intent.putExtra("id", content.id);
-            intent.putExtra("pw", content.pw);
-            intent.putExtra("memo", content.memo);
+            intent.putExtra("title", content.getTitle());
+            intent.putExtra("id", content.getId());
+            intent.putExtra("pw", content.getPw());
+            intent.putExtra("memo", content.getMemo());
             String label = getSnapshots().getSnapshot(position).getId();
             intent.putExtra("label", label);
             view.getContext().startActivity(intent);

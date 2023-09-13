@@ -44,6 +44,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class MainFragment extends Fragment {
     RecyclerView recyclerView;
+    FirestoreRecyclerOptions<Content> options;
     Adapter adapter;
     FloatingActionButton fab_write, fab_top;
     RelativeLayout emptyView;
@@ -63,14 +64,14 @@ public class MainFragment extends Fragment {
         progressBar = view.findViewById(R.id.main_progressBar);
 
         Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
-        FirestoreRecyclerOptions<Content> options = new FirestoreRecyclerOptions.Builder<Content>()
-                .setQuery(query, Content.class)
-                .build();
         query.get().addOnCompleteListener(task -> {
             progressBar.setVisibility(View.GONE);
             showEmptyView(options.getSnapshots().isEmpty());
         });
 
+        options = new FirestoreRecyclerOptions.Builder<Content>()
+                .setQuery(query, Content.class)
+                .build();
         adapter = new Adapter(options, this);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -88,6 +89,7 @@ public class MainFragment extends Fragment {
                 super.onItemRangeRemoved(positionStart, itemCount);
             }
         });
+
         recyclerView = view.findViewById(R.id.recycler_contents);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

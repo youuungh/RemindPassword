@@ -25,7 +25,7 @@ public class AddContentActivity extends AppCompatActivity {
     EditText edt_id, edt_pw, edt_memo;
     MaterialButton button_save;
     ProgressBar progressBar;
-    String title, id, pw, memo, label;
+    String label;
     boolean isEdit = false;
 
     @Override
@@ -44,17 +44,11 @@ public class AddContentActivity extends AppCompatActivity {
         edt_pw = findViewById(R.id.edt_pw);
         edt_memo = findViewById(R.id.edt_memo);
 
-        // 데이터 받아오기
-        title = getIntent().getStringExtra("title");
-        id = getIntent().getStringExtra("id");
-        pw = getIntent().getStringExtra("pw");
-        memo = getIntent().getStringExtra("memo");
+        edt_title.setText(getIntent().getStringExtra("title"));
+        edt_id.setText(getIntent().getStringExtra("id"));
+        edt_pw.setText(getIntent().getStringExtra("pw"));
+        edt_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
-
-        edt_title.setText(title);
-        edt_id.setText(id);
-        edt_pw.setText(pw);
-        edt_memo.setText(memo);
 
         if(label != null && !label.isEmpty()) {
             isEdit = true;
@@ -77,12 +71,7 @@ public class AddContentActivity extends AppCompatActivity {
             }
 
             // firebase 데이터 저장
-            Content content = new Content();
-            content.setTitle(title);
-            content.setId(id);
-            content.setPw(pw);
-            content.setMemo(memo);
-            content.setTimestamp(Timestamp.now());
+            Content content = new Content(title, id, pw, memo, timestamp);
 
             if (isEdit) {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
