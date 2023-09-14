@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.elevation.SurfaceColors;
@@ -24,6 +26,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.search.SearchBar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
@@ -65,6 +69,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         main_count = main_nav.getMenu().getItem(0).getActionView().findViewById(R.id.tv_main_count);
         trash_count = main_nav.getMenu().getItem(1).getActionView().findViewById(R.id.tv_trash_count);
+
+        Utils.getContentReference().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                main_count.setText(String.valueOf(task.getResult().size()));
+        });
+        Utils.getTrashReference().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                trash_count.setText(String.valueOf(task.getResult().size()));
+        });
 
         View header = main_nav.getHeaderView(0);
         tv_userEmail = header.findViewById(R.id.tv_userMail);
@@ -119,6 +132,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void mainCounterChanged(String count) {
         main_count.setText(count);
+    }
+
+    public void trashCounterChanged(String count) {
+        trash_count.setText(count);
     }
 
     @Override

@@ -1,15 +1,11 @@
-package com.example.passwordmanager.model;
+package com.example.passwordmanager.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,28 +14,27 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.passwordmanager.AddContentActivity;
-import com.example.passwordmanager.MainActivity;
 import com.example.passwordmanager.MainFragment;
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.Utils;
+import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.Random;
 
 public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolder> {
-    MainFragment context;
 
-    public Adapter(@NonNull FirestoreRecyclerOptions<Content> options, MainFragment context) {
+    public Adapter(@NonNull FirestoreRecyclerOptions<Content> options) {
         super(options);
-        this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_view_layout, parent, false);
-        int[] colorList = context.getResources().getIntArray(R.array.cv_colors);
+        int[] colorList = v.getResources().getIntArray(R.array.cv_colors);
         int randomColor = colorList[new Random().nextInt(colorList.length)];
         CardView cv_content = v.findViewById(R.id.cv_content);
         cv_content.setCardBackgroundColor(randomColor);

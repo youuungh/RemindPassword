@@ -1,25 +1,36 @@
 package com.example.passwordmanager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import com.example.passwordmanager.adapter.Adapter;
 import com.example.passwordmanager.model.Content;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import org.checkerframework.checker.units.qual.A;
 
 public class AddContentActivity extends AppCompatActivity {
-    DocumentReference documentReference;
+    DocumentReference docRef;
     MaterialToolbar toolbar;
     TextInputEditText edt_title;
     EditText edt_id, edt_pw, edt_memo;
@@ -70,7 +81,6 @@ public class AddContentActivity extends AppCompatActivity {
                 return;
             }
 
-            // firebase 데이터 저장
             Content content = new Content(title, id, pw, memo, timestamp);
 
             if (isEdit) {
@@ -78,7 +88,9 @@ public class AddContentActivity extends AppCompatActivity {
                 View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.bs_container));
                 bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v -> {
                     bottomSheetDialog.dismiss();
-                    deleteFromFirebase();
+                    DocumentReference fromPath = Utils.getContentReference().document(label);
+                    DocumentReference toPath = Utils.getTrashReference().document(label);
+                    moveFirebaseDocument(fromPath, toPath);
                 });
                 bottomSheetDialog.setContentView(bottomSheetView);
                 bottomSheetDialog.show();
@@ -96,32 +108,35 @@ public class AddContentActivity extends AppCompatActivity {
     private void saveToFirebase(Content content) {
         addChangeInProgress(true);
         if(isEdit) {
-            // 컨텐츠 업데이트
-            documentReference = Utils.getContentReference().document(label);
+            docRef = Utils.getContentReference().document(label);
         } else {
-            // 컨텐츠 생성
-            documentReference = Utils.getContentReference().document();
+            docRef = Utils.getContentReference().document();
         }
 
-        documentReference.set(content).addOnCompleteListener(task -> {
+        docRef.set(content).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 button_save.setEnabled(false);
                 finish();
             } else {
                 addChangeInProgress(false);
                 button_save.setEnabled(true);
-                Utils.showSnack(findViewById(R.id.contentScreen), "다시 시도하세요");
+                Utils.showSnack(findViewById(R.id.contentScreen), "오류, 다시 시도하세요");
             }
         });
     }
 
-    private void deleteFromFirebase() {
-        documentReference = Utils.getContentReference().document(label);
-        documentReference.delete().addOnCompleteListener(task -> {
+    private  void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
+        button_save.setEnabled(false);
+        addChangeInProgress(true);
+        fromPath.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                finish();
-            } else {
-                Utils.showSnack(findViewById(R.id.contentScreen), "다시 시도하세요");
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot != null) {
+                    toPath.set(documentSnapshot.getData())
+                            .addOnSuccessListener(unused -> fromPath.delete()
+                                    .addOnSuccessListener(unused1 -> finish())
+                                    .addOnFailureListener(e -> Utils.showSnack(findViewById(R.id.contentScreen), "오류, 다시 시도하세요")));
+                }
             }
         });
     }

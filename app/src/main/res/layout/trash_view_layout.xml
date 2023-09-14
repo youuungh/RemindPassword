@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/transparent"
+    android:orientation="vertical">
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_trash"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="18dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        app:cardBackgroundColor="@color/md_blue_grey_50"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/trash_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginEnd="100dp"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="제목"
+                android:textColor="@color/customTextColor"
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/trash_id"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/trash_title"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="메일"
+                android:textColor="@color/customTextColor"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/trash_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/trash_id"
+                android:layout_alignParentEnd="true"
+                android:paddingStart="5dp"
+                android:paddingEnd="8dp"
+                android:paddingTop="8dp"
+                android:gravity="end"
+                android:text="날짜"
+                android:textColor="@color/customTextColor"
+                android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
+
+        </RelativeLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+</LinearLayout>

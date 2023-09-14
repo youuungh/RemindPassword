@@ -20,7 +20,7 @@
             app:navigationIcon="@drawable/ic_arrow_left">
 
             <FrameLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|center_vertical"
                 android:layout_marginEnd="24dp">
@@ -37,8 +37,22 @@
                     app:iconPadding="0dp"
                     app:iconGravity="textStart"
                     app:backgroundTint="@null"
-                    app:rippleColor="?attr/colorControlHighlight">
-                </com.google.android.material.button.MaterialButton>
+                    app:rippleColor="?attr/colorControlHighlight"
+                    android:visibility="visible"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="80dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textColor="@color/customTextColor"
+                    android:background="@drawable/rounded_edit_button"
+                    app:icon="@drawable/ic_write"
+                    app:iconTint="@color/white"
+                    app:iconPadding="0dp"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="@null"
+                    app:rippleColor="?attr/colorControlHighlight"
+                    android:visibility="invisible"/>
 
                 <ProgressBar
                     android:id="@+id/add_progressBar"

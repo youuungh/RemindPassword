@@ -9,6 +9,8 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
@@ -32,6 +34,14 @@ public class Utils {
         return FirebaseFirestore.getInstance()
                 .collection("Users")
                 .document("contents")
+                .collection(fUser.getUid());
+    }
+
+    static CollectionReference getTrashReference() {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        return FirebaseFirestore.getInstance()
+                .collection("Users")
+                .document("trash")
                 .collection(fUser.getUid());
     }
 }
