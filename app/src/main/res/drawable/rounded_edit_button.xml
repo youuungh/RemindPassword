@@ -5,11 +5,11 @@
         <shape xmlns:android="http://schemas.android.com/apk/res/android">
             <gradient
                 android:angle="45"
-                android:endColor="#ADA4A5"
-                android:startColor="#F7F8F8"
+                android:endColor="#AD95C5"
+                android:startColor="#448BCD"
                 android:type="linear" />
             <corners
-                android:radius="30dp"/>
+                android:radius="48dp"/>
         </shape>
     </item>
 </ripple>

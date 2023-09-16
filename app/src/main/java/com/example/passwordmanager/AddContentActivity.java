@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,16 +35,16 @@ public class AddContentActivity extends AppCompatActivity {
     MaterialToolbar toolbar;
     TextInputEditText edt_title;
     EditText edt_id, edt_pw, edt_memo;
-    MaterialButton button_save;
+    MaterialButton button_save, button_edit;
     ProgressBar progressBar;
     String label;
     boolean isEdit = false;
+    boolean isChange = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
-
         toolbar = findViewById(R.id.content_add_toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
@@ -61,12 +62,15 @@ public class AddContentActivity extends AppCompatActivity {
         edt_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
 
-        if(label != null && !label.isEmpty()) {
-            isEdit = true;
-        }
+        if(label != null && !label.isEmpty()) isEdit = true;
 
         progressBar = findViewById(R.id.add_progressBar);
 
+        button_edit = findViewById(R.id.button_edit);
+        button_edit.setVisibility(isEdit ? View.VISIBLE : View.GONE);
+        button_edit.setOnClickListener(v -> {
+            changeVisible(isEdit);
+        });
         button_save = findViewById(R.id.button_save);
         button_save.setIcon(isEdit ? ContextCompat.getDrawable(this, R.drawable.ic_dot_horizon_bold) : ContextCompat.getDrawable(this, R.drawable.ic_check_bold));
         button_save.setOnClickListener(view -> {
@@ -83,7 +87,7 @@ public class AddContentActivity extends AppCompatActivity {
 
             Content content = new Content(title, id, pw, memo, timestamp);
 
-            if (isEdit) {
+            if (isEdit && !isChange) {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
                 View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.bs_container));
                 bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v -> {
@@ -94,10 +98,18 @@ public class AddContentActivity extends AppCompatActivity {
                 });
                 bottomSheetDialog.setContentView(bottomSheetView);
                 bottomSheetDialog.show();
+            } else if (isChange) {
+                saveToFirebase(content);
             } else {
                 saveToFirebase(content);
             }
         });
+    }
+
+    private void changeVisible(boolean isEdit) {
+        button_edit.setVisibility(isEdit ? View.GONE : View.VISIBLE);
+        button_save.setIcon(isEdit ? ContextCompat.getDrawable(this, R.drawable.ic_check_bold) : ContextCompat.getDrawable(this, R.drawable.ic_dot_horizon_bold));
+        isChange = true;
     }
 
     private void addChangeInProgress(boolean inProgress) {
@@ -109,6 +121,8 @@ public class AddContentActivity extends AppCompatActivity {
         addChangeInProgress(true);
         if(isEdit) {
             docRef = Utils.getContentReference().document(label);
+            if (isChange)
+                docRef = Utils.getContentReference().document(label);
         } else {
             docRef = Utils.getContentReference().document();
         }
