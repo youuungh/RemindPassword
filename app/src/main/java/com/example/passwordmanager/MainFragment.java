@@ -5,12 +5,18 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -20,6 +26,7 @@ import com.example.passwordmanager.adapter.Adapter;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.search.SearchBar;
 import com.google.firebase.firestore.Query;
 
 public class MainFragment extends Fragment {
@@ -37,6 +44,19 @@ public class MainFragment extends Fragment {
 
         main_emptyView = view.findViewById(R.id.main_view_empty);
         progressBar = view.findViewById(R.id.main_progressBar);
+
+        ((MainActivity)getActivity()).menuHost.addMenuProvider(new MenuProvider() {
+            @Override
+            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
+                menu.clear();
+                menuInflater.inflate(R.menu.menu_searchbar, menu);
+            }
+
+            @Override
+            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
+                return false;
+            }
+        });
 
         Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {

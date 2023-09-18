@@ -2,8 +2,12 @@ package com.example.passwordmanager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
+import androidx.core.view.MenuHost;
+import androidx.core.view.MenuProvider;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -12,6 +16,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -34,6 +40,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     FirebaseAuth fAuth;
     FirebaseUser fUser;
@@ -42,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     MaterialButton button;
     SearchBar searchBar;
     TextView tv_userEmail, main_count, trash_count;
+    MenuHost menuHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +66,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         drawerLayout = findViewById(R.id.layout_drawer);
         searchBar = findViewById(R.id.main_searchbar);
-        searchBar.setNavigationOnClickListener(v -> {
-            drawerLayout.open();
-        });
+        searchBar.setNavigationOnClickListener(v -> { drawerLayout.open(); });
+
+        menuHost = this.searchBar;
 
         main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);
@@ -108,7 +117,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerLayout.closeDrawer(GravityCompat.START);
-
         switch (item.getItemId()) {
             case R.id.nav_main:
                 showFragments(new MainFragment());
