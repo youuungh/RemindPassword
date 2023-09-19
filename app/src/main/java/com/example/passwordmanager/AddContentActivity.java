@@ -89,7 +89,7 @@ public class AddContentActivity extends AppCompatActivity {
 
             if (isEdit && !isChange) {
                 BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-                View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.bs_container));
+                View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.cbs_container));
                 bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v -> {
                     bottomSheetDialog.dismiss();
                     DocumentReference fromPath = Utils.getContentReference().document(label);

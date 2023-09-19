@@ -45,18 +45,8 @@ public class MainFragment extends Fragment {
         main_emptyView = view.findViewById(R.id.main_view_empty);
         progressBar = view.findViewById(R.id.main_progressBar);
 
-        ((MainActivity)getActivity()).menuHost.addMenuProvider(new MenuProvider() {
-            @Override
-            public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
-                menu.clear();
-                menuInflater.inflate(R.menu.menu_searchbar, menu);
-            }
-
-            @Override
-            public boolean onMenuItemSelected(@NonNull MenuItem menuItem) {
-                return false;
-            }
-        });
+        ((MainActivity)getActivity()).searchBar.getMenu().clear();
+        ((MainActivity)getActivity()).searchBar.inflateMenu(R.menu.menu_searchbar);
 
         Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {

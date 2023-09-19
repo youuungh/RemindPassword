@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import com.google.android.material.elevation.SurfaceColors;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.search.SearchBar;
+import com.google.android.material.search.SearchView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -49,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView main_nav;
     MaterialButton button;
     SearchBar searchBar;
+    SearchView searchView;
     TextView tv_userEmail, main_count, trash_count;
-    MenuHost menuHost;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawerLayout = findViewById(R.id.layout_drawer);
         searchBar = findViewById(R.id.main_searchbar);
         searchBar.setNavigationOnClickListener(v -> { drawerLayout.open(); });
-
-        menuHost = this.searchBar;
+        searchView = findViewById(R.id.main_searchView);
 
         main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);
