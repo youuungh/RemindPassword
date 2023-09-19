@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchBar = findViewById(R.id.main_searchbar);
         searchBar.setNavigationOnClickListener(v -> { drawerLayout.open(); });
         searchView = findViewById(R.id.main_searchView);
+        searchView.setupWithSearchBar(searchBar);
 
         main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);

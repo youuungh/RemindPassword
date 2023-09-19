@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,12 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/BaseTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31" >
+        tools:targetApi="31">
         <activity
             android:name=".HomeActivity"
             android:exported="true"
             android:theme="@style/BaseTheme"
-            android:windowSoftInputMode="adjustUnspecified" >
+            android:windowSoftInputMode="adjustUnspecified">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -41,7 +41,7 @@
         <activity
             android:name=".ResetPasswordActivity"
             android:exported="false"
-            android:theme="@style/BaseTheme"/>
+            android:theme="@style/BaseTheme" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -52,10 +52,14 @@
             android:exported="true"
             android:theme="@style/ContentTheme" />
         <activity
+            android:name=".TrashContentActivity"
+            android:exported="false"
+            android:theme="@style/ContentTheme"/>
+        <activity
             android:name=".SettingActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="adjustUnspecified" >
+            android:windowSoftInputMode="adjustUnspecified">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

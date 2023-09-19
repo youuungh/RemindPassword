@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/main_layout_appbar"
@@ -36,7 +35,6 @@
         android:hint="@string/search"
         android:backgroundTint="@color/white"
         app:layout_anchor="@id/main_searchbar"
-        app:useDrawerArrowDrawable="true"
         android:fitsSystemWindows="true"/>
 
     <FrameLayout
