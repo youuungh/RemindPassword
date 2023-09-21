@@ -17,18 +17,30 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.passwordmanager.adapter.Adapter;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class TrashFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
@@ -36,8 +48,7 @@ public class TrashFragment extends Fragment {
     Query query;
     RecyclerView recyclerView;
     FloatingActionButton trash_fab_top;
-    RelativeLayout trash_emptyView;
-    ProgressBar progressBar;
+    RelativeLayout trash_emptyView, trash_loadingView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,7 +56,7 @@ public class TrashFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_trash, container, false);
 
         trash_emptyView = view.findViewById(R.id.trash_view_empty);
-        progressBar = view.findViewById(R.id.trash_progressBar);
+        trash_loadingView = view.findViewById(R.id.trash_view_loading);
 
         ((MainActivity)getActivity()).searchBar.getMenu().clear();
         ((MainActivity)getActivity()).searchBar.inflateMenu(R.menu.menu_options);
@@ -54,6 +65,23 @@ public class TrashFragment extends Fragment {
             View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_bottom_sheet, getView().findViewById(R.id.tbs_container));
             bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
                 bottomSheetDialog.dismiss();
+                if (!options.getSnapshots().isEmpty()) {
+                    Utils.getTrashReference().get().addOnCompleteListener(task -> {
+                        trash_loadingView.setVisibility(View.VISIBLE);
+
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+
+                            for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                                DocumentReference fromPath = Utils.getTrashReference().document(documentSnapshot.getReference().getId());
+                                DocumentReference toPath = Utils.getContentReference().document(documentSnapshot.getReference().getId());
+                                moveFirebaseDocument(fromPath, toPath);
+                            }
+                        }
+                    });
+                } else {
+                     Utils.showSnack(view.findViewById(R.id.recycler_trash), "복원할 항목이 없습니다");
+                }
             });
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.show();
@@ -97,13 +125,29 @@ public class TrashFragment extends Fragment {
         trash_emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
     }
 
+    private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
+        fromPath.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot != null) {
+                    toPath.set(documentSnapshot.getData())
+                            .addOnSuccessListener(unused -> {
+                                fromPath.delete();
+                                trash_loadingView.setVisibility(View.GONE);
+                            })
+                            .addOnFailureListener(e -> Utils.showSnack(getView().findViewById(R.id.recycler_trash), "오류, 다시 시도하세요"));
+                }
+            }
+        });
+    }
+
     @Override
     public void onStart() {
         super.onStart();
 
         query = Utils.getTrashReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {
-            progressBar.setVisibility(View.GONE);
+            trash_loadingView.setVisibility(View.GONE);
             showEmptyView(options.getSnapshots().isEmpty());
         });
         options = new FirestoreRecyclerOptions.Builder<Content>()
@@ -115,7 +159,11 @@ public class TrashFragment extends Fragment {
             protected void onBindViewHolder(@NonNull TrashViewHolder holder, int position, @NonNull Content trash) {
                 holder.trash_title.setText(trash.getTitle());
                 holder.trash_id.setText(trash.getId());
-                holder.trash_timestamp.setText(Utils.timeStampToString(trash.getTimestamp()));
+                holder.trash_timestamp.setText("99일");
+
+                holder.trash_option.setOnClickListener(v -> {
+                    Toast.makeText(v.getContext(), "클릭", Toast.LENGTH_SHORT).show();
+                });
             }
 
             @NonNull
@@ -151,14 +199,28 @@ public class TrashFragment extends Fragment {
         adapter.startListening();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        adapter.startListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
     public static class TrashViewHolder extends RecyclerView.ViewHolder {
         TextView trash_title, trash_id, trash_timestamp;
+        ImageButton trash_option;
 
         public TrashViewHolder(@NonNull View itemView) {
             super(itemView);
             trash_title = itemView.findViewById(R.id.trash_title);
             trash_id = itemView.findViewById(R.id.trash_id);
             trash_timestamp = itemView.findViewById(R.id.trash_timestamp);
+            trash_option = itemView.findViewById(R.id.trash_option);
         }
     }
 }

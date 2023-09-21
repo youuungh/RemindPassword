@@ -34,8 +34,7 @@ public class MainFragment extends Fragment {
     RecyclerView recyclerView;
     Adapter adapter;
     FloatingActionButton main_fab_write, main_fab_top;
-    RelativeLayout main_emptyView;
-    ProgressBar progressBar;
+    RelativeLayout main_emptyView, main_loadingView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,42 +42,14 @@ public class MainFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         main_emptyView = view.findViewById(R.id.main_view_empty);
-        progressBar = view.findViewById(R.id.main_progressBar);
+        main_loadingView = view.findViewById(R.id.main_view_loading);
 
         ((MainActivity)getActivity()).searchBar.getMenu().clear();
         ((MainActivity)getActivity()).searchBar.inflateMenu(R.menu.menu_searchbar);
 
-        Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
-        query.get().addOnCompleteListener(task -> {
-            progressBar.setVisibility(View.GONE);
-            showEmptyView(options.getSnapshots().isEmpty());
-        });
-
-        options = new FirestoreRecyclerOptions.Builder<Content>()
-                .setQuery(query, Content.class)
-                .build();
-        adapter = new Adapter(options);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                showEmptyView(options.getSnapshots().isEmpty());
-                ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
-                recyclerView.smoothScrollToPosition(0);
-                super.onItemRangeInserted(positionStart, itemCount);
-            }
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                showEmptyView(options.getSnapshots().isEmpty());
-                ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
-                recyclerView.smoothScrollToPosition(0);
-                super.onItemRangeRemoved(positionStart, itemCount);
-            }
-        });
-
         recyclerView = view.findViewById(R.id.recycler_contents);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
 
         main_fab_write = view.findViewById(R.id.main_fab_write);
         main_fab_write.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContentActivity.class)));
@@ -121,6 +92,34 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+
+        Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        query.get().addOnCompleteListener(task -> {
+            main_loadingView.setVisibility(View.GONE);
+            showEmptyView(options.getSnapshots().isEmpty());
+        });
+
+        options = new FirestoreRecyclerOptions.Builder<Content>()
+                .setQuery(query, Content.class)
+                .build();
+        adapter = new Adapter(options);
+        recyclerView.setAdapter(adapter);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                showEmptyView(options.getSnapshots().isEmpty());
+                ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
+                recyclerView.smoothScrollToPosition(0);
+                super.onItemRangeInserted(positionStart, itemCount);
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                showEmptyView(options.getSnapshots().isEmpty());
+                ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
+                recyclerView.smoothScrollToPosition(0);
+                super.onItemRangeRemoved(positionStart, itemCount);
+            }
+        });
         adapter.startListening();
     }
 

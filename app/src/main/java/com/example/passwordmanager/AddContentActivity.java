@@ -139,7 +139,7 @@ public class AddContentActivity extends AppCompatActivity {
         });
     }
 
-    private  void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
+    private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
         button_save.setEnabled(false);
         addChangeInProgress(true);
         fromPath.get().addOnCompleteListener(task -> {
@@ -148,7 +148,7 @@ public class AddContentActivity extends AppCompatActivity {
                 if (documentSnapshot != null) {
                     toPath.set(documentSnapshot.getData())
                             .addOnSuccessListener(unused -> fromPath.delete()
-                                    .addOnSuccessListener(unused1 -> finish())
+                                    .addOnSuccessListener(unused1 -> startActivity(new Intent(this, MainActivity.class)))
                                     .addOnFailureListener(e -> Utils.showSnack(findViewById(R.id.contentScreen), "오류, 다시 시도하세요")));
                 }
             }
