@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/BaseTheme"
         android:usesCleartextTraffic="true"
+        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
         <activity
             android:name=".HomeActivity"
@@ -51,10 +52,6 @@
             android:name=".AddContentActivity"
             android:exported="true"
             android:theme="@style/ContentTheme" />
-        <activity
-            android:name=".TrashContentActivity"
-            android:exported="false"
-            android:theme="@style/ContentTheme"/>
         <activity
             android:name=".SettingActivity"
             android:exported="true"

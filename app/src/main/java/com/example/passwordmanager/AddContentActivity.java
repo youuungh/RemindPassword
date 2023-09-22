@@ -148,7 +148,7 @@ public class AddContentActivity extends AppCompatActivity {
                 if (documentSnapshot != null) {
                     toPath.set(documentSnapshot.getData())
                             .addOnSuccessListener(unused -> fromPath.delete()
-                                    .addOnSuccessListener(unused1 -> startActivity(new Intent(this, MainActivity.class)))
+                                    .addOnSuccessListener(unused1 -> finish())
                                     .addOnFailureListener(e -> Utils.showSnack(findViewById(R.id.contentScreen), "오류, 다시 시도하세요")));
                 }
             }

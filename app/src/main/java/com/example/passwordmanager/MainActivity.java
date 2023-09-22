@@ -55,20 +55,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     TextView tv_userEmail, main_count, trash_count;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        updateCounter();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        showFragments(new MainFragment());
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(null);
+        if (savedInstanceState == null)
+            showFragments(new MainFragment());
 
         fAuth = FirebaseAuth.getInstance();
         fUser = fAuth.getCurrentUser();
 
         drawerLayout = findViewById(R.id.layout_drawer);
         searchBar = findViewById(R.id.main_searchbar);
-        searchBar.setNavigationOnClickListener(v -> { drawerLayout.open(); });
+        searchBar.setNavigationOnClickListener(v -> drawerLayout.open());
         searchView = findViewById(R.id.main_searchView);
         searchView.setupWithSearchBar(searchBar);
 
@@ -80,15 +87,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         main_count = main_nav.getMenu().getItem(0).getActionView().findViewById(R.id.tv_main_count);
         trash_count = main_nav.getMenu().getItem(1).getActionView().findViewById(R.id.tv_trash_count);
-
-        Utils.getContentReference().get().addOnCompleteListener(task -> {
-            if (task.isSuccessful())
-                main_count.setText(String.valueOf(task.getResult().size()));
-        });
-        Utils.getTrashReference().get().addOnCompleteListener(task -> {
-            if (task.isSuccessful())
-                trash_count.setText(String.valueOf(task.getResult().size()));
-        });
 
         View header = main_nav.getHeaderView(0);
         tv_userEmail = header.findViewById(R.id.tv_userMail);
@@ -119,33 +117,33 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerLayout.closeDrawer(GravityCompat.START);
-        switch (item.getItemId()) {
-            case R.id.nav_main:
-                showFragments(new MainFragment());
-                break;
-            case R.id.nav_trash:
-                showFragments(new TrashFragment());
-                break;
-            case R.id.nav_setting:
-                //startActivity(new Intent(MainActivity.this, SettingActivity.class);
-                break;
+
+        int id = item.getItemId();
+        if (id == R.id.nav_main) {
+            showFragments(new MainFragment());
+        } else if (id == R.id.nav_trash) {
+            showFragments(new TrashFragment());
+        } else if (id == R.id.nav_setting) {
+            //startActivity(new Intent(MainActivity.this, SettingActivity.class));
         }
         return true;
+    }
+
+    public void updateCounter() {
+        Utils.getContentReference().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                main_count.setText(String.valueOf(task.getResult().size()));
+        });
+        Utils.getTrashReference().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                trash_count.setText(String.valueOf(task.getResult().size()));
+        });
     }
 
     private void showFragments(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.layout_fragment, fragment);
-        ft.addToBackStack(null);
         ft.commit();
-    }
-
-    public void mainCounterChanged(String count) {
-        main_count.setText(count);
-    }
-
-    public void trashCounterChanged(String count) {
-        trash_count.setText(count);
     }
 
     @Override

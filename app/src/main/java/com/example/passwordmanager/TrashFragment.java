@@ -28,6 +28,8 @@ import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -45,7 +47,6 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class TrashFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
     FirestoreRecyclerAdapter<Content, TrashViewHolder> adapter;
-    Query query;
     RecyclerView recyclerView;
     FloatingActionButton trash_fab_top;
     RelativeLayout trash_emptyView, trash_loadingView;
@@ -81,6 +82,25 @@ public class TrashFragment extends Fragment {
                     });
                 } else {
                      Utils.showSnack(view.findViewById(R.id.recycler_trash), "복원할 항목이 없습니다");
+                }
+            });
+            bottomSheetView.findViewById(R.id.option_delete).setOnClickListener(v -> {
+                bottomSheetDialog.dismiss();
+                if (!options.getSnapshots().isEmpty()) {
+                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.CustomAlertDialog)
+                            .setMessage("휴지통에 있는 모든 항목이\n완전히 삭제됩니다")
+                            .setCancelable(false)
+                            .setPositiveButton("삭제", (dialog, which) -> {
+                                trash_loadingView.setVisibility(View.VISIBLE);
+                                deleteFirebaseDocument();
+                            })
+                            .setNegativeButton("취소", (dialog, which) -> {
+                                dialog.cancel();
+                            });
+                    builder.create();
+                    builder.show();
+                } else {
+                    Utils.showSnack(view.findViewById(R.id.recycler_trash), "휴지통이 비어 있습니다");
                 }
             });
             bottomSheetDialog.setContentView(bottomSheetView);
@@ -134,6 +154,23 @@ public class TrashFragment extends Fragment {
                             .addOnSuccessListener(unused -> {
                                 fromPath.delete();
                                 trash_loadingView.setVisibility(View.GONE);
+                                ((MainActivity)getActivity()).updateCounter();
+                            })
+                            .addOnFailureListener(e -> Utils.showSnack(getView().findViewById(R.id.recycler_trash), "오류, 다시 시도하세요"));
+                }
+            }
+        });
+    }
+
+    private void deleteFirebaseDocument() {
+        Utils.getTrashReference().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                    Utils.getTrashReference().document(queryDocumentSnapshot.getId())
+                            .delete()
+                            .addOnSuccessListener(unused -> {
+                                trash_loadingView.setVisibility(View.GONE);
+                                ((MainActivity)getActivity()).updateCounter();
                             })
                             .addOnFailureListener(e -> Utils.showSnack(getView().findViewById(R.id.recycler_trash), "오류, 다시 시도하세요"));
                 }
@@ -145,7 +182,7 @@ public class TrashFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        query = Utils.getTrashReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        Query query = Utils.getTrashReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {
             trash_loadingView.setVisibility(View.GONE);
             showEmptyView(options.getSnapshots().isEmpty());
@@ -183,16 +220,12 @@ public class TrashFragment extends Fragment {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 showEmptyView(options.getSnapshots().isEmpty());
-                ((MainActivity)getActivity()).trashCounterChanged(String.valueOf(adapter.getItemCount()));
-                recyclerView.smoothScrollToPosition(0);
                 super.onItemRangeInserted(positionStart, itemCount);
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 showEmptyView(options.getSnapshots().isEmpty());
-                ((MainActivity)getActivity()).trashCounterChanged(String.valueOf(adapter.getItemCount()));
-                recyclerView.smoothScrollToPosition(0);
                 super.onItemRangeRemoved(positionStart, itemCount);
             }
         });

@@ -108,15 +108,11 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 showEmptyView(options.getSnapshots().isEmpty());
-                ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
-                recyclerView.smoothScrollToPosition(0);
                 super.onItemRangeInserted(positionStart, itemCount);
             }
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 showEmptyView(options.getSnapshots().isEmpty());
-                ((MainActivity)getActivity()).mainCounterChanged(String.valueOf(adapter.getItemCount()));
-                recyclerView.smoothScrollToPosition(0);
                 super.onItemRangeRemoved(positionStart, itemCount);
             }
         });
