@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/cbs_container"
+    android:id="@+id/ibs_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="16dp"
+    android:paddingTop="3dp"
     android:paddingBottom="16dp"
     android:background="@drawable/bottom_sheet_bg"
     android:orientation="vertical">
@@ -12,7 +11,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="16dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/option_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="64dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:text="DATA"
+            android:textColor="@color/customTextColor"
+            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/option_restore"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
         android:paddingStart="24dp"
@@ -26,20 +48,20 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_star"/>
+            android:src="@drawable/ic_restore"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:text="즐겨찾기에 추가"
+            android:text="복원"
             android:textColor="@color/customTextColor"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/option_trash"
+        android:id="@+id/option_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -56,15 +78,15 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_trash"/>
+            android:src="@drawable/ic_trash_empty"/>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:text="휴지통으로 이동"
-            android:textColor="@color/customTextColor"
+            android:text="삭제"
+            android:textColor="@color/error"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
     </LinearLayout>
 

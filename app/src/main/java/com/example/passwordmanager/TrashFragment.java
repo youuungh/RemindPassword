@@ -92,7 +92,7 @@ public class TrashFragment extends Fragment {
                             .setCancelable(false)
                             .setPositiveButton("삭제", (dialog, which) -> {
                                 trash_loadingView.setVisibility(View.VISIBLE);
-                                deleteFirebaseDocument();
+                                deleteAllFirebaseDocument();
                             })
                             .setNegativeButton("취소", (dialog, which) -> {
                                 dialog.cancel();
@@ -137,7 +137,6 @@ public class TrashFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-
         return view;
     }
 
@@ -162,7 +161,17 @@ public class TrashFragment extends Fragment {
         });
     }
 
-    private void deleteFirebaseDocument() {
+    private void deleteFromFirebase(DocumentReference docRef) {
+        docRef.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Utils.showSnack(getView().findViewById(R.id.recycler_trash), "삭제됨");
+            } else {
+                Utils.showSnack(getView().findViewById(R.id.recycler_trash), "오류, 다시 시도하세요");
+            }
+        });
+    }
+
+    private void deleteAllFirebaseDocument() {
         Utils.getTrashReference().get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
@@ -194,12 +203,39 @@ public class TrashFragment extends Fragment {
         adapter = new FirestoreRecyclerAdapter<Content, TrashViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull TrashViewHolder holder, int position, @NonNull Content trash) {
+                String label = getSnapshots().getSnapshot(position).getId();
                 holder.trash_title.setText(trash.getTitle());
                 holder.trash_id.setText(trash.getId());
                 holder.trash_timestamp.setText("99일");
 
                 holder.trash_option.setOnClickListener(v -> {
-                    Toast.makeText(v.getContext(), "클릭", Toast.LENGTH_SHORT).show();
+                    BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
+                    View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.item_bottom_sheet, getView().findViewById(R.id.ibs_container));
+                    TextView item_title = bottomSheetView.findViewById(R.id.option_title);
+                    item_title.setText(trash.getTitle());
+                    bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v1 -> {
+                        bottomSheetDialog.dismiss();
+                        DocumentReference fromPath = Utils.getTrashReference().document(label);
+                        DocumentReference toPath = Utils.getContentReference().document();
+                        moveFirebaseDocument(fromPath, toPath);
+                    });
+                    bottomSheetView.findViewById(R.id.option_delete).setOnClickListener(v1 -> {
+                        bottomSheetDialog.dismiss();
+                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.CustomAlertDialog)
+                                .setMessage("이 항목을 완전히 삭제할까요?")
+                                .setCancelable(false)
+                                .setPositiveButton("삭제", (dialog, which) -> {
+                                    DocumentReference docRef = Utils.getTrashReference().document(label);
+                                    deleteFromFirebase(docRef);
+                                })
+                                .setNegativeButton("취소", (dialog, which) -> {
+                                    dialog.cancel();
+                                });
+                        builder.create();
+                        builder.show();
+                    });
+                    bottomSheetDialog.setContentView(bottomSheetView);
+                    bottomSheetDialog.show();
                 });
             }
 
