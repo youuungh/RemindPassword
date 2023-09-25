@@ -3,23 +3,19 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent"
-    android:orientation="vertical">
+    android:background="@android:color/transparent">
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="18dp"
-        android:layout_marginEnd="18dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
         app:cardBackgroundColor="@color/md_blue_grey_50"
         app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
-        app:strokeWidth="0dp">
+        app:strokeWidth="0dp"
+        app:cardUseCompatPadding="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,26 +27,25 @@
                 android:id="@+id/content_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toStartOf="@id/content_option"
                 android:layout_alignParentStart="true"
-                android:layout_marginEnd="100dp"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
                 android:text="제목"
                 android:textColor="@color/customTextColor"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 android:textStyle="bold"
+                android:ems="8"
                 android:maxLines="1"
                 android:ellipsize="end"/>
 
             <ImageButton
                 android:id="@+id/content_option"
-                android:layout_width="wrap_content"
+                android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@id/content_title"
                 android:layout_alignBottom="@id/content_title"
                 android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="2dp"
                 android:src="@drawable/ic_dot_horizon"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="옵션" />

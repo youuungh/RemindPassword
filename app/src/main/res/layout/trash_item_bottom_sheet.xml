@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/ibs_container"
+    android:id="@+id/tibs_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="3dp"
@@ -15,7 +15,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/option_title"
+            android:id="@+id/trash_option_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -32,7 +32,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/option_restore"
+        android:id="@+id/trash_option_restore"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
@@ -61,7 +61,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/option_delete"
+        android:id="@+id/trash_option_delete"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

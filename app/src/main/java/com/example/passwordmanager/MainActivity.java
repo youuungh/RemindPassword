@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SearchBar searchBar;
     SearchView searchView;
     TextView tv_userEmail, main_count, trash_count;
+    MainFragment mFragment;
 
     @Override
     protected void onResume() {
@@ -67,8 +68,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(null);
-        if (savedInstanceState == null)
+        if (savedInstanceState == null) {
             showFragments(new MainFragment());
+        }
 
         fAuth = FirebaseAuth.getInstance();
         fUser = fAuth.getCurrentUser();

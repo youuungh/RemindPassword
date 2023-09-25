@@ -29,7 +29,7 @@ public class Utils {
         return new SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREAN).format(timestamp.toDate());
     }
 
-    static CollectionReference getContentReference() {
+    public static CollectionReference getContentReference() {
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         return FirebaseFirestore.getInstance()
                 .collection("Users")
@@ -37,7 +37,7 @@ public class Utils {
                 .collection(fUser.getUid());
     }
 
-    static CollectionReference getTrashReference() {
+    public static CollectionReference getTrashReference() {
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         return FirebaseFirestore.getInstance()
                 .collection("Users")

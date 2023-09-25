@@ -61,8 +61,13 @@ public class AddContentActivity extends AppCompatActivity {
         edt_pw.setText(getIntent().getStringExtra("pw"));
         edt_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
+        boolean editable = getIntent().getBooleanExtra("editable", false);
 
         if(label != null && !label.isEmpty()) isEdit = true;
+        if (editable) {
+            isEdit = false;
+            edt_title.requestFocus();
+        }
 
         progressBar = findViewById(R.id.add_progressBar);
 
@@ -70,6 +75,7 @@ public class AddContentActivity extends AppCompatActivity {
         button_edit.setVisibility(isEdit ? View.VISIBLE : View.GONE);
         button_edit.setOnClickListener(v -> {
             changeVisible(isEdit);
+            edt_title.requestFocus();
         });
         button_save = findViewById(R.id.button_save);
         button_save.setIcon(isEdit ? ContextCompat.getDrawable(this, R.drawable.ic_dot_horizon_bold) : ContextCompat.getDrawable(this, R.drawable.ic_check_bold));

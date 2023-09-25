@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +36,8 @@ public class MainFragment extends Fragment {
     Adapter adapter;
     FloatingActionButton main_fab_write, main_fab_top;
     RelativeLayout main_emptyView, main_loadingView;
+    boolean isSwitch = false;
+    Bundle saveState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -44,12 +47,38 @@ public class MainFragment extends Fragment {
         main_emptyView = view.findViewById(R.id.main_view_empty);
         main_loadingView = view.findViewById(R.id.main_view_loading);
 
-        ((MainActivity)getActivity()).searchBar.getMenu().clear();
-        ((MainActivity)getActivity()).searchBar.inflateMenu(R.menu.menu_searchbar);
-
         recyclerView = view.findViewById(R.id.recycler_contents);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        ((MainActivity)getActivity()).searchBar.getMenu().clear();
+        ((MainActivity)getActivity()).searchBar.inflateMenu(R.menu.menu_searchbar);
+        ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.menu_column) {
+                if (!isSwitch) {
+                    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    item.setIcon(R.drawable.ic_column_linear);
+                } else {
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    item.setIcon(R.drawable.ic_column_grid);
+                }
+                isSwitch = !isSwitch;
+            }
+            return false;
+        });
+
+        if (savedInstanceState == null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        } else {
+            isSwitch = savedInstanceState.getBoolean("MAIN_MENU_STATE");
+            if (isSwitch) {
+                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+            } else {
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+            }
+        }
 
         main_fab_write = view.findViewById(R.id.main_fab_write);
         main_fab_write.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContentActivity.class)));
@@ -81,8 +110,13 @@ public class MainFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("MAIN_MENU_STATE", isSwitch);
     }
 
     private void showEmptyView(boolean flag) {
@@ -102,7 +136,7 @@ public class MainFragment extends Fragment {
         options = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(query, Content.class)
                 .build();
-        adapter = new Adapter(options);
+        adapter = new Adapter(options, this);
         recyclerView.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override

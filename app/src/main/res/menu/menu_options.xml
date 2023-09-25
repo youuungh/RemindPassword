@@ -2,7 +2,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:title="menu_option"
+        android:id="@+id/menu_column"
+        android:title=""
+        android:icon="@drawable/ic_column_grid"
+        app:showAsAction="always"/>
+    <item
+        android:title=""
         android:icon="@drawable/ic_dot_vertical"
         android:enabled="true"
         app:showAsAction="always"/>

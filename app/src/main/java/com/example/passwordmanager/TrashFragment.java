@@ -3,43 +3,27 @@ package com.example.passwordmanager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.passwordmanager.adapter.Adapter;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.search.SearchBar;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -50,6 +34,7 @@ public class TrashFragment extends Fragment {
     RecyclerView recyclerView;
     FloatingActionButton trash_fab_top;
     RelativeLayout trash_emptyView, trash_loadingView;
+    boolean isSwitch = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -59,9 +44,40 @@ public class TrashFragment extends Fragment {
         trash_emptyView = view.findViewById(R.id.trash_view_empty);
         trash_loadingView = view.findViewById(R.id.trash_view_loading);
 
+        recyclerView = view.findViewById(R.id.recycler_trash);
+        recyclerView.setHasFixedSize(true);
+
         ((MainActivity)getActivity()).searchBar.getMenu().clear();
         ((MainActivity)getActivity()).searchBar.inflateMenu(R.menu.menu_options);
-        ((MainActivity)getActivity()).searchBar.setOnMenuItemClickListener(item -> {
+        ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.menu_column) {
+                if (!isSwitch) {
+                    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    item.setIcon(R.drawable.ic_column_linear);
+                } else {
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    item.setIcon(R.drawable.ic_column_grid);
+                }
+                isSwitch = !isSwitch;
+            }
+            return false;
+        });
+
+        if (savedInstanceState == null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        } else {
+            isSwitch = savedInstanceState.getBoolean("TRASH_MENU_STATE");
+            if (isSwitch) {
+                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+            } else {
+                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+            }
+        }
+
+        ((MainActivity)getActivity()).searchBar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_bottom_sheet, getView().findViewById(R.id.tbs_container));
             bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
@@ -108,10 +124,6 @@ public class TrashFragment extends Fragment {
             return false;
         });
 
-        recyclerView = view.findViewById(R.id.recycler_trash);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         trash_fab_top = view.findViewById(R.id.trash_fab_top);
         trash_fab_top.setOnClickListener(v -> recyclerView.smoothScrollToPosition(0));
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -138,6 +150,12 @@ public class TrashFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("TRASH_MENU_STATE", isSwitch);
     }
 
     private void showEmptyView(boolean flag) {
@@ -210,16 +228,16 @@ public class TrashFragment extends Fragment {
 
                 holder.trash_option.setOnClickListener(v -> {
                     BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
-                    View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.item_bottom_sheet, getView().findViewById(R.id.ibs_container));
-                    TextView item_title = bottomSheetView.findViewById(R.id.option_title);
+                    View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_item_bottom_sheet, getView().findViewById(R.id.tibs_container));
+                    TextView item_title = bottomSheetView.findViewById(R.id.trash_option_title);
                     item_title.setText(trash.getTitle());
-                    bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v1 -> {
+                    bottomSheetView.findViewById(R.id.trash_option_restore).setOnClickListener(v1 -> {
                         bottomSheetDialog.dismiss();
                         DocumentReference fromPath = Utils.getTrashReference().document(label);
                         DocumentReference toPath = Utils.getContentReference().document();
                         moveFirebaseDocument(fromPath, toPath);
                     });
-                    bottomSheetView.findViewById(R.id.option_delete).setOnClickListener(v1 -> {
+                    bottomSheetView.findViewById(R.id.trash_option_delete).setOnClickListener(v1 -> {
                         bottomSheetDialog.dismiss();
                         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.CustomAlertDialog)
                                 .setMessage("이 항목을 완전히 삭제할까요?")
