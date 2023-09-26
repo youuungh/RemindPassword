@@ -1,5 +1,7 @@
 package com.example.passwordmanager;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -53,11 +55,11 @@ public class TrashFragment extends Fragment {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
                 if (!isSwitch) {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                    item.setIcon(R.drawable.ic_column_linear);
-                } else {
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     item.setIcon(R.drawable.ic_column_grid);
+                } else {
+                    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    item.setIcon(R.drawable.ic_column_linear);
                 }
                 isSwitch = !isSwitch;
             }
@@ -65,16 +67,12 @@ public class TrashFragment extends Fragment {
         });
 
         if (savedInstanceState == null) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            SharedPreferences prefer = getActivity().getSharedPreferences("TRASH_MENU_STATE", Context.MODE_PRIVATE);
+            isSwitch = prefer.getBoolean("SWITCH_DATA", true);
+            onChangeTrashMenuItem();
         } else {
             isSwitch = savedInstanceState.getBoolean("TRASH_MENU_STATE");
-            if (isSwitch) {
-                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
-            } else {
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
-            }
+            onChangeTrashMenuItem();
         }
 
         ((MainActivity)getActivity()).searchBar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
@@ -152,14 +150,18 @@ public class TrashFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean("TRASH_MENU_STATE", isSwitch);
-    }
-
     private void showEmptyView(boolean flag) {
         trash_emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
+    }
+
+    private void onChangeTrashMenuItem() {
+        if (isSwitch) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+        }
     }
 
     private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
@@ -203,6 +205,12 @@ public class TrashFragment extends Fragment {
                 }
             }
         });
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("TRASH_MENU_STATE", isSwitch);
     }
 
     @Override
@@ -290,6 +298,14 @@ public class TrashFragment extends Fragment {
     public void onStop() {
         super.onStop();
         adapter.startListening();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences prefer = getActivity().getSharedPreferences("TRASH_MENU_STATE", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefer.edit();
+        editor.putBoolean("SWITCH_DATA", isSwitch).apply();
     }
 
     @Override

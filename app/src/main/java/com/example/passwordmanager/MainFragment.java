@@ -2,6 +2,7 @@ package com.example.passwordmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -37,7 +38,6 @@ public class MainFragment extends Fragment {
     FloatingActionButton main_fab_write, main_fab_top;
     RelativeLayout main_emptyView, main_loadingView;
     boolean isSwitch = false;
-    Bundle saveState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,11 +56,11 @@ public class MainFragment extends Fragment {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
                 if (!isSwitch) {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                    item.setIcon(R.drawable.ic_column_linear);
-                } else {
                     recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
                     item.setIcon(R.drawable.ic_column_grid);
+                } else {
+                    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    item.setIcon(R.drawable.ic_column_linear);
                 }
                 isSwitch = !isSwitch;
             }
@@ -68,16 +68,12 @@ public class MainFragment extends Fragment {
         });
 
         if (savedInstanceState == null) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            SharedPreferences prefer = getActivity().getSharedPreferences("MAIN_MENU_STATE", Context.MODE_PRIVATE);
+            isSwitch = prefer.getBoolean("SWITCH_DATA", true);
+            onChangeMainMenuItem();
         } else {
             isSwitch = savedInstanceState.getBoolean("MAIN_MENU_STATE");
-            if (isSwitch) {
-                recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-                ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
-            } else {
-                recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-                ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
-            }
+            onChangeMainMenuItem();
         }
 
         main_fab_write = view.findViewById(R.id.main_fab_write);
@@ -113,20 +109,29 @@ public class MainFragment extends Fragment {
         return view;
     }
 
+    private void showEmptyView(boolean flag) {
+        main_emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
+    }
+
+    private void onChangeMainMenuItem() {
+        if (isSwitch) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+        }
+    }
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean("MAIN_MENU_STATE", isSwitch);
     }
 
-    private void showEmptyView(boolean flag) {
-        main_emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
-    }
-
     @Override
     public void onStart() {
         super.onStart();
-
         Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {
             main_loadingView.setVisibility(View.GONE);
@@ -160,9 +165,16 @@ public class MainFragment extends Fragment {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        SharedPreferences prefer = getActivity().getSharedPreferences("MAIN_MENU_STATE", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefer.edit();
+        editor.putBoolean("SWITCH_DATA", isSwitch).apply();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
     }
-
 }
