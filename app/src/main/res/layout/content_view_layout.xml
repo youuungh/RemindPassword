@@ -15,6 +15,7 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
         app:strokeWidth="0dp"
+        app:strokeColor="@color/customTextColor"
         app:cardUseCompatPadding="true">
 
         <RelativeLayout
