@@ -23,9 +23,13 @@ import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolder> {
@@ -92,6 +96,20 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
         });
     }
 
+    private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
+        fromPath.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot != null) {
+                    toPath.set(documentSnapshot.getData())
+                            .addOnSuccessListener(unused -> {
+                                fromPath.delete();
+                                ((MainActivity)context.getContext()).updateCounter();
+                            });
+                }
+            }
+        });
+    }
     @Override
     public int getItemCount() {
         return getSnapshots().size();
@@ -108,20 +126,5 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
             content_timestamp = itemView.findViewById(R.id.content_timestamp);
             content_option = itemView.findViewById(R.id.content_option);
         }
-    }
-
-    private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
-        fromPath.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                DocumentSnapshot documentSnapshot = task.getResult();
-                if (documentSnapshot != null) {
-                    toPath.set(documentSnapshot.getData())
-                            .addOnSuccessListener(unused -> {
-                                fromPath.delete();
-                                ((MainActivity)context.getContext()).updateCounter();
-                            });
-                }
-            }
-        });
     }
 }

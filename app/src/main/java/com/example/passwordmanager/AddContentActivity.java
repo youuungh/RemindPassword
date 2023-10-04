@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -80,35 +82,38 @@ public class AddContentActivity extends AppCompatActivity {
         button_save = findViewById(R.id.button_save);
         button_save.setIcon(isEdit ? ContextCompat.getDrawable(this, R.drawable.ic_dot_horizon_bold) : ContextCompat.getDrawable(this, R.drawable.ic_check_bold));
         button_save.setOnClickListener(view -> {
-            String title = edt_title.getText().toString();
-            String id = edt_id.getText().toString();
-            String pw = edt_pw.getText().toString();
-            String memo = edt_memo.getText().toString();
-            Timestamp timestamp = Timestamp.now();
-
-            if (title.isEmpty()) {
-                Utils.showSnack(findViewById(R.id.contentScreen), "제목을 입력하세요");
-                return;
-            }
-
-            Content content = new Content(title, id, pw, memo, timestamp);
-
-            if (isEdit && !isChange) {
-                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-                View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.cbs_container));
-                bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v -> {
-                    bottomSheetDialog.dismiss();
-                    DocumentReference fromPath = Utils.getContentReference().document(label);
-                    DocumentReference toPath = Utils.getTrashReference().document(label);
-                    moveFirebaseDocument(fromPath, toPath);
-                });
-                bottomSheetDialog.setContentView(bottomSheetView);
-                bottomSheetDialog.show();
-            } else if (isChange) {
-                saveToFirebase(content);
-            } else {
-                saveToFirebase(content);
-            }
+            Animation anim = AnimationUtils.loadAnimation(this, R.anim.anim_button_add);
+            anim.setDuration(500);
+            button_save.startAnimation(anim);
+//            String title = edt_title.getText().toString();
+//            String id = edt_id.getText().toString();
+//            String pw = edt_pw.getText().toString();
+//            String memo = edt_memo.getText().toString();
+//            Timestamp timestamp = Timestamp.now();
+//
+//            if (title.isEmpty()) {
+//                Utils.showSnack(findViewById(R.id.contentScreen), "제목을 입력하세요");
+//                return;
+//            }
+//
+//            Content content = new Content(title, id, pw, memo, timestamp);
+//
+//            if (isEdit && !isChange) {
+//                BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+//                View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.cbs_container));
+//                bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v -> {
+//                    bottomSheetDialog.dismiss();
+//                    DocumentReference fromPath = Utils.getContentReference().document(label);
+//                    DocumentReference toPath = Utils.getTrashReference().document(label);
+//                    moveFirebaseDocument(fromPath, toPath);
+//                });
+//                bottomSheetDialog.setContentView(bottomSheetView);
+//                bottomSheetDialog.show();
+//            } else if (isChange) {
+//                saveToFirebase(content);
+//            } else {
+//                saveToFirebase(content);
+//            }
         });
     }
 
