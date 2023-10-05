@@ -9,6 +9,7 @@
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -16,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/BaseTheme"
         android:usesCleartextTraffic="true"
-        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
         <activity
             android:name=".HomeActivity"
@@ -51,6 +51,10 @@
         <activity
             android:name=".AddContentActivity"
             android:exported="true"
+            android:theme="@style/ContentTheme" />
+        <activity
+            android:name=".EditContentActivity"
+            android:exported="false"
             android:theme="@style/ContentTheme" />
         <activity
             android:name=".SettingActivity"

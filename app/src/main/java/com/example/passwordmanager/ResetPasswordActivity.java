@@ -87,9 +87,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
                 edt_reset.clearFocus();
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();
-                if (focusedView != null) {
+                if (focusedView != null)
                     manager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
                 resetInFirebase(fPasswordInput);
             });
         }

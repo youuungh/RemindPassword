@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.passwordmanager.AddContentActivity;
+import com.example.passwordmanager.EditContentActivity;
 import com.example.passwordmanager.MainActivity;
 import com.example.passwordmanager.MainFragment;
 import com.example.passwordmanager.R;
@@ -60,7 +61,7 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
         holder.content_timestamp.setText(Utils.timeStampToString(content.getTimestamp()));
 
         holder.itemView.setOnClickListener(view -> {
-            Intent intent = new Intent(view.getContext(), AddContentActivity.class);
+            Intent intent = new Intent(view.getContext(), EditContentActivity.class);
             intent.putExtra("title", content.getTitle());
             intent.putExtra("id", content.getId());
             intent.putExtra("pw", content.getPw());
@@ -76,13 +77,12 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
             item_title.setText(content.getTitle());
             bottomSheetView.findViewById(R.id.main_option_edit).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
-                Intent intent = new Intent(v.getContext(), AddContentActivity.class);
+                Intent intent = new Intent(v.getContext(), EditContentActivity.class);
                 intent.putExtra("title", content.getTitle());
                 intent.putExtra("id", content.getId());
                 intent.putExtra("pw", content.getPw());
                 intent.putExtra("memo", content.getMemo());
                 intent.putExtra("label", label);
-                intent.putExtra("editable", true);
                 v.getContext().startActivity(intent);
             });
             bottomSheetView.findViewById(R.id.main_option_trash).setOnClickListener(v1 -> {

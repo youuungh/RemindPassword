@@ -22,7 +22,7 @@
             android:background="@color/white"
             app:title="로그인"
             app:titleCentered="true"
-            app:titleTextColor="#49454f"
+            app:titleTextColor="@color/customTextColor"
             app:navigationIcon="@drawable/ic_arrow_left"/>
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -86,7 +86,7 @@ public class SignUpActivity extends AppCompatActivity {
         progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
-    public void clearFocus() {
+    private void clearFocus() {
         edt_email.clearFocus();
         edt_password.clearFocus();
         edt_passCheck.clearFocus();
@@ -129,9 +129,8 @@ public class SignUpActivity extends AppCompatActivity {
                 clearFocus();
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();
-                if (focusedView != null) {
+                if (focusedView != null)
                     manager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                }
                 signUpInFirebase(emailInput, passwordInput);
             });
         }
