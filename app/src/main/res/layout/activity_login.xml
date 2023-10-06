@@ -42,12 +42,11 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/login_layout_email"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:padding="0dp"
-                android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
                 android:focusableInTouchMode="true"
                 app:endIconMode="clear_text"
                 app:endIconDrawable="@drawable/ic_clear_text"
@@ -59,7 +58,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/login_email"
-                    style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
+                    style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="이메일 입력"
@@ -72,12 +71,11 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/login_layout_password"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:padding="0dp"
-                android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
                 android:focusableInTouchMode="true"
                 app:endIconMode="password_toggle"
                 app:endIconDrawable="@drawable/custom_password_toggle"
@@ -90,7 +88,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/login_password"
-                    style="@style/Widget.MaterialComponents.TextInputEditText.OutlinedBox"
+                    style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="비밀번호 입력"

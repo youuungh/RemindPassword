@@ -42,6 +42,9 @@ public class AddContentActivity extends AppCompatActivity {
         edt_pw = findViewById(R.id.edt_pw);
         edt_memo = findViewById(R.id.edt_memo);
 
+        edt_title.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+
         edt_title.setText(getIntent().getStringExtra("title"));
         edt_id.setText(getIntent().getStringExtra("id"));
         edt_pw.setText(getIntent().getStringExtra("pw"));

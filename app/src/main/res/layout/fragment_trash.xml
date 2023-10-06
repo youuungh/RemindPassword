@@ -2,7 +2,6 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -13,14 +12,14 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:paddingBottom="5dp"
-        android:nestedScrollingEnabled="true"/>
+        android:clipToPadding="false"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/trash_fab_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="12dp"
         android:contentDescription="@string/top"
         android:src="@drawable/ic_arrow_up"
         android:visibility="invisible"

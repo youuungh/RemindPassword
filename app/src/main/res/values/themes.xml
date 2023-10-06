@@ -1,33 +1,24 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
     <style name="BaseTheme" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="27">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
-        <!-- Customize your theme here. -->
     </style>
 
     <style name="MainTheme" parent="Theme.Material3.Light.NoActionBar">
-        <!-- Primary brand color. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorSurface">@color/white</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:navigationBarColor">?attr/colorPrimary</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="27">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
-        <item name="colorSurface">@color/white</item>
-        <!-- Customize your theme here. -->
-        <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/md_blue_grey_50</item>
     </style>
 
     <style name="ContentTheme" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/customTextColor</item>
         <item name="android:statusBarColor">@color/white</item>
-        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="27">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
@@ -70,5 +61,4 @@
     <style name="BottomSheetStyle" parent="Widget.Material3.BottomSheet.Modal">
         <item name="android:background">@android:color/transparent</item>
     </style>
-    
 </resources>

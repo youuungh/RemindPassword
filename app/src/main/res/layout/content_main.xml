@@ -2,9 +2,9 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/main_layout_appbar"
@@ -25,7 +25,7 @@
             app:navigationIconTint="@color/customTextColor"
             app:forceDefaultNavigationOnClickListener="false"
             app:contentInsetStartWithNavigation="70dp"
-            app:layout_scrollFlags="exitUntilCollapsed"/>
+            app:layout_scrollFlags="enterAlwaysCollapsed"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.search.SearchView
