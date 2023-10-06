@@ -65,5 +65,4 @@
             android:text="비었습니다"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
     </RelativeLayout>
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

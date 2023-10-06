@@ -182,9 +182,8 @@
                     android:indeterminateTint="@color/white"
                     android:progressDrawable="@drawable/custom_progressbar"
                     android:layout_marginEnd="15dp"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_alignParentEnd="true"/>
             </RelativeLayout>
         </LinearLayout>
     </FrameLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
