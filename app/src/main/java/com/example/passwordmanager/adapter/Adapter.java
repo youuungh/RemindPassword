@@ -77,7 +77,7 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
             item_title.setText(content.getTitle());
             bottomSheetView.findViewById(R.id.main_option_edit).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
-                Intent intent = new Intent(v.getContext(), EditContentActivity.class);
+                Intent intent = new Intent(v.getContext(), AddContentActivity.class);
                 intent.putExtra("title", content.getTitle());
                 intent.putExtra("id", content.getId());
                 intent.putExtra("pw", content.getPw());
