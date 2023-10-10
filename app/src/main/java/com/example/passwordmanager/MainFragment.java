@@ -24,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.example.passwordmanager.adapter.Adapter;
 import com.example.passwordmanager.model.Content;
@@ -80,18 +81,22 @@ public class MainFragment extends Fragment {
         main_fab_write = view.findViewById(R.id.main_fab_write);
         main_fab_write.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContentActivity.class)));
         main_fab_top = view.findViewById(R.id.main_fab_top);
-        main_fab_top.setOnClickListener(v -> recyclerView.smoothScrollToPosition(0));
+        main_fab_top.setOnClickListener(v -> {
+            recyclerView.scrollToPosition(0);
+            main_fab_top.hide();
+        });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            final Handler handler = new Handler();
+            final Runnable runnable = () -> main_fab_top.hide();
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                Handler handler = new Handler();
-                Runnable runnable = () -> main_fab_top.hide();
-
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     new Handler().postDelayed(() -> main_fab_write.show(), 500);
-                    handler.removeCallbacks(runnable);
                     handler.postDelayed(runnable, 3000);
+                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    if (main_fab_top.isShown())
+                        main_fab_top.hide();
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -101,8 +106,10 @@ public class MainFragment extends Fragment {
                 if (dy > 0) {
                     main_fab_top.show();
                     main_fab_write.hide();
+                    handler.removeCallbacks(runnable);
                 } else if (dy < 0) {
                     main_fab_top.show();
+                    handler.removeCallbacks(runnable);
                 }
                 super.onScrolled(recyclerView, dx, dy);
             }

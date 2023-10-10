@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/main_layout_appbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="?actionBarSize"
         android:backgroundTint="@color/white">
 
         <com.google.android.material.search.SearchBar
             android:id="@+id/main_searchbar"
-            style="@style/Widget.Material3.SearchBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginVertical="8dp"
+            android:layout_marginHorizontal="16dp"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:hint="@string/search"
@@ -25,7 +25,8 @@
             app:navigationIconTint="@color/customTextColor"
             app:forceDefaultNavigationOnClickListener="false"
             app:contentInsetStartWithNavigation="70dp"
-            app:layout_scrollFlags="enterAlwaysCollapsed"/>
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:defaultMarginsEnabled="false" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.search.SearchView
@@ -34,7 +35,6 @@
         android:layout_height="match_parent"
         android:hint="@string/search"
         android:backgroundTint="@color/white"
-        app:layout_anchor="@id/main_searchbar"
         android:fitsSystemWindows="true"/>
 
     <FrameLayout
@@ -42,6 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:layout_below="@id/main_layout_appbar">
     </FrameLayout>
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

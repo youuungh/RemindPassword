@@ -123,16 +123,20 @@ public class TrashFragment extends Fragment {
         });
 
         trash_fab_top = view.findViewById(R.id.trash_fab_top);
-        trash_fab_top.setOnClickListener(v -> recyclerView.smoothScrollToPosition(0));
+        trash_fab_top.setOnClickListener(v -> {
+            recyclerView.scrollToPosition(0);
+            trash_fab_top.hide();
+        });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            final Handler handler = new Handler();
+            final Runnable runnable = () -> trash_fab_top.hide();
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                Handler handler = new Handler();
-                Runnable runnable = () -> trash_fab_top.hide();
-
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    handler.removeCallbacks(runnable);
                     handler.postDelayed(runnable, 3000);
+                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_SETTLING) {
+                    if (trash_fab_top.isShown())
+                        trash_fab_top.hide();
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -141,8 +145,10 @@ public class TrashFragment extends Fragment {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
                     trash_fab_top.show();
+                    handler.removeCallbacks(runnable);
                 } else if (dy < 0) {
                     trash_fab_top.show();
+                    handler.removeCallbacks(runnable);
                 }
                 super.onScrolled(recyclerView, dx, dy);
             }

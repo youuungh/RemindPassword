@@ -74,7 +74,9 @@ public class LoginActivity extends AppCompatActivity {
                     clearFocus();
                     if(task.isSuccessful()) {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
-                            startActivity(new Intent(this, MainActivity.class));
+                            Intent intent = new Intent(this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                             finish();
                         } else {
                             loginChangeInProgress(false);

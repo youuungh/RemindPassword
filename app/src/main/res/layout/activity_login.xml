@@ -65,7 +65,7 @@
                     android:fontFamily="@font/dm_sans"
                     android:inputType="textEmailAddress"
                     android:longClickable="false"
-                    android:textColorHint="#ADA4A5"
+                    android:textColorHint="?android:textColorHint"
                     android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -95,7 +95,7 @@
                     android:fontFamily="@font/dm_sans"
                     android:inputType="textPassword"
                     android:longClickable="true"
-                    android:textColorHint="#ADA4A5"
+                    android:textColorHint="?android:textColorHint"
                     android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
             </com.google.android.material.textfield.TextInputLayout>
 
