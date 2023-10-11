@@ -34,8 +34,8 @@ public class TrashFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
     FirestoreRecyclerAdapter<Content, TrashViewHolder> adapter;
     RecyclerView recyclerView;
-    FloatingActionButton trash_fab_top;
     RelativeLayout trash_emptyView, trash_loadingView;
+    FloatingActionButton trash_fab_top;
     boolean isSwitch = false;
 
     @Override
@@ -122,10 +122,12 @@ public class TrashFragment extends Fragment {
             return false;
         });
 
-        trash_fab_top = view.findViewById(R.id.trash_fab_top);
+        trash_fab_top = ((MainActivity)getActivity()).fab_top;
         trash_fab_top.setOnClickListener(v -> {
             recyclerView.scrollToPosition(0);
-            trash_fab_top.hide();
+            ((MainActivity)getActivity()).appBarLayout.setExpanded(true);
+            if (recyclerView.getVerticalScrollbarPosition() == 0)
+                trash_fab_top.hide();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler();
@@ -134,9 +136,6 @@ public class TrashFragment extends Fragment {
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     handler.postDelayed(runnable, 3000);
-                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    if (trash_fab_top.isShown())
-                        trash_fab_top.hide();
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -149,6 +148,8 @@ public class TrashFragment extends Fragment {
                 } else if (dy < 0) {
                     trash_fab_top.show();
                     handler.removeCallbacks(runnable);
+                    if (!recyclerView.canScrollVertically(-1))
+                        trash_fab_top.hide();
                 }
                 super.onScrolled(recyclerView, dx, dy);
             }

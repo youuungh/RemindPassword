@@ -1,7 +1,6 @@
 package com.example.passwordmanager;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowCompat;
@@ -9,23 +8,30 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
+import android.app.SharedElementCallback;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.transition.AutoTransition;
+import android.transition.ChangeBounds;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowInsets;
-import android.view.WindowManager;
+import android.view.Window;
 import android.widget.TextView;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.search.SearchView;
+import com.google.android.material.transition.MaterialElevationScale;
+import com.google.android.material.transition.platform.Hold;
+import com.google.android.material.transition.platform.MaterialContainerTransform;
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -33,11 +39,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseAuth fAuth;
     FirebaseUser fUser;
     DrawerLayout drawerLayout;
+    AppBarLayout appBarLayout;
     NavigationView main_nav;
     MaterialButton button;
     SearchBar searchBar;
     SearchView searchView;
     TextView tv_userEmail, main_count, trash_count;
+    FloatingActionButton fab_write, fab_top;
 
     @Override
     protected void onResume() {
@@ -59,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fUser = fAuth.getCurrentUser();
 
         drawerLayout = findViewById(R.id.layout_drawer);
+        appBarLayout = findViewById(R.id.main_layout_appbar);
         searchBar = findViewById(R.id.main_searchbar);
         searchBar.setNavigationOnClickListener(v -> drawerLayout.open());
         searchView = findViewById(R.id.main_searchView);
@@ -78,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (fUser != null) {
             tv_userEmail.setText(fUser.getEmail());
         }
+
+        fab_top = findViewById(R.id.main_fab_top);
+        fab_write = findViewById(R.id.main_fab_write);
 
         button = findViewById(R.id.nav_button);
         button.setOnClickListener(v -> {
@@ -106,8 +118,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.nav_main) {
             showFragments(new MainFragment());
+            fab_write.show();
         } else if (id == R.id.nav_trash) {
             showFragments(new TrashFragment());
+            fab_write.hide();
         } else if (id == R.id.nav_setting) {
             //startActivity(new Intent(MainActivity.this, SettingActivity.class));
         }

@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.view.MenuHost;
 import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.transition.Explode;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -22,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -29,6 +32,7 @@ import android.widget.Toast;
 import com.example.passwordmanager.adapter.Adapter;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchBar;
 import com.google.firebase.firestore.Query;
@@ -37,14 +41,16 @@ public class MainFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
     RecyclerView recyclerView;
     Adapter adapter;
-    FloatingActionButton main_fab_write, main_fab_top;
     RelativeLayout main_emptyView, main_loadingView;
+    FloatingActionButton main_fab_write, main_fab_top;
     boolean isSwitch = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
+        getActivity().getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
+        getActivity().getWindow().setExitTransition(new Explode());
 
         main_emptyView = view.findViewById(R.id.main_view_empty);
         main_loadingView = view.findViewById(R.id.main_view_loading);
@@ -78,12 +84,16 @@ public class MainFragment extends Fragment {
             onChangeMainMenuItem();
         }
 
-        main_fab_write = view.findViewById(R.id.main_fab_write);
-        main_fab_write.setOnClickListener(v -> startActivity(new Intent(getActivity(), AddContentActivity.class)));
-        main_fab_top = view.findViewById(R.id.main_fab_top);
+        main_fab_write = ((MainActivity)getActivity()).fab_write;
+        main_fab_top = ((MainActivity)getActivity()).fab_top;
+        main_fab_write.setOnClickListener(v -> {
+            startActivity(new Intent(getActivity(), AddContentActivity.class));
+        });
         main_fab_top.setOnClickListener(v -> {
             recyclerView.scrollToPosition(0);
-            main_fab_top.hide();
+            ((MainActivity)getActivity()).appBarLayout.setExpanded(true);
+            if (recyclerView.getVerticalScrollbarPosition() == 0)
+                main_fab_top.hide();
         });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -94,9 +104,6 @@ public class MainFragment extends Fragment {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                     new Handler().postDelayed(() -> main_fab_write.show(), 500);
                     handler.postDelayed(runnable, 3000);
-                } else if (!recyclerView.canScrollVertically(-1) && newState == RecyclerView.SCROLL_STATE_SETTLING) {
-                    if (main_fab_top.isShown())
-                        main_fab_top.hide();
                 }
                 super.onScrollStateChanged(recyclerView, newState);
             }
@@ -110,6 +117,8 @@ public class MainFragment extends Fragment {
                 } else if (dy < 0) {
                     main_fab_top.show();
                     handler.removeCallbacks(runnable);
+                    if (!recyclerView.canScrollVertically(-1))
+                        main_fab_top.hide();
                 }
                 super.onScrolled(recyclerView, dx, dy);
             }
