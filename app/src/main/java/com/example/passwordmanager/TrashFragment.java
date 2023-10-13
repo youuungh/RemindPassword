@@ -232,7 +232,6 @@ public class TrashFragment extends Fragment {
         options = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(query, Content.class)
                 .build();
-
         adapter = new FirestoreRecyclerAdapter<Content, TrashViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull TrashViewHolder holder, int position, @NonNull Content trash) {

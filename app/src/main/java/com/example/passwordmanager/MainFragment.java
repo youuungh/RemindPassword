@@ -6,42 +6,47 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.view.MenuHost;
-import androidx.core.view.MenuProvider;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
-import android.transition.Explode;
-import android.view.ActionMode;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import com.example.passwordmanager.adapter.Adapter;
 import com.example.passwordmanager.model.Content;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchBar;
+import com.google.android.material.search.SearchView;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
-    RecyclerView recyclerView;
+    Query query, search_query;
+    RecyclerView recycler_content, recycler_search;
+    SearchBar search_bar;
+    SearchView main_search_view;
     Adapter adapter;
-    RelativeLayout main_emptyView, main_loadingView;
+    RelativeLayout main_empty_view, main_loading_view;
     FloatingActionButton main_fab_write, main_fab_top;
     boolean isSwitch = false;
 
@@ -49,30 +54,87 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
-        getActivity().getWindow().requestFeature(Window.FEATURE_ACTIVITY_TRANSITIONS);
-        getActivity().getWindow().setExitTransition(new Explode());
 
-        main_emptyView = view.findViewById(R.id.main_view_empty);
-        main_loadingView = view.findViewById(R.id.main_view_loading);
+        main_empty_view = view.findViewById(R.id.main_view_empty);
+        main_loading_view = view.findViewById(R.id.main_view_loading);
 
-        recyclerView = view.findViewById(R.id.recycler_contents);
-        recyclerView.setHasFixedSize(true);
+        recycler_content = view.findViewById(R.id.recycler_contents);
+        recycler_content.setHasFixedSize(true);
 
-        ((MainActivity)getActivity()).searchBar.getMenu().clear();
-        ((MainActivity)getActivity()).searchBar.inflateMenu(R.menu.menu_searchbar);
-        ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
+        recycler_search = getActivity().findViewById(R.id.recycler_search);
+        recycler_search.setHasFixedSize(true);
+        recycler_search.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        search_bar = ((MainActivity)getActivity()).searchBar;
+        search_bar.getMenu().clear();
+        search_bar.inflateMenu(R.menu.menu_searchbar);
+        search_bar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
                 if (!isSwitch) {
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recycler_content.setLayoutManager(new LinearLayoutManager(getActivity()));
                     item.setIcon(R.drawable.ic_column_grid);
                 } else {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    recycler_content.setLayoutManager(new GridLayoutManager(getActivity(), 2));
                     item.setIcon(R.drawable.ic_column_linear);
                 }
                 isSwitch = !isSwitch;
             }
             return false;
+        });
+
+        main_search_view = ((MainActivity)getActivity()).searchView;
+        main_search_view.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().isEmpty()) {
+                    search_query = Utils.getContentReference();
+                } else {
+                    search_query = Utils.getContentReference()
+                            .orderBy("title")
+                            .startAt(s.toString().trim())
+                            .endAt(s.toString().trim() + "\uf8ff");
+                    options = new FirestoreRecyclerOptions.Builder<Content>()
+                            .setQuery(search_query, Content.class)
+                            .build();
+                    FirestoreRecyclerAdapter<Content, SearchViewHolder> search_adapter = new FirestoreRecyclerAdapter<Content, SearchViewHolder>(options) {
+                        @Override
+                        protected void onBindViewHolder(@NonNull SearchViewHolder holder, int position, @NonNull Content titles) {
+                            String label = getSnapshots().getSnapshot(position).getId();
+                            holder.search_title.setText(titles.getTitle());
+
+                            holder.itemView.setOnClickListener(v -> {
+                                Intent intent = new Intent(view.getContext(), EditContentActivity.class);
+                                intent.putExtra("title", titles.getTitle());
+                                intent.putExtra("id", titles.getId());
+                                intent.putExtra("pw", titles.getPw());
+                                intent.putExtra("memo", titles.getMemo());
+                                intent.putExtra("label", label);
+                                view.getContext().startActivity(intent);
+                            });
+                        }
+
+                        @NonNull
+                        @Override
+                        public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_view_layout, parent, false);
+                            return new SearchViewHolder(v);
+                        }
+                    };
+                    recycler_search.setAdapter(search_adapter);
+                    search_adapter.startListening();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
         });
 
         if (savedInstanceState == null) {
@@ -90,13 +152,13 @@ public class MainFragment extends Fragment {
             startActivity(new Intent(getActivity(), AddContentActivity.class));
         });
         main_fab_top.setOnClickListener(v -> {
-            recyclerView.scrollToPosition(0);
+            recycler_content.scrollToPosition(0);
             ((MainActivity)getActivity()).appBarLayout.setExpanded(true);
-            if (recyclerView.getVerticalScrollbarPosition() == 0)
+            if (recycler_content.getVerticalScrollbarPosition() == 0)
                 main_fab_top.hide();
         });
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recycler_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler();
             final Runnable runnable = () -> main_fab_top.hide();
             @Override
@@ -127,16 +189,16 @@ public class MainFragment extends Fragment {
     }
 
     private void showEmptyView(boolean flag) {
-        main_emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
+        main_empty_view.setVisibility(flag ? View.VISIBLE : View.GONE);
     }
 
     private void onChangeMainMenuItem() {
         if (isSwitch) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+            recycler_content.setLayoutManager(new LinearLayoutManager(getActivity()));
+            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
         } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-            ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+            recycler_content.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
         }
     }
 
@@ -149,17 +211,16 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {
-            main_loadingView.setVisibility(View.GONE);
+            main_loading_view.setVisibility(View.GONE);
             showEmptyView(options.getSnapshots().isEmpty());
         });
-
         options = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(query, Content.class)
                 .build();
-        adapter = new Adapter(options, this);
-        recyclerView.setAdapter(adapter);
+        adapter = new Adapter(options, getContext());
+        recycler_content.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
@@ -193,5 +254,13 @@ public class MainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
+    }
+
+    public static class SearchViewHolder extends RecyclerView.ViewHolder {
+        TextView search_title;
+        public SearchViewHolder(@NonNull View itemView) {
+            super(itemView);
+            search_title = itemView.findViewById(R.id.search_title);
+        }
     }
 }

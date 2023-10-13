@@ -33,13 +33,20 @@
 
     <com.google.android.material.search.SearchView
         android:id="@+id/main_searchView"
+        android:theme="@style/CustomSearchView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:hint="@string/search"
         android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-        android:backgroundTint="@color/white"
-        app:closeIcon="@drawable/ic_close"
-        android:fitsSystemWindows="true"/>
+        android:fitsSystemWindows="true">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="10dp"
+            android:clipToPadding="true"/>
+    </com.google.android.material.search.SearchView>
 
     <FrameLayout
         android:id="@+id/layout_fragment"

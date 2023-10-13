@@ -30,6 +30,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginVertical="10dp"
                     android:textColor="@color/customTextColor"
                     android:background="@drawable/rounded_sign_out_button"
                     app:icon="@drawable/ic_dot_horizon_bold"
@@ -45,6 +46,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toStartOf="@id/button_options"
                     android:layout_marginEnd="10dp"
+                    android:layout_marginVertical="10dp"
                     android:textColor="@color/customTextColor"
                     android:background="@drawable/rounded_edit_button"
                     app:icon="@drawable/ic_edit"
@@ -60,6 +62,7 @@
                     android:layout_width="30dp"
                     android:layout_height="48dp"
                     android:layout_alignParentEnd="true"
+                    android:layout_marginVertical="10dp"
                     android:layout_marginEnd="30dp"
                     android:indeterminateTint="@color/white"
                     android:progressDrawable="@drawable/custom_progressbar"
@@ -102,17 +105,20 @@
                     app:boxStrokeWidthFocused="0dp"
                     app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
 
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/tv_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="24dp"
+                        android:paddingBottom="24dp"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp"
                         android:backgroundTint="@color/md_grey_200"
                         android:fontFamily="@font/dm_sans"
                         android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                         android:focusable="false"
                         android:longClickable="false"
                         android:enabled="false"
+                        android:text="제목"
                         android:textColor="@color/customTextColor"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -133,7 +139,7 @@
                         app:boxStrokeWidthFocused="0dp"
                         app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
 
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/tv_id"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -168,7 +174,7 @@
                         app:endIconMode="password_toggle"
                         app:endIconDrawable="@drawable/custom_password_toggle"
                         app:endIconCheckable="true">
-                        <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                        <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/tv_pw"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -210,7 +216,7 @@
                 app:boxStrokeWidthFocused="0dp"
                 app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
 
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tv_memo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

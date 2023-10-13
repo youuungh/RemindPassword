@@ -14,12 +14,13 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 public class EditContentActivity extends AppCompatActivity {
     MaterialToolbar toolbar;
-    MaterialAutoCompleteTextView tv_title, tv_id, tv_pw, tv_memo;
+    TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
     MaterialButton button_edit, button_options;
     ProgressBar progressBar;
     String label;
@@ -91,7 +92,10 @@ public class EditContentActivity extends AppCompatActivity {
                     toPath.set(documentSnapshot.getData())
                             .addOnSuccessListener(unused -> fromPath.delete()
                                     .addOnSuccessListener(unused1 -> finish())
-                                    .addOnFailureListener(e -> Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요")));
+                                    .addOnFailureListener(e -> {
+                                        Utils.showSnack(findViewById(R.id.edit_screen), "오류, 다시 시도하세요");
+                                        editChangeInProgress(false);
+                                    }));
                 }
             }
         });

@@ -1,6 +1,7 @@
 package com.example.passwordmanager.adapter;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
@@ -34,9 +35,9 @@ import java.util.List;
 import java.util.Random;
 
 public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolder> {
-    MainFragment context;
+    Context context;
 
-    public Adapter(@NonNull FirestoreRecyclerOptions<Content> options, MainFragment context) {
+    public Adapter(@NonNull FirestoreRecyclerOptions<Content> options, Context context) {
         super(options);
         this.context = context;
     }
@@ -104,7 +105,7 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
                     toPath.set(documentSnapshot.getData())
                             .addOnSuccessListener(unused -> {
                                 fromPath.delete();
-                                ((MainActivity)context.getContext()).updateCounter();
+                                ((MainActivity)context).updateCounter();
                             });
                 }
             }
