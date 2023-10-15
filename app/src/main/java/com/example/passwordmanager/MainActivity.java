@@ -149,6 +149,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.close();
+        } else if (searchView.isShowing()) {
+            searchView.hide();
         } else {
             super.onBackPressed();
         }

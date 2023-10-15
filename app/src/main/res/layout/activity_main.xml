@@ -26,7 +26,7 @@
         app:itemHorizontalPadding="30dp"
         app:itemVerticalPadding="20dp"
         app:itemIconPadding="30dp"
-        app:itemTextColor="#49454f"
+        app:itemTextColor="@color/customTextColor"
         app:itemTextAppearance="@style/TextAppearance.Material3.TitleMedium"
         app:itemShapeFillColor="@drawable/menu_ripple">
 
