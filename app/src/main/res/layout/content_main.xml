@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -31,23 +32,6 @@
             app:defaultMarginsEnabled="false" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.search.SearchView
-        android:id="@+id/main_searchView"
-        android:theme="@style/CustomSearchView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:hint="@string/search"
-        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-        android:fitsSystemWindows="true">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp"
-            android:clipToPadding="true"/>
-    </com.google.android.material.search.SearchView>
-
     <FrameLayout
         android:id="@+id/layout_fragment"
         android:layout_width="match_parent"
@@ -69,7 +53,7 @@
         app:tint="@null"
         app:backgroundTint="@color/md_blue_grey_50"
         app:rippleColor="?attr/colorControlHighlight"
-        app:elevation="5dp"
+        app:elevation="6dp"
         app:pressedTranslationZ="1dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

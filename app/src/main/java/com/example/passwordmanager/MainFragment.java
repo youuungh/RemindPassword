@@ -41,11 +41,10 @@ import java.util.List;
 
 public class MainFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
-    Query query, search_query;
-    RecyclerView recycler_content, recycler_search;
-    SearchBar search_bar;
-    SearchView main_search_view;
     Adapter adapter;
+    Query query;
+    RecyclerView recycler_content;
+    SearchBar search_bar;
     RelativeLayout main_empty_view, main_loading_view;
     FloatingActionButton main_fab_write, main_fab_top;
     boolean isSwitch = false;
@@ -61,10 +60,6 @@ public class MainFragment extends Fragment {
         recycler_content = view.findViewById(R.id.recycler_contents);
         recycler_content.setHasFixedSize(true);
 
-        recycler_search = getActivity().findViewById(R.id.recycler_search);
-        recycler_search.setHasFixedSize(true);
-        recycler_search.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         search_bar = ((MainActivity)getActivity()).searchBar;
         search_bar.getMenu().clear();
         search_bar.inflateMenu(R.menu.menu_searchbar);
@@ -72,69 +67,15 @@ public class MainFragment extends Fragment {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
                 if (!isSwitch) {
-                    recycler_content.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recycler_content.setLayoutManager(new LinearLayoutManager(this.getContext()));
                     item.setIcon(R.drawable.ic_column_grid);
                 } else {
-                    recycler_content.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    recycler_content.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
                     item.setIcon(R.drawable.ic_column_linear);
                 }
                 isSwitch = !isSwitch;
             }
             return false;
-        });
-
-        main_search_view = ((MainActivity)getActivity()).searchView;
-        main_search_view.getEditText().addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.toString().isEmpty()) {
-                    search_query = Utils.getContentReference();
-                } else {
-                    search_query = Utils.getContentReference()
-                            .orderBy("title")
-                            .startAt(s.toString().trim())
-                            .endAt(s.toString().trim() + "\uf8ff");
-                    options = new FirestoreRecyclerOptions.Builder<Content>()
-                            .setQuery(search_query, Content.class)
-                            .build();
-                    FirestoreRecyclerAdapter<Content, SearchViewHolder> search_adapter = new FirestoreRecyclerAdapter<Content, SearchViewHolder>(options) {
-                        @Override
-                        protected void onBindViewHolder(@NonNull SearchViewHolder holder, int position, @NonNull Content titles) {
-                            String label = getSnapshots().getSnapshot(position).getId();
-                            holder.search_title.setText(titles.getTitle());
-
-                            holder.itemView.setOnClickListener(v -> {
-                                Intent intent = new Intent(view.getContext(), EditContentActivity.class);
-                                intent.putExtra("title", titles.getTitle());
-                                intent.putExtra("id", titles.getId());
-                                intent.putExtra("pw", titles.getPw());
-                                intent.putExtra("memo", titles.getMemo());
-                                intent.putExtra("label", label);
-                                view.getContext().startActivity(intent);
-                            });
-                        }
-
-                        @NonNull
-                        @Override
-                        public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                            View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_view_layout, parent, false);
-                            return new SearchViewHolder(v);
-                        }
-                    };
-                    recycler_search.setAdapter(search_adapter);
-                    search_adapter.startListening();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
         });
 
         if (savedInstanceState == null) {
@@ -194,10 +135,10 @@ public class MainFragment extends Fragment {
 
     private void onChangeMainMenuItem() {
         if (isSwitch) {
-            recycler_content.setLayoutManager(new LinearLayoutManager(getActivity()));
+            recycler_content.setLayoutManager(new LinearLayoutManager(this.getContext()));
             search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
         } else {
-            recycler_content.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+            recycler_content.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
             search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
         }
     }
@@ -254,13 +195,5 @@ public class MainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         adapter.notifyDataSetChanged();
-    }
-
-    public static class SearchViewHolder extends RecyclerView.ViewHolder {
-        TextView search_title;
-        public SearchViewHolder(@NonNull View itemView) {
-            super(itemView);
-            search_title = itemView.findViewById(R.id.search_title);
-        }
     }
 }

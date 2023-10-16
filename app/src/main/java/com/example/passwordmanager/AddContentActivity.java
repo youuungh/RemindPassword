@@ -68,6 +68,7 @@ public class AddContentActivity extends AppCompatActivity {
             clearFocus();
 
             String title = edt_title.getText().toString();
+            String search = title.toLowerCase();
             String id = edt_id.getText().toString();
             String pw = edt_pw.getText().toString();
             String memo = edt_memo.getText().toString();
@@ -77,7 +78,7 @@ public class AddContentActivity extends AppCompatActivity {
                 Utils.showSnack(findViewById(R.id.add_screen), "제목을 입력하세요");
                 return;
             }
-            Content content = new Content(title, id, pw, memo, timestamp);
+            Content content = new Content(title, search, id, pw, memo, timestamp);
             saveToFirebase(content);
         });
     }

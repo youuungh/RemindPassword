@@ -11,29 +11,44 @@
         android:id="@+id/cv_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/md_blue_grey_50"
+        android:layout_margin="6dp"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="0dp"
-        app:strokeColor="@color/md_blue_grey_50"
-        app:cardUseCompatPadding="true">
+        app:cardElevation="3dp"
+        app:strokeWidth="0dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
-            android:padding="3dp">
+            android:padding="6dp">
 
             <TextView
                 android:id="@+id/search_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="10dp"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
                 android:text="제목"
                 android:textColor="@color/customTextColor"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                 android:textStyle="bold"
                 android:ems="8"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/search_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/search_title"
+                android:paddingStart="8dp"
+                android:paddingEnd="6dp"
+                android:paddingBottom="3dp"
+                android:text="메일"
+                android:textColor="@color/customTextColor"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:ems="12"
                 android:maxLines="1"
                 android:ellipsize="end"/>
         </RelativeLayout>

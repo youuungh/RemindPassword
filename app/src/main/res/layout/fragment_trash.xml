@@ -18,6 +18,7 @@
         android:id="@+id/trash_view_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="?actionBarSize"
         android:gravity="center"
         android:clickable="true"
         android:focusable="true"

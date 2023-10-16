@@ -22,11 +22,6 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
     </style>
 
-    <style name="CustomSearchView" parent="Widget.Material3.SearchView">
-        <item name="colorOnSurface">@color/customTextColor</item>
-        <item name="colorOutline">@android:color/transparent</item>
-    </style>
-
     <style name="CustomAlertDialog" parent="MaterialAlertDialog.Material3">
         <item name="android:textStyle">bold</item>
         <item name="android:background">@color/md_blue_grey_50</item>

@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     NavigationView main_nav;
     MaterialButton button;
     SearchBar searchBar;
-    SearchView searchView;
     TextView tv_userEmail, main_count, trash_count;
     FloatingActionButton fab_write, fab_top;
 
@@ -70,8 +69,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         appBarLayout = findViewById(R.id.main_layout_appbar);
         searchBar = findViewById(R.id.main_searchbar);
         searchBar.setNavigationOnClickListener(v -> drawerLayout.open());
-        searchView = findViewById(R.id.main_searchView);
-        searchView.setupWithSearchBar(searchBar);
+        searchBar.setOnClickListener(v -> {
+            SearchFragment sf = new SearchFragment();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.layout_content, sf).addToBackStack(null).commit();
+        });
 
         main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);
@@ -149,8 +151,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.close();
-        } else if (searchView.isShowing()) {
-            searchView.hide();
         } else {
             super.onBackPressed();
         }

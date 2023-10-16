@@ -6,6 +6,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class Content {
     private String title;
+    private String search;
     private String id;
     private String pw;
     private String memo;
@@ -15,8 +16,9 @@ public class Content {
 
     }
 
-    public Content(String title, String id, String pw, String memo, Timestamp timestamp) {
+    public Content(String title, String search, String id, String pw, String memo, Timestamp timestamp) {
         this.title = title;
+        this.search = search;
         this.id = id;
         this.pw = pw;
         this.memo = memo;
@@ -26,6 +28,8 @@ public class Content {
     public String getTitle() {
         return title;
     }
+
+    public String getSearch() { return search; }
 
     public String getId() {
         return id;

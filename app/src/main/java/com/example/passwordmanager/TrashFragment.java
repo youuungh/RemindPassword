@@ -24,6 +24,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.search.SearchBar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
@@ -34,6 +35,7 @@ public class TrashFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
     FirestoreRecyclerAdapter<Content, TrashViewHolder> adapter;
     RecyclerView recyclerView;
+    SearchBar search_bar;
     RelativeLayout trash_emptyView, trash_loadingView;
     FloatingActionButton trash_fab_top;
     boolean isSwitch = false;
@@ -49,16 +51,17 @@ public class TrashFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_trash);
         recyclerView.setHasFixedSize(true);
 
-        ((MainActivity)getActivity()).searchBar.getMenu().clear();
-        ((MainActivity)getActivity()).searchBar.inflateMenu(R.menu.menu_options);
-        ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
+        search_bar = ((MainActivity)getActivity()).searchBar;
+        search_bar.getMenu().clear();
+        search_bar.inflateMenu(R.menu.menu_options);
+        search_bar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
                 if (!isSwitch) {
-                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
                     item.setIcon(R.drawable.ic_column_grid);
                 } else {
-                    recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                    recyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
                     item.setIcon(R.drawable.ic_column_linear);
                 }
                 isSwitch = !isSwitch;
@@ -75,7 +78,7 @@ public class TrashFragment extends Fragment {
             onChangeTrashMenuItem();
         }
 
-        ((MainActivity)getActivity()).searchBar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
+        search_bar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_bottom_sheet, getView().findViewById(R.id.tbs_container));
             bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
@@ -163,11 +166,11 @@ public class TrashFragment extends Fragment {
 
     private void onChangeTrashMenuItem() {
         if (isSwitch) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-            ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
         } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-            ((MainActivity)getActivity()).searchBar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+            recyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
+            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
         }
     }
 
