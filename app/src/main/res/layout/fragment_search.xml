@@ -6,7 +6,6 @@
     android:background="@color/white"
     android:clickable="true"
     android:focusable="true"
-    android:focusableInTouchMode="true"
     android:elevation="7dp">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -47,6 +46,23 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:paddingBottom="10dp"
-        android:clipToPadding="true"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        android:clipToPadding="false"
+        android:nestedScrollingEnabled="false" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/search_fab_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp"
+        android:contentDescription="@string/top"
+        android:src="@drawable/ic_arrow_up"
+        android:visibility="invisible"
+        app:fabCustomSize="40dp"
+        app:backgroundTint="@color/transparent_grey"
+        app:rippleColor="?attr/colorControlHighlight"
+        app:shapeAppearanceOverlay="@style/CircleFloatingActionButton"
+        app:elevation="0dp"
+        app:pressedTranslationZ="0dp"/>
 </RelativeLayout>

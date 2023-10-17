@@ -3,13 +3,11 @@ package com.example.passwordmanager.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -18,20 +16,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.passwordmanager.AddContentActivity;
 import com.example.passwordmanager.EditContentActivity;
 import com.example.passwordmanager.MainActivity;
-import com.example.passwordmanager.MainFragment;
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.Utils;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolder> {

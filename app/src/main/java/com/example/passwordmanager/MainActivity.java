@@ -17,6 +17,7 @@ import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -45,12 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     SearchBar searchBar;
     TextView tv_userEmail, main_count, trash_count;
     FloatingActionButton fab_write, fab_top;
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateCounter();
-    }
+    boolean isSelect = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportActionBar().setTitle(null);
         if (savedInstanceState == null) {
             showFragments(new MainFragment());
+
         }
 
         fAuth = FirebaseAuth.getInstance();
@@ -70,9 +67,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         searchBar = findViewById(R.id.main_searchbar);
         searchBar.setNavigationOnClickListener(v -> drawerLayout.open());
         searchBar.setOnClickListener(v -> {
-            SearchFragment sf = new SearchFragment();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.layout_content, sf).addToBackStack(null).commit();
+            SearchFragment searchFragment = new SearchFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.layout_content, searchFragment).addToBackStack(null).commit();
         });
 
         main_nav = findViewById(R.id.main_nav);
@@ -120,9 +117,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         if (id == R.id.nav_main) {
             showFragments(new MainFragment());
+            isSelect = false;
             fab_write.show();
         } else if (id == R.id.nav_trash) {
             showFragments(new TrashFragment());
+            isSelect = true;
             fab_write.hide();
         } else if (id == R.id.nav_setting) {
             //startActivity(new Intent(MainActivity.this, SettingActivity.class));
@@ -143,8 +142,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void showFragments(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.layout_fragment, fragment);
-        ft.commit();
+        ft.replace(R.id.layout_fragment, fragment).commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        updateCounter();
     }
 
     @Override

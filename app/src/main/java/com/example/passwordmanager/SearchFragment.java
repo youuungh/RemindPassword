@@ -12,26 +12,31 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.passwordmanager.adapter.SearchAdapter;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.Query;
 
 public class SearchFragment extends Fragment {
-    FirestoreRecyclerOptions<Content> options;
-    FirestoreRecyclerAdapter<Content, SearchViewHolder> search_adapter;
-    Query query;
+    FirestoreRecyclerOptions<Content> content_options, trash_options;
+    SearchAdapter search_adapter;
+    Query content_query, trash_query;
     MaterialToolbar mToolbar;
     RecyclerView recycler_search;
     SearchView searchView;
+    FloatingActionButton search_fab_top;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -45,6 +50,10 @@ public class SearchFragment extends Fragment {
             FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
             fm.remove(SearchFragment.this).commit();
         });
+
+        recycler_search = view.findViewById(R.id.recycler_search);
+        recycler_search.setHasFixedSize(true);
+        recycler_search.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
         searchView = view.findViewById(R.id.search_view);
         searchView.requestFocus();
@@ -66,71 +75,83 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        recycler_search = view.findViewById(R.id.recycler_search);
-        recycler_search.setHasFixedSize(true);
-        recycler_search.setLayoutManager(new LinearLayoutManager(getActivity()));
+        search_fab_top = view.findViewById(R.id.search_fab_top);
+        search_fab_top.setOnClickListener(v -> {
+            recycler_search.scrollToPosition(0);
+            if (recycler_search.getVerticalScrollbarPosition() == 0)
+                search_fab_top.hide();
+        });
+
+        recycler_search.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            final Handler handler = new Handler();
+            final Runnable runnable = () -> search_fab_top.hide();
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    handler.postDelayed(runnable, 2000);
+                }
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                if (dy > 0) {
+                    search_fab_top.show();
+                    handler.removeCallbacks(runnable);
+                } else if (dy < 0) {
+                    search_fab_top.show();
+                    handler.removeCallbacks(runnable);
+                    if (!recyclerView.canScrollVertically(-1))
+                        search_fab_top.hide();
+                }
+                super.onScrolled(recyclerView, dx, dy);
+            }
+        });
         return view;
     }
 
     private void searchData(String s) {
-        if (!s.isEmpty()) {
-            query = Utils.getContentReference()
-                    .orderBy("search")
-                    .startAt(s.toLowerCase().trim())
-                    .endAt(s.toLowerCase().trim() + "\uf8ff");
-            options = new FirestoreRecyclerOptions.Builder<Content>()
-                    .setQuery(query, Content.class)
-                    .build();
-            search_adapter = new FirestoreRecyclerAdapter<Content, SearchViewHolder>(options) {
-                @NonNull
-                @Override
-                public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-                    View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_view_layout, parent, false);
-                    return new SearchViewHolder(v);
-                }
-
-                @Override
-                protected void onBindViewHolder(@NonNull SearchViewHolder holder, int position, @NonNull Content titles) {
-                    String label = getSnapshots().getSnapshot(position).getId();
-                    holder.search_title.setText(titles.getTitle());
-                    holder.search_id.setText(titles.getId());
-
-                    holder.itemView.setOnClickListener(v -> {
-                        Intent intent = new Intent(v.getContext(), EditContentActivity.class);
-                        intent.putExtra("title", titles.getTitle());
-                        intent.putExtra("id", titles.getId());
-                        intent.putExtra("pw", titles.getPw());
-                        intent.putExtra("memo", titles.getMemo());
-                        intent.putExtra("label", label);
-                        v.getContext().startActivity(intent);
-                    });
-                }
-            };
-            search_adapter.startListening();
-            recycler_search.setAdapter(search_adapter);
+        if (((MainActivity)getActivity()).isSelect) {
+            if (!s.isEmpty()) {
+                trash_query = Utils.getTrashReference()
+                        .orderBy("search")
+                        .startAt(s.toLowerCase().trim())
+                        .endAt(s.toLowerCase().trim() + "\uf8ff");
+                trash_options = new FirestoreRecyclerOptions.Builder<Content>()
+                        .setQuery(trash_query, Content.class)
+                        .build();
+                search_adapter = new SearchAdapter(trash_options, this.getContext());
+                recycler_search.setAdapter(search_adapter);
+            } else {
+                trash_options.getSnapshots().clear();
+            }
         } else {
-            options.getSnapshots().clear();
+            if (!s.isEmpty()) {
+                content_query = Utils.getContentReference()
+                        .orderBy("search")
+                        .startAt(s.toLowerCase().trim())
+                        .endAt(s.toLowerCase().trim() + "\uf8ff");
+                content_options = new FirestoreRecyclerOptions.Builder<Content>()
+                        .setQuery(content_query, Content.class)
+                        .build();
+                search_adapter = new SearchAdapter(content_options, this.getContext());
+                recycler_search.setAdapter(search_adapter);
+            } else {
+                content_options.getSnapshots().clear();
+            }
         }
+        search_adapter.startListening();
     }
 
     @Override
     public void onResume() {
-        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         super.onResume();
+        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     @Override
     public void onStop() {
-        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         super.onStop();
-    }
-
-    public static class SearchViewHolder extends RecyclerView.ViewHolder {
-        TextView search_title, search_id;
-        public SearchViewHolder(@NonNull View itemView) {
-            super(itemView);
-            search_title = itemView.findViewById(R.id.search_title);
-            search_id = itemView.findViewById(R.id.search_id);
-        }
+        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 }

@@ -17,6 +17,7 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -42,7 +43,6 @@ import java.util.List;
 public class MainFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
     Adapter adapter;
-    Query query;
     RecyclerView recycler_content;
     SearchBar search_bar;
     RelativeLayout main_empty_view, main_loading_view;
@@ -152,7 +152,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {
             main_loading_view.setVisibility(View.GONE);
             showEmptyView(options.getSnapshots().isEmpty());
