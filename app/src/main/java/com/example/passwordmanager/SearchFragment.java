@@ -2,10 +2,13 @@ package com.example.passwordmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -27,6 +30,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.transition.MaterialFadeThrough;
+import com.google.android.material.transition.MaterialSharedAxis;
 import com.google.firebase.firestore.Query;
 
 public class SearchFragment extends Fragment {
@@ -37,6 +42,13 @@ public class SearchFragment extends Fragment {
     RecyclerView recycler_search;
     SearchView searchView;
     FloatingActionButton search_fab_top;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true).setDuration(getResources().getInteger(com.google.android.material.R.integer.material_motion_duration_long_1)));
+        setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false).setDuration(getResources().getInteger(com.google.android.material.R.integer.material_motion_duration_long_1)));
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setExitSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
+        getWindow().setSharedElementsUseOverlay(false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (getSupportActionBar() != null)
@@ -89,7 +91,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         fab_top = findViewById(R.id.main_fab_top);
         fab_write = findViewById(R.id.main_fab_write);
-        fab_write.setOnClickListener(v -> startActivity(new Intent(this, AddContentActivity.class)));
+        fab_write.setOnClickListener(v -> {
+            Intent intent = new Intent(this, AddContentActivity.class);
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this, fab_write, "fab").toBundle();
+            startActivity(intent, bundle);
+//            startActivity(new Intent(this, AddContentActivity.class));
+        });
 
         button = findViewById(R.id.nav_button);
         button.setOnClickListener(v -> {

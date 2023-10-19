@@ -173,6 +173,7 @@ public class MainFragment extends Fragment {
             }
         });
         adapter.startListening();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -192,6 +193,6 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        adapter.notifyDataSetChanged();
+        //adapter.notifyDataSetChanged();
     }
 }

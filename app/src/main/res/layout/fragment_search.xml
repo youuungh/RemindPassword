@@ -6,7 +6,8 @@
     android:background="@color/white"
     android:clickable="true"
     android:focusable="true"
-    android:elevation="7dp">
+    android:elevation="7dp"
+    android:transitionGroup="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/search_layout_appbar"

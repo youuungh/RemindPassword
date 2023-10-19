@@ -39,6 +39,13 @@ public class AddContentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        findViewById(android.R.id.content).setTransitionName("fab");
+        setEnterSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
+        MaterialContainerTransform transform = new MaterialContainerTransform();
+        transform.addTarget(android.R.id.content);
+        transform.setDuration(500);
+        getWindow().setSharedElementEnterTransition(transform);
+        getWindow().setSharedElementReturnTransition(transform);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
         toolbar = findViewById(R.id.content_add_toolbar);
