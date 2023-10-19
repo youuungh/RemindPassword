@@ -47,8 +47,7 @@ public class SearchFragment extends Fragment {
         mToolbar = view.findViewById(R.id.search_toolbar);
         mToolbar.setNavigationOnClickListener(v -> {
             ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            FragmentTransaction fm = getActivity().getSupportFragmentManager().beginTransaction();
-            fm.remove(SearchFragment.this).commit();
+            getActivity().getSupportFragmentManager().popBackStack();
         });
 
         recycler_search = view.findViewById(R.id.recycler_search);

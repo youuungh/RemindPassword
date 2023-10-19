@@ -1,5 +1,6 @@
 package com.example.passwordmanager;
 
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -89,9 +90,6 @@ public class MainFragment extends Fragment {
 
         main_fab_write = ((MainActivity)getActivity()).fab_write;
         main_fab_top = ((MainActivity)getActivity()).fab_top;
-        main_fab_write.setOnClickListener(v -> {
-            startActivity(new Intent(getActivity(), AddContentActivity.class));
-        });
         main_fab_top.setOnClickListener(v -> {
             recycler_content.scrollToPosition(0);
             ((MainActivity)getActivity()).appBarLayout.setExpanded(true);

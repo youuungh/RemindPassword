@@ -12,6 +12,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="27">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+        <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <style name="ContentTheme" parent="Theme.Material3.Light.NoActionBar">
@@ -20,6 +21,7 @@
         <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar" tools:targetApi="27">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+        <item name="android:windowActivityTransitions">true</item>
     </style>
 
     <style name="CustomAlertDialog" parent="MaterialAlertDialog.Material3">

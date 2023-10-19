@@ -8,6 +8,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.app.ActivityOptions;
 import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.os.Bundle;
@@ -56,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportActionBar().setTitle(null);
         if (savedInstanceState == null) {
             showFragments(new MainFragment());
-
         }
 
         fAuth = FirebaseAuth.getInstance();
@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         fab_top = findViewById(R.id.main_fab_top);
         fab_write = findViewById(R.id.main_fab_write);
+        fab_write.setOnClickListener(v -> startActivity(new Intent(this, AddContentActivity.class)));
 
         button = findViewById(R.id.nav_button);
         button.setOnClickListener(v -> {

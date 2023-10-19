@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -38,7 +37,7 @@
                     app:iconPadding="0dp"
                     app:iconGravity="textStart"
                     app:backgroundTint="@null"
-                    app:rippleColor="?attr/colorControlHighlight"/>
+                    app:rippleColor="?attr/colorControlHighlight" />
 
                 <ProgressBar
                     android:id="@+id/add_progressBar"
@@ -51,7 +50,7 @@
                     android:indeterminateTint="@color/white"
                     android:progressDrawable="@drawable/custom_progressbar"
                     android:translationZ="2dp"
-                    android:visibility="invisible"/>
+                    android:visibility="invisible" />
             </RelativeLayout>
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
@@ -99,7 +98,7 @@
                     android:backgroundTint="@android:color/transparent"
                     android:hint="제목"
                     android:fontFamily="@font/dm_sans"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
+                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
             </com.google.android.material.textfield.TextInputLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -146,7 +145,7 @@
                         android:backgroundTint="@android:color/transparent"
                         android:hint="이메일"
                         android:fontFamily="@font/dm_sans"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.divider.MaterialDivider
@@ -182,7 +181,7 @@
                         android:hint="비밀번호"
                         android:fontFamily="@font/dm_sans"
                         android:inputType="textPassword"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -223,7 +222,7 @@
                     android:backgroundTint="@android:color/transparent"
                     android:hint="메모"
                     android:fontFamily="@font/dm_sans"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
             </com.google.android.material.textfield.TextInputLayout>
         </com.google.android.material.card.MaterialCardView>
     </RelativeLayout></RelativeLayout>

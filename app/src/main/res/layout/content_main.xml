@@ -54,7 +54,7 @@
         app:backgroundTint="@color/md_blue_grey_50"
         app:rippleColor="?attr/colorControlHighlight"
         app:elevation="6dp"
-        app:pressedTranslationZ="1dp"/>
+        app:pressedTranslationZ="1dp" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/main_fab_top"
@@ -70,5 +70,5 @@
         app:rippleColor="?attr/colorControlHighlight"
         app:shapeAppearanceOverlay="@style/CircleFloatingActionButton"
         app:elevation="0dp"
-        app:pressedTranslationZ="0dp"/>
+        app:pressedTranslationZ="0dp" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

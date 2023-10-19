@@ -2,10 +2,15 @@ package com.example.passwordmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.transition.Explode;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
@@ -13,9 +18,15 @@ import android.widget.ProgressBar;
 import com.example.passwordmanager.model.Content;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.MaterialColors;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.transition.platform.MaterialArcMotion;
+import com.google.android.material.transition.platform.MaterialContainerTransform;
+import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+
+import java.time.Duration;
 
 public class AddContentActivity extends AppCompatActivity {
     DocumentReference docRef;
