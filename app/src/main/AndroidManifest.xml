@@ -31,38 +31,38 @@
         <activity
             android:name=".LoginActivity"
             android:exported="true"
-            android:theme="@style/ContentTheme"
-            android:windowSoftInputMode="adjustUnspecified" />
+            android:theme="@style/MainTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SignUpActivity"
             android:exported="true"
-            android:theme="@style/ContentTheme"
-            android:windowSoftInputMode="adjustUnspecified" />
+            android:theme="@style/MainTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ResetPasswordActivity"
             android:exported="false"
-            android:theme="@style/ContentTheme"
-            android:windowSoftInputMode="adjustUnspecified" />
+            android:theme="@style/MainTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="adjustUnspecified" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".AddContentActivity"
             android:exported="true"
-            android:theme="@style/ContentTheme"
-            android:windowSoftInputMode="adjustUnspecified" />
+            android:theme="@style/MainTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".EditContentActivity"
             android:exported="false"
-            android:theme="@style/ContentTheme"
-            android:windowSoftInputMode="adjustUnspecified" />
+            android:theme="@style/MainTheme"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SettingActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
-            android:windowSoftInputMode="adjustUnspecified">
+            android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

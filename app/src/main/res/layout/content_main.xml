@@ -52,7 +52,6 @@
         app:maxImageSize="16dp"
         app:tint="@null"
         app:backgroundTint="@color/md_blue_grey_50"
-        app:rippleColor="?attr/colorControlHighlight"
         app:elevation="6dp"
         app:pressedTranslationZ="1dp"
         android:transitionName="fab"/>

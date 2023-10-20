@@ -2,6 +2,7 @@ package com.example.passwordmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 import android.content.Intent;
@@ -39,6 +40,7 @@ public class AddContentActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         findViewById(android.R.id.content).setTransitionName("fab");
         setEnterSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
         MaterialContainerTransform transform = new MaterialContainerTransform();
@@ -59,9 +61,6 @@ public class AddContentActivity extends AppCompatActivity {
         edt_id = findViewById(R.id.edt_id);
         edt_pw = findViewById(R.id.edt_pw);
         edt_memo = findViewById(R.id.edt_memo);
-
-        edt_title.requestFocus();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 
         edt_title.setText(getIntent().getStringExtra("title"));
         edt_id.setText(getIntent().getStringExtra("id"));
@@ -99,6 +98,13 @@ public class AddContentActivity extends AppCompatActivity {
             Content content = new Content(title, search, id, pw, memo, timestamp);
             saveToFirebase(content);
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        edt_title.requestFocus();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
     @Override

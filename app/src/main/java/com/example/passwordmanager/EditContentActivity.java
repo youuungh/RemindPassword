@@ -2,6 +2,7 @@ package com.example.passwordmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.WindowCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ public class EditContentActivity extends AppCompatActivity {
     String label;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_content);
         toolbar = findViewById(R.id.content_edit_toolbar);
