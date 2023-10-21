@@ -29,7 +29,7 @@
             app:forceDefaultNavigationOnClickListener="false"
             app:contentInsetStartWithNavigation="70dp"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:defaultMarginsEnabled="false" />
+            app:defaultMarginsEnabled="false"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -54,7 +54,8 @@
         app:backgroundTint="@color/md_blue_grey_50"
         app:elevation="6dp"
         app:pressedTranslationZ="1dp"
-        android:transitionName="fab"/>
+        android:transitionName="fab"
+        app:rippleColor="?colorControlHighlight"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/main_fab_top"

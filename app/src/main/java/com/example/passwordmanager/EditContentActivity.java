@@ -6,6 +6,7 @@ import androidx.core.view.WindowCompat;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.transition.platform.MaterialElevationScale;
+import com.google.android.material.transition.platform.MaterialFade;
+import com.google.android.material.transition.platform.MaterialFadeThrough;
+import com.google.android.material.transition.platform.MaterialSharedAxis;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -25,16 +30,17 @@ public class EditContentActivity extends AppCompatActivity {
     MaterialButton button_edit, button_options;
     ProgressBar progressBar;
     String label;
+    long lastClickTime = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        getWindow().setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
+        getWindow().setAllowEnterTransitionOverlap(true);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_content);
         toolbar = findViewById(R.id.content_edit_toolbar);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(view -> finish());
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(null);
+        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         progressBar = findViewById(R.id.edit_progressBar);
         tv_title = findViewById(R.id.tv_title);

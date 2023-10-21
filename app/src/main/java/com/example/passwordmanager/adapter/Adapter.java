@@ -1,8 +1,11 @@
 package com.example.passwordmanager.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,12 +59,13 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
 
         holder.itemView.setOnClickListener(view -> {
             Intent intent = new Intent(view.getContext(), EditContentActivity.class);
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) view.getContext()).toBundle();
             intent.putExtra("title", content.getTitle());
             intent.putExtra("id", content.getId());
             intent.putExtra("pw", content.getPw());
             intent.putExtra("memo", content.getMemo());
             intent.putExtra("label", label);
-            view.getContext().startActivity(intent);
+            view.getContext().startActivity(intent, bundle);
         });
 
         holder.content_option.setOnClickListener(v -> {

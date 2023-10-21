@@ -13,6 +13,7 @@
         <item name="android:windowLightStatusBar" tools:targetApi="27">true</item>
         <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
         <item name="android:windowActivityTransitions">true</item>
+        <item name="android:splitMotionEvents">false</item>
     </style>
 
     <style name="CustomAlertDialog" parent="MaterialAlertDialog.Material3">

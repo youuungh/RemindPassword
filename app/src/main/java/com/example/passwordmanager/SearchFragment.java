@@ -47,8 +47,8 @@ public class SearchFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true).setDuration(getResources().getInteger(com.google.android.material.R.integer.material_motion_duration_long_1)));
-        setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false).setDuration(getResources().getInteger(com.google.android.material.R.integer.material_motion_duration_long_1)));
+        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true).setDuration(300));
+        setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false).setDuration(300));
     }
 
     @Override
@@ -71,7 +71,7 @@ public class SearchFragment extends Fragment {
         searchView.requestFocus();
         searchView.setOnQueryTextFocusChangeListener( (v, hasFocus) -> {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_NOT_ALWAYS);
         });
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

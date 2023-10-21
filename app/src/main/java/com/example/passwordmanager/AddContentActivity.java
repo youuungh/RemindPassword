@@ -8,6 +8,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.transition.ArcMotion;
 import android.transition.Explode;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +22,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.transition.platform.MaterialArcMotion;
 import com.google.android.material.transition.platform.MaterialContainerTransform;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
@@ -41,19 +43,21 @@ public class AddContentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        // fab transition
         findViewById(android.R.id.content).setTransitionName("fab");
         setEnterSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
         MaterialContainerTransform transform = new MaterialContainerTransform();
-        transform.addTarget(android.R.id.content);
-        transform.setDuration(500);
-        getWindow().setSharedElementEnterTransition(transform);
-        getWindow().setSharedElementReturnTransition(transform);
+        transform.addTarget(android.R.id.content).setPathMotion(new MaterialArcMotion());
+        transform.setScrimColor(Color.TRANSPARENT);
+        transform.excludeTarget(android.R.id.statusBarBackground, true);
+        transform.excludeTarget(android.R.id.navigationBarBackground, true);
+        getWindow().setSharedElementEnterTransition(transform.setDuration(500));
+        getWindow().setSharedElementReturnTransition(transform.setDuration(450));
+        //
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
         toolbar = findViewById(R.id.content_add_toolbar);
         setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(null);
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         progressBar = findViewById(R.id.add_progressBar);
@@ -68,9 +72,8 @@ public class AddContentActivity extends AppCompatActivity {
         edt_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
 
-        if(label != null && !label.isEmpty()) { isEdit = true; }
-
-        if (isEdit) {
+        if(label != null && !label.isEmpty()) {
+            isEdit = true;
             toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
             edt_title.requestFocus();
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -78,10 +81,10 @@ public class AddContentActivity extends AppCompatActivity {
 
         button_save = findViewById(R.id.button_save);
         button_save.setOnClickListener(view -> {
-            InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             View focusedView = getCurrentFocus();
             if (focusedView != null)
-                manager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+                imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
             clearFocus();
 
             String title = edt_title.getText().toString();
@@ -103,7 +106,7 @@ public class AddContentActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        edt_title.requestFocus();
+        //edt_title.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
     }
 
@@ -118,6 +121,10 @@ public class AddContentActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        View focusedView = getCurrentFocus();
+        if (focusedView != null)
+            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         if (isEdit)
             overridePendingTransition(0, R.anim.anim_fade_out);
     }
