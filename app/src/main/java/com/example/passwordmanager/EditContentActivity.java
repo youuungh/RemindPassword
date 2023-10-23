@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -30,7 +31,7 @@ public class EditContentActivity extends AppCompatActivity {
     MaterialButton button_edit, button_options;
     ProgressBar progressBar;
     String label;
-    long lastClickTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
@@ -61,13 +62,13 @@ public class EditContentActivity extends AppCompatActivity {
         button_edit = findViewById(R.id.button_edit);
         button_edit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddContentActivity.class);
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
             intent.putExtra("title", tv_title.getText().toString());
             intent.putExtra("id", tv_id.getText().toString());
             intent.putExtra("pw", tv_pw.getText().toString());
             intent.putExtra("memo", tv_memo.getText().toString());
             intent.putExtra("label", label);
-            startActivity(intent);
-            overridePendingTransition(0, R.anim.anim_fade_out);
+            startActivity(intent, bundle);
         });
 
         button_options = findViewById(R.id.button_options);

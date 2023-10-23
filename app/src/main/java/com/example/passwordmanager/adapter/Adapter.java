@@ -28,6 +28,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import org.checkerframework.checker.units.qual.A;
+
 import java.util.Random;
 
 public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolder> {
@@ -76,12 +78,13 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
             bottomSheetView.findViewById(R.id.main_option_edit).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
                 Intent intent = new Intent(v.getContext(), AddContentActivity.class);
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext()).toBundle();
                 intent.putExtra("title", content.getTitle());
                 intent.putExtra("id", content.getId());
                 intent.putExtra("pw", content.getPw());
                 intent.putExtra("memo", content.getMemo());
                 intent.putExtra("label", label);
-                v.getContext().startActivity(intent);
+                v.getContext().startActivity(intent, bundle);
             });
             bottomSheetView.findViewById(R.id.main_option_trash).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();

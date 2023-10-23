@@ -5,9 +5,11 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.transition.ArcMotion;
 import android.transition.Explode;
 import android.view.View;
@@ -26,6 +28,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.transition.platform.MaterialArcMotion;
 import com.google.android.material.transition.platform.MaterialContainerTransform;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
+import com.google.android.material.transition.platform.MaterialFade;
+import com.google.android.material.transition.platform.MaterialFadeThrough;
+import com.google.android.material.transition.platform.MaterialSharedAxis;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -49,10 +54,10 @@ public class AddContentActivity extends AppCompatActivity {
         MaterialContainerTransform transform = new MaterialContainerTransform();
         transform.addTarget(android.R.id.content).setPathMotion(new MaterialArcMotion());
         transform.setScrimColor(Color.TRANSPARENT);
-        transform.excludeTarget(android.R.id.statusBarBackground, true);
-        transform.excludeTarget(android.R.id.navigationBarBackground, true);
-        getWindow().setSharedElementEnterTransition(transform.setDuration(500));
-        getWindow().setSharedElementReturnTransition(transform.setDuration(450));
+        transform.excludeTarget(android.R.id.statusBarBackground, false);
+        transform.excludeTarget(android.R.id.navigationBarBackground, false);
+        getWindow().setSharedElementEnterTransition(transform.setDuration(400));
+        getWindow().setSharedElementReturnTransition(transform.setDuration(350));
         //
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
@@ -74,19 +79,19 @@ public class AddContentActivity extends AppCompatActivity {
 
         if(label != null && !label.isEmpty()) {
             isEdit = true;
-            toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
             edt_title.requestFocus();
+            toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
             getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        } else {
+            new Handler().postDelayed(() -> {
+                edt_title.requestFocus();
+                showSoftKeyboard();
+            }, 500);
         }
 
         button_save = findViewById(R.id.button_save);
         button_save.setOnClickListener(view -> {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            View focusedView = getCurrentFocus();
-            if (focusedView != null)
-                imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
-            clearFocus();
-
+            hideSoftKeyboard();
             String title = edt_title.getText().toString();
             String search = title.toLowerCase();
             String id = edt_id.getText().toString();
@@ -103,37 +108,26 @@ public class AddContentActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        //edt_title.requestFocus();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (isFinishing() && isEdit) {
-            overridePendingTransition(0, R.anim.anim_fade_out);
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        View focusedView = getCurrentFocus();
-        if (focusedView != null)
-            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-        if (isEdit)
-            overridePendingTransition(0, R.anim.anim_fade_out);
-    }
-
     private void clearFocus() {
         edt_title.clearFocus();
         edt_id.clearFocus();
         edt_pw.clearFocus();
         edt_memo.clearFocus();
+    }
+
+    private void showSoftKeyboard() {
+        new Handler().postDelayed(() -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        }, 50);
+    }
+
+    private void hideSoftKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        View focusedView = getCurrentFocus();
+        if (focusedView != null)
+            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        clearFocus();
     }
 
     private void addChangeInProgress(boolean inProgress) {
@@ -163,5 +157,11 @@ public class AddContentActivity extends AppCompatActivity {
                 Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        hideSoftKeyboard();
     }
 }
