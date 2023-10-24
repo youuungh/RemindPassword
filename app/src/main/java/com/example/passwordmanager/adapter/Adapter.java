@@ -111,6 +111,7 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
             }
         });
     }
+
     @Override
     public int getItemCount() {
         return getSnapshots().size();

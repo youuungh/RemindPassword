@@ -26,9 +26,9 @@ import com.google.android.material.transition.MaterialSharedAxis;
 import com.google.firebase.firestore.Query;
 
 public class SearchFragment extends Fragment {
-    FirestoreRecyclerOptions<Content> content_options, trash_options;
+    FirestoreRecyclerOptions<Content> content_options;
     SearchAdapter search_adapter;
-    Query content_query, trash_query;
+    Query content_query;
     MaterialToolbar mToolbar;
     RecyclerView recycler_search;
     SearchView searchView;
@@ -51,7 +51,8 @@ public class SearchFragment extends Fragment {
         mToolbar.setNavigationOnClickListener(v -> {
             searchView.clearFocus();
             ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            getActivity().getSupportFragmentManager().popBackStack();
+            ((MainActivity)getActivity()).fab_write.show();
+            getParentFragmentManager().popBackStack();
         });
 
         recycler_search = view.findViewById(R.id.recycler_search);
@@ -114,47 +115,31 @@ public class SearchFragment extends Fragment {
     }
 
     private void searchData(String s) {
-        if (((MainActivity)getActivity()).isSelect) {
-            if (!s.isEmpty()) {
-                trash_query = Utils.getTrashReference()
-                        .orderBy("search")
-                        .startAt(s.toLowerCase().trim())
-                        .endAt(s.toLowerCase().trim() + "\uf8ff");
-                trash_options = new FirestoreRecyclerOptions.Builder<Content>()
-                        .setQuery(trash_query, Content.class)
-                        .build();
-                search_adapter = new SearchAdapter(trash_options, this.getContext());
-                recycler_search.setAdapter(search_adapter);
-            } else {
-                trash_options.getSnapshots().clear();
-            }
+        if (!s.isEmpty()) {
+            content_query = Utils.getContentReference()
+                    .orderBy("search")
+                    .startAt(s.toLowerCase().trim())
+                    .endAt(s.toLowerCase().trim() + "\uf8ff");
+            content_options = new FirestoreRecyclerOptions.Builder<Content>()
+                    .setQuery(content_query, Content.class)
+                    .build();
+            search_adapter = new SearchAdapter(content_options, getContext());
+            recycler_search.setAdapter(search_adapter);
         } else {
-            if (!s.isEmpty()) {
-                content_query = Utils.getContentReference()
-                        .orderBy("search")
-                        .startAt(s.toLowerCase().trim())
-                        .endAt(s.toLowerCase().trim() + "\uf8ff");
-                content_options = new FirestoreRecyclerOptions.Builder<Content>()
-                        .setQuery(content_query, Content.class)
-                        .build();
-                search_adapter = new SearchAdapter(content_options, this.getContext());
-                recycler_search.setAdapter(search_adapter);
-            } else {
-                content_options.getSnapshots().clear();
-            }
+            content_options.getSnapshots().clear();
         }
         search_adapter.startListening();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 }

@@ -1,7 +1,10 @@
 package com.example.passwordmanager.adapter;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,12 +42,13 @@ public class SearchAdapter extends FirestoreRecyclerAdapter<Content, SearchAdapt
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EditContentActivity.class);
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext()).toBundle();
             intent.putExtra("title", titles.getTitle());
             intent.putExtra("id", titles.getId());
             intent.putExtra("pw", titles.getPw());
             intent.putExtra("memo", titles.getMemo());
             intent.putExtra("label", label);
-            v.getContext().startActivity(intent);
+            v.getContext().startActivity(intent, bundle);
         });
     }
 

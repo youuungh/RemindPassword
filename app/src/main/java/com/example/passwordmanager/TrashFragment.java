@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -33,9 +34,9 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 public class TrashFragment extends Fragment {
     FirestoreRecyclerOptions<Content> options;
-    FirestoreRecyclerAdapter<Content, TrashViewHolder> adapter;
+    FirestoreRecyclerAdapter<Content, TrashViewHolder> trash_adapter;
+    MaterialToolbar mToolbar;
     RecyclerView recyclerView;
-    SearchBar search_bar;
     RelativeLayout trash_emptyView, trash_loadingView;
     FloatingActionButton trash_fab_top;
     boolean isSwitch = false;
@@ -51,10 +52,10 @@ public class TrashFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recycler_trash);
         recyclerView.setHasFixedSize(true);
 
-        search_bar = ((MainActivity)getActivity()).searchBar;
-        search_bar.getMenu().clear();
-        search_bar.inflateMenu(R.menu.menu_options);
-        search_bar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
+        mToolbar = view.findViewById(R.id.trash_toolbar);
+        mToolbar.setNavigationOnClickListener(v -> ((MainActivity) getActivity()).drawerLayout.open());
+        mToolbar.inflateMenu(R.menu.menu_options);
+        mToolbar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
                 if (!isSwitch) {
@@ -78,7 +79,7 @@ public class TrashFragment extends Fragment {
             onChangeTrashMenuItem();
         }
 
-        search_bar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
+        mToolbar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_bottom_sheet, getView().findViewById(R.id.tbs_container));
             bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
@@ -128,7 +129,6 @@ public class TrashFragment extends Fragment {
         trash_fab_top = ((MainActivity)getActivity()).fab_top;
         trash_fab_top.setOnClickListener(v -> {
             recyclerView.scrollToPosition(0);
-            ((MainActivity)getActivity()).appBarLayout.setExpanded(true);
             if (recyclerView.getVerticalScrollbarPosition() == 0)
                 trash_fab_top.hide();
         });
@@ -167,10 +167,10 @@ public class TrashFragment extends Fragment {
     private void onChangeTrashMenuItem() {
         if (isSwitch) {
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+            mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
         } else {
             recyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
-            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+            mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
         }
     }
 
@@ -226,7 +226,6 @@ public class TrashFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
         Query query = Utils.getTrashReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {
             trash_loadingView.setVisibility(View.GONE);
@@ -235,7 +234,7 @@ public class TrashFragment extends Fragment {
         options = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(query, Content.class)
                 .build();
-        adapter = new FirestoreRecyclerAdapter<Content, TrashViewHolder>(options) {
+        trash_adapter = new FirestoreRecyclerAdapter<Content, TrashViewHolder>(options) {
             @Override
             protected void onBindViewHolder(@NonNull TrashViewHolder holder, int position, @NonNull Content trash) {
                 String label = getSnapshots().getSnapshot(position).getId();
@@ -286,8 +285,8 @@ public class TrashFragment extends Fragment {
                 return getSnapshots().size();
             }
         };
-        recyclerView.setAdapter(adapter);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+        recyclerView.setAdapter(trash_adapter);
+        trash_adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 showEmptyView(options.getSnapshots().isEmpty());
@@ -300,13 +299,14 @@ public class TrashFragment extends Fragment {
                 super.onItemRangeRemoved(positionStart, itemCount);
             }
         });
-        adapter.startListening();
+        trash_adapter.startListening();
+        trash_adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        adapter.startListening();
+        trash_adapter.startListening();
     }
 
     @Override
@@ -315,12 +315,6 @@ public class TrashFragment extends Fragment {
         SharedPreferences prefer = getActivity().getSharedPreferences("TRASH_MENU_STATE", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefer.edit();
         editor.putBoolean("SWITCH_DATA", isSwitch).apply();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        adapter.notifyDataSetChanged();
     }
 
     public static class TrashViewHolder extends RecyclerView.ViewHolder {

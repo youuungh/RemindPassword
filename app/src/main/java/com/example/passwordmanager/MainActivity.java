@@ -33,10 +33,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FirebaseAuth fAuth;
     FirebaseUser fUser;
     DrawerLayout drawerLayout;
-    AppBarLayout appBarLayout;
     NavigationView main_nav;
     MaterialButton button;
-    SearchBar searchBar;
     TextView tv_userEmail, main_count, trash_count;
     FloatingActionButton fab_write, fab_top;
     boolean isSelect = false;
@@ -56,15 +54,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fUser = fAuth.getCurrentUser();
 
         drawerLayout = findViewById(R.id.layout_drawer);
-        appBarLayout = findViewById(R.id.main_layout_appbar);
-        searchBar = findViewById(R.id.main_searchbar);
-        searchBar.setNavigationOnClickListener(v -> drawerLayout.open());
-        searchBar.setOnClickListener(v -> {
-            SearchFragment searchFragment = new SearchFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(R.id.layout_content, searchFragment).addToBackStack(null).commit();
-        });
-
         main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);
         main_nav.setCheckedItem(R.id.nav_main);
@@ -140,7 +129,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void showFragments(Fragment fragment) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.layout_fragment, fragment).commit();
+        ft.replace(R.id.fragment_container, fragment).commit();
     }
 
     @Override

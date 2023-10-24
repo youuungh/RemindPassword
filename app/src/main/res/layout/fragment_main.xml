@@ -2,8 +2,35 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/main_layout_appbar"
+        android:layout_width="match_parent"
+        android:layout_height="?actionBarSize"
+        android:backgroundTint="@color/white">
+
+        <com.google.android.material.search.SearchBar
+            android:id="@+id/main_searchbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:layout_marginHorizontal="16dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="2dp"
+            android:hint="@string/search"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:backgroundTint="@color/searchBarColor"
+            app:navigationIcon="@drawable/ic_menu"
+            app:navigationIconTint="@color/customTextColor"
+            app:forceDefaultNavigationOnClickListener="false"
+            app:contentInsetStartWithNavigation="70dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:defaultMarginsEnabled="false"/>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_contents"
@@ -12,13 +39,14 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:paddingBottom="10dp"
-        android:clipToPadding="false"/>
+        android:background="@color/white"
+        android:clipToPadding="false"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <RelativeLayout
         android:id="@+id/main_view_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?actionBarSize"
         android:gravity="center"
         android:clickable="true"
         android:focusable="true"
@@ -38,7 +66,6 @@
         android:id="@+id/main_view_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?actionBarSize"
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible">
