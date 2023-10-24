@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -22,6 +23,7 @@ import com.google.android.material.transition.platform.MaterialElevationScale;
 import com.google.android.material.transition.platform.MaterialFade;
 import com.google.android.material.transition.platform.MaterialFadeThrough;
 import com.google.android.material.transition.platform.MaterialSharedAxis;
+import com.google.android.material.transition.platform.SlideDistanceProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -35,8 +37,9 @@ public class EditContentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
-        getWindow().setAllowEnterTransitionOverlap(true);
+        com.google.android.material.transition.platform.MaterialFadeThrough enter = new MaterialFadeThrough();
+        enter.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.BOTTOM));
+        getWindow().setEnterTransition(enter);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_content);
         toolbar = findViewById(R.id.content_edit_toolbar);

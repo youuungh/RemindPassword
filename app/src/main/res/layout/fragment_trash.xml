@@ -10,7 +10,8 @@
         android:id="@+id/trash_layout_appbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:paddingHorizontal="22dp"
+        android:paddingStart="22dp"
+        android:paddingEnd="26dp"
         android:background="@color/white">
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -20,7 +21,7 @@
             app:navigationIcon="@drawable/ic_menu">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingHorizontal="16dp"
