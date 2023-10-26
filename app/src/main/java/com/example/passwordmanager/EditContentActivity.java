@@ -6,6 +6,7 @@ import androidx.core.view.WindowCompat;
 
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.graphics.Interpolator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -37,9 +38,8 @@ public class EditContentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        com.google.android.material.transition.platform.MaterialFadeThrough enter = new MaterialFadeThrough();
-        enter.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.BOTTOM));
-        getWindow().setEnterTransition(enter);
+        getWindow().setEnterTransition(new MaterialElevationScale(true).setDuration(200));
+        getWindow().setReturnTransition(new MaterialElevationScale(false).setDuration(300));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_content);
         toolbar = findViewById(R.id.content_edit_toolbar);

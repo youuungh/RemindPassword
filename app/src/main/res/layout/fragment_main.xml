@@ -66,6 +66,8 @@
         android:id="@+id/main_view_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:layout_marginBottom="?attr/actionBarSize"
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible">

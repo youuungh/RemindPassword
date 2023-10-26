@@ -12,6 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +25,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
+import com.google.android.material.transition.platform.MaterialElevationScale;
 import com.google.android.material.transition.platform.MaterialFade;
 import com.google.android.material.transition.platform.MaterialFadeThrough;
 import com.google.android.material.transition.platform.MaterialSharedAxis;
@@ -44,8 +46,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        setExitSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
-        getWindow().setSharedElementsUseOverlay(false);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
@@ -140,7 +140,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onResume();
         updateCounter();
     }
-
     @Override
     public void onBackPressed() {
         if(drawerLayout.isDrawerOpen(GravityCompat.START)) {

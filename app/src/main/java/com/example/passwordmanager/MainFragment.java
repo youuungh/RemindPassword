@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -54,6 +55,7 @@ public class MainFragment extends Fragment {
     SearchBar search_bar;
     RelativeLayout main_empty_view, main_loading_view;
     FloatingActionButton main_fab_write, main_fab_top;
+    Parcelable state;
     boolean isSwitch = false;
 
     @Override
@@ -117,6 +119,34 @@ public class MainFragment extends Fragment {
                 main_fab_top.hide();
         });
 
+        Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        query.get().addOnCompleteListener(task -> {
+            main_loading_view.setVisibility(View.GONE);
+            showEmptyView(options.getSnapshots().isEmpty());
+        });
+        options = new FirestoreRecyclerOptions.Builder<Content>()
+                .setQuery(query, Content.class)
+                .build();
+        adapter = new Adapter(options, getContext());
+        adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
+        recycler_content.setAdapter(adapter);
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                showEmptyView(options.getSnapshots().isEmpty());
+                recycler_content.scrollToPosition(0);
+                appBarLayout.setExpanded(true);
+                super.onItemRangeInserted(positionStart, itemCount);
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                showEmptyView(options.getSnapshots().isEmpty());
+                super.onItemRangeRemoved(positionStart, itemCount);
+            }
+        });
+        adapter.startListening();
+        adapter.notifyDataSetChanged();
+
         recycler_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler();
             final Runnable runnable = () -> main_fab_top.hide();
@@ -170,35 +200,6 @@ public class MainFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        Query query = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
-        query.get().addOnCompleteListener(task -> {
-            main_loading_view.setVisibility(View.GONE);
-            showEmptyView(options.getSnapshots().isEmpty());
-        });
-        options = new FirestoreRecyclerOptions.Builder<Content>()
-                .setQuery(query, Content.class)
-                .build();
-        adapter = new Adapter(options, getContext());
-        recycler_content.setAdapter(adapter);
-        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
-            @Override
-            public void onItemRangeInserted(int positionStart, int itemCount) {
-                showEmptyView(options.getSnapshots().isEmpty());
-                super.onItemRangeInserted(positionStart, itemCount);
-            }
-            @Override
-            public void onItemRangeRemoved(int positionStart, int itemCount) {
-                showEmptyView(options.getSnapshots().isEmpty());
-                super.onItemRangeRemoved(positionStart, itemCount);
-            }
-        });
-        adapter.startListening();
-        adapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
         adapter.startListening();
     }
 

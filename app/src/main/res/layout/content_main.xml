@@ -23,10 +23,9 @@
         app:maxImageSize="16dp"
         app:tint="@null"
         app:backgroundTint="@color/md_blue_grey_50"
+        app:rippleColor="?colorControlHighlight"
         app:elevation="6dp"
-        app:pressedTranslationZ="1dp"
-        android:transitionName="fab"
-        app:rippleColor="?colorControlHighlight"/>
+        app:pressedTranslationZ="1dp"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/main_fab_top"

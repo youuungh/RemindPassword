@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.transition.ArcMotion;
 import android.transition.Explode;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsets;
@@ -25,12 +26,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.material.transition.platform.Hold;
 import com.google.android.material.transition.platform.MaterialArcMotion;
 import com.google.android.material.transition.platform.MaterialContainerTransform;
 import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
+import com.google.android.material.transition.platform.MaterialElevationScale;
 import com.google.android.material.transition.platform.MaterialFade;
 import com.google.android.material.transition.platform.MaterialFadeThrough;
 import com.google.android.material.transition.platform.MaterialSharedAxis;
+import com.google.android.material.transition.platform.SlideDistanceProvider;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
 
@@ -48,17 +52,14 @@ public class AddContentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        // fab transition
-        findViewById(android.R.id.content).setTransitionName("fab");
-        setEnterSharedElementCallback(new MaterialContainerTransformSharedElementCallback());
-        MaterialContainerTransform transform = new MaterialContainerTransform();
-        transform.addTarget(android.R.id.content).setPathMotion(new MaterialArcMotion());
-        transform.setScrimColor(Color.TRANSPARENT);
-        transform.excludeTarget(android.R.id.statusBarBackground, false);
-        transform.excludeTarget(android.R.id.navigationBarBackground, false);
-        getWindow().setSharedElementEnterTransition(transform.setDuration(400));
-        getWindow().setSharedElementReturnTransition(transform.setDuration(350));
-        //
+        com.google.android.material.transition.platform.MaterialFadeThrough enter = new MaterialFadeThrough();
+        enter.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.BOTTOM));
+        enter.setDuration(500);
+        getWindow().setEnterTransition(enter);
+        com.google.android.material.transition.platform.MaterialFadeThrough exit = new MaterialFadeThrough();
+        exit.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.TOP));
+        exit.setDuration(650);
+        getWindow().setReturnTransition(exit);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
         toolbar = findViewById(R.id.content_add_toolbar);
@@ -81,12 +82,8 @@ public class AddContentActivity extends AppCompatActivity {
             isEdit = true;
             edt_title.requestFocus();
             toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         } else {
-            new Handler().postDelayed(() -> {
-                edt_title.requestFocus();
-                showSoftKeyboard();
-            }, 500);
+            edt_title.requestFocus();
         }
 
         button_save = findViewById(R.id.button_save);
@@ -113,13 +110,6 @@ public class AddContentActivity extends AppCompatActivity {
         edt_id.clearFocus();
         edt_pw.clearFocus();
         edt_memo.clearFocus();
-    }
-
-    private void showSoftKeyboard() {
-        new Handler().postDelayed(() -> {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
-        }, 50);
     }
 
     private void hideSoftKeyboard() {

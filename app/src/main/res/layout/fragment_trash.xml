@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:paddingHorizontal="16dp"
-                android:paddingBottom="4dp"
+                android:paddingBottom="3dp"
                 android:textSize="20sp"
                 android:text="휴지통"/>
         </com.google.android.material.appbar.MaterialToolbar>
@@ -64,6 +64,8 @@
         android:id="@+id/trash_view_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="?attr/actionBarSize"
+        android:layout_below="@id/trash_layout_appbar"
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible">

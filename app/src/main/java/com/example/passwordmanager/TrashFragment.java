@@ -206,6 +206,7 @@ public class TrashFragment extends Fragment {
         docRef.delete().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Utils.showSnack(getView().findViewById(R.id.recycler_trash), "삭제됨");
+                ((MainActivity)getActivity()).updateCounter();
             } else {
                 Utils.showSnack(getView().findViewById(R.id.recycler_trash), "오류, 다시 시도하세요");
             }
