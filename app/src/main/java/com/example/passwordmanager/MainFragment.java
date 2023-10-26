@@ -55,7 +55,6 @@ public class MainFragment extends Fragment {
     SearchBar search_bar;
     RelativeLayout main_empty_view, main_loading_view;
     FloatingActionButton main_fab_write, main_fab_top;
-    Parcelable state;
     boolean isSwitch = false;
 
     @Override
