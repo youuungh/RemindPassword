@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SimpleItemAnimator;
@@ -67,7 +68,7 @@ public class SearchFragment extends Fragment {
 
         recycler_search = view.findViewById(R.id.recycler_search);
         recycler_search.setHasFixedSize(true);
-        recycler_search.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        recycler_search.setLayoutManager(new LinearLayoutManager(getContext()));
 
         searchView = view.findViewById(R.id.search_view);
         searchView.requestFocus();
@@ -137,18 +138,20 @@ public class SearchFragment extends Fragment {
                 if (task.isSuccessful()) {
                     QuerySnapshot querySnapshot = task.getResult();
                     search_emptyView.setVisibility(querySnapshot.isEmpty() ? View.VISIBLE : View.GONE);
+                    search_adapter.notifyItemRangeChanged(0, querySnapshot.size());
                 }
             });
             content_options = new FirestoreRecyclerOptions.Builder<Content>()
                     .setQuery(content_query, Content.class)
                     .build();
-            search_adapter = new SearchAdapter(content_options, getContext());
-            search_adapter.startListening();
-            recycler_search.setAdapter(search_adapter);
         } else {
             content_options.getSnapshots().clear();
             search_emptyView.setVisibility(View.GONE);
         }
+        search_adapter = new SearchAdapter(content_options, getContext());
+        search_adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
+        recycler_search.setAdapter(search_adapter);
+        search_adapter.startListening();
     }
 
     @Override

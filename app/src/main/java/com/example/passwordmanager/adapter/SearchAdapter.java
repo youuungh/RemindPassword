@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.passwordmanager.EditContentActivity;
@@ -50,6 +51,11 @@ public class SearchAdapter extends FirestoreRecyclerAdapter<Content, SearchAdapt
             intent.putExtra("label", label);
             v.getContext().startActivity(intent, bundle);
         });
+    }
+
+    @Override
+    public int getItemCount() {
+        return getSnapshots().size();
     }
 
     public static class SearchViewHolder extends RecyclerView.ViewHolder {

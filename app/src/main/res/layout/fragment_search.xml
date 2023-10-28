@@ -50,7 +50,8 @@
         android:paddingEnd="10dp"
         android:paddingBottom="10dp"
         android:clipToPadding="false"
-        android:nestedScrollingEnabled="false" />
+        android:nestedScrollingEnabled="false"
+        android:animateLayoutChanges="false"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/search_fab_top"
