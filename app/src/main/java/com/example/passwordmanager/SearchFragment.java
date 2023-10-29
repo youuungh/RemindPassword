@@ -27,6 +27,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.transition.MaterialSharedAxis;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
@@ -138,7 +139,7 @@ public class SearchFragment extends Fragment {
                 if (task.isSuccessful()) {
                     QuerySnapshot querySnapshot = task.getResult();
                     search_emptyView.setVisibility(querySnapshot.isEmpty() ? View.VISIBLE : View.GONE);
-                    search_adapter.notifyItemRangeChanged(0, querySnapshot.size());
+                    search_adapter.notifyItemChanged(querySnapshot.size());
                 }
             });
             content_options = new FirestoreRecyclerOptions.Builder<Content>()

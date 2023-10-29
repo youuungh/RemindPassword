@@ -20,6 +20,9 @@ import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+import java.util.List;
+import java.util.Objects;
+
 public class SearchAdapter extends FirestoreRecyclerAdapter<Content, SearchAdapter.SearchViewHolder> {
     Context context;
 
