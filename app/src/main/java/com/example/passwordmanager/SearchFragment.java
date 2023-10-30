@@ -8,13 +8,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SimpleItemAnimator;
 
 import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,19 +24,14 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.transition.MaterialSharedAxis;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.protobuf.NullValue;
 
 
 public class SearchFragment extends Fragment {
-    FirestoreRecyclerOptions<Content> content_options;
+    FirestoreRecyclerOptions<Content> options;
     SearchAdapter search_adapter;
-    Query content_query;
     MaterialToolbar mToolbar;
     RecyclerView recycler_search;
     SearchView searchView;
@@ -77,10 +69,10 @@ public class SearchFragment extends Fragment {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
         });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                searchData(query);
                 return false;
             }
 
@@ -131,28 +123,25 @@ public class SearchFragment extends Fragment {
 
     private void searchData(String s) {
         if (!s.isEmpty()) {
-            content_query = Utils.getContentReference()
-                    .orderBy("search")
-                    .startAt(s.toLowerCase().trim())
-                    .endAt(s.toLowerCase().trim() + "\uf8ff");
-            content_query.get().addOnCompleteListener(task -> {
+            Query query = Utils.getContentReference()
+                    .orderBy("search");
+            options = new FirestoreRecyclerOptions.Builder<Content>()
+                    .setQuery(query, Content.class)
+                    .build();
+            query.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    QuerySnapshot querySnapshot = task.getResult();
-                    search_emptyView.setVisibility(querySnapshot.isEmpty() ? View.VISIBLE : View.GONE);
-                    search_adapter.notifyItemChanged(querySnapshot.size());
+                    search_adapter = new SearchAdapter(task.getResult().toObjects(Content.class), this);
+                    recycler_search.setAdapter(search_adapter);
+                    search_adapter.getFilter().filter(s);
                 }
             });
-            content_options = new FirestoreRecyclerOptions.Builder<Content>()
-                    .setQuery(content_query, Content.class)
-                    .build();
         } else {
-            content_options.getSnapshots().clear();
-            search_emptyView.setVisibility(View.GONE);
+            recycler_search.setAdapter(null);
         }
-        search_adapter = new SearchAdapter(content_options, getContext());
-        search_adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
-        recycler_search.setAdapter(search_adapter);
-        search_adapter.startListening();
+    }
+
+    public void showEmptyView(boolean isEmpty) {
+        search_emptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     @Override
