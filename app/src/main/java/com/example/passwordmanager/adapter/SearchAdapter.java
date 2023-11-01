@@ -24,13 +24,14 @@ import com.firebase.ui.firestore.ObservableSnapshotArray;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
     SearchFragment context;
     List<Content> searchList;
     List<Content> searchListFiltered;
 
-    public SearchAdapter(List<Content> searchList, SearchFragment context) {
+    public SearchAdapter(SearchFragment context, List<Content> searchList) {
         this.context = context;
         this.searchList = searchList;
         searchListFiltered = searchList;
@@ -83,7 +84,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
         final Content content = searchListFiltered.get(position);
-        //String label = searchListFiltered.get(position).getId();
         holder.search_id.setText(searchListFiltered.get(position).getId());
         holder.search_title.setText(searchListFiltered.get(position).getTitle());
 
@@ -94,7 +94,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             intent.putExtra("id", searchListFiltered.get(position).getId());
             intent.putExtra("pw", searchListFiltered.get(position).getPw());
             intent.putExtra("memo", searchListFiltered.get(position).getMemo());
-            //intent.putExtra("label", );
+            intent.putExtra("label", String.valueOf(content));
             v.getContext().startActivity(intent, bundle);
         });
     }

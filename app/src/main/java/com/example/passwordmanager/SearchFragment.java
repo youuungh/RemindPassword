@@ -25,8 +25,14 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.transition.MaterialSharedAxis;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SearchFragment extends Fragment {
@@ -124,13 +130,16 @@ public class SearchFragment extends Fragment {
     private void searchData(String s) {
         if (!s.isEmpty()) {
             Query query = Utils.getContentReference()
-                    .orderBy("search");
+                    .orderBy("search")
+                    .startAt(s.toLowerCase().trim())
+                    .endAt(s.toLowerCase().trim() + "\uf8ff");
             options = new FirestoreRecyclerOptions.Builder<Content>()
                     .setQuery(query, Content.class)
+                    .setLifecycleOwner(this)
                     .build();
             query.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    search_adapter = new SearchAdapter(task.getResult().toObjects(Content.class), this);
+                    search_adapter = new SearchAdapter(this, task.getResult().toObjects(Content.class));
                     recycler_search.setAdapter(search_adapter);
                     search_adapter.getFilter().filter(s);
                 }

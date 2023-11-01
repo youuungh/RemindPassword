@@ -10,18 +10,20 @@ public class Content {
     private String id;
     private String pw;
     private String memo;
+    private String docId;
     private Timestamp timestamp;
 
     public Content() {
 
     }
 
-    public Content(String title, String search, String id, String pw, String memo, Timestamp timestamp) {
+    public Content(String title, String search, String id, String pw, String memo, String docId, Timestamp timestamp) {
         this.title = title;
         this.search = search;
         this.id = id;
         this.pw = pw;
         this.memo = memo;
+        this.docId = docId;
         this.timestamp = timestamp;
     }
 
@@ -41,6 +43,10 @@ public class Content {
 
     public String getMemo() {
         return memo;
+    }
+
+    public String getDocId() {
+        return docId;
     }
 
     public Timestamp getTimestamp() {

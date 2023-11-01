@@ -1,5 +1,7 @@
 package com.example.passwordmanager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
@@ -21,6 +23,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 
 import com.example.passwordmanager.model.Content;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
@@ -37,6 +41,10 @@ import com.google.android.material.transition.platform.MaterialSharedAxis;
 import com.google.android.material.transition.platform.SlideDistanceProvider;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Duration;
 
@@ -46,7 +54,7 @@ public class AddContentActivity extends AppCompatActivity {
     TextInputEditText edt_title, edt_id, edt_pw, edt_memo;
     MaterialButton button_save;
     ProgressBar progressBar;
-    String label;
+    String label, docId;
     boolean isEdit = false;
 
     @Override
@@ -100,7 +108,7 @@ public class AddContentActivity extends AppCompatActivity {
                 Utils.showSnack(findViewById(R.id.add_screen), "제목을 입력하세요");
                 return;
             }
-            Content content = new Content(title, search, id, pw, memo, timestamp);
+            Content content = new Content(title, search, id, pw, memo, docId, timestamp);
             saveToFirebase(content);
         });
     }
