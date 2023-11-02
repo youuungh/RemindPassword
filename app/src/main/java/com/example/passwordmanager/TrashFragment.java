@@ -301,14 +301,14 @@ public class TrashFragment extends Fragment {
         trash_adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
-                showEmptyView(options.getSnapshots().isEmpty());
                 super.onItemRangeInserted(positionStart, itemCount);
+                showEmptyView(options.getSnapshots().isEmpty());
             }
 
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
-                showEmptyView(options.getSnapshots().isEmpty());
                 super.onItemRangeRemoved(positionStart, itemCount);
+                showEmptyView(options.getSnapshots().isEmpty());
             }
         });
         trash_adapter.startListening();

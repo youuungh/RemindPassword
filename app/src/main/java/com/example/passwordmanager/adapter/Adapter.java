@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.passwordmanager.AddContentActivity;
 import com.example.passwordmanager.EditContentActivity;
 import com.example.passwordmanager.MainActivity;
+import com.example.passwordmanager.MainFragment;
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.Utils;
 import com.example.passwordmanager.model.Content;
@@ -34,9 +35,9 @@ import org.checkerframework.checker.units.qual.A;
 import java.util.Random;
 
 public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolder> {
-    Context context;
+    MainFragment context;
 
-    public Adapter(@NonNull FirestoreRecyclerOptions<Content> options, Context context) {
+    public Adapter(@NonNull FirestoreRecyclerOptions<Content> options, MainFragment context) {
         super(options);
         this.context = context;
     }
@@ -106,7 +107,7 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
                     toPath.set(documentSnapshot.getData())
                             .addOnSuccessListener(unused -> {
                                 fromPath.delete();
-                                ((MainActivity)context).updateCounter();
+                                ((MainActivity) context.getActivity()).updateCounter();
                             });
                 }
             }

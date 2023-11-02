@@ -49,6 +49,10 @@ public class Content {
         return docId;
     }
 
+    public void setDocId(String docId) {
+        this.docId = docId;
+    }
+
     public Timestamp getTimestamp() {
         return timestamp;
     }

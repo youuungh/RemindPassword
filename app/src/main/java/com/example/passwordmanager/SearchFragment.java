@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,7 +37,6 @@ import java.util.List;
 
 
 public class SearchFragment extends Fragment {
-    FirestoreRecyclerOptions<Content> options;
     SearchAdapter search_adapter;
     MaterialToolbar mToolbar;
     RecyclerView recycler_search;
@@ -74,19 +74,6 @@ public class SearchFragment extends Fragment {
         searchView.setOnQueryTextFocusChangeListener( (v, hasFocus) -> {
             InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                searchData(newText);
-                return false;
-            }
         });
 
         search_emptyView = view.findViewById(R.id.search_view_empty);
@@ -127,28 +114,6 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
-    private void searchData(String s) {
-        if (!s.isEmpty()) {
-            Query query = Utils.getContentReference()
-                    .orderBy("search")
-                    .startAt(s.toLowerCase().trim())
-                    .endAt(s.toLowerCase().trim() + "\uf8ff");
-            options = new FirestoreRecyclerOptions.Builder<Content>()
-                    .setQuery(query, Content.class)
-                    .setLifecycleOwner(this)
-                    .build();
-            query.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    search_adapter = new SearchAdapter(this, task.getResult().toObjects(Content.class));
-                    recycler_search.setAdapter(search_adapter);
-                    search_adapter.getFilter().filter(s);
-                }
-            });
-        } else {
-            recycler_search.setAdapter(null);
-        }
-    }
-
     public void showEmptyView(boolean isEmpty) {
         search_emptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
@@ -163,5 +128,29 @@ public class SearchFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        Query query = Utils.getContentReference().orderBy("search");
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                search_adapter = new SearchAdapter(this, task.getResult().toObjects(Content.class));
+            }
+        });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!TextUtils.isEmpty(newText)) {
+                    recycler_search.setAdapter(search_adapter);
+                    search_adapter.getFilter().filter(newText);
+                } else {
+                    recycler_search.setAdapter(null);
+                }
+                return true;
+            }
+        });
     }
 }

@@ -37,13 +37,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         searchListFiltered = searchList;
     }
 
+    public void setData(List<Content> data) {
+        searchList.clear();
+        searchList.addAll(data);
+        notifyDataSetChanged();
+    }
+
     @Override
     public Filter getFilter() {
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
                 String pattern = constraint.toString().toLowerCase().trim();
-
                 if (pattern.isEmpty()) {
                     searchListFiltered = searchList;
                 } else {
@@ -83,7 +88,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
-        final Content content = searchListFiltered.get(position);
+        String label = searchListFiltered.get(position).getDocId();
         holder.search_id.setText(searchListFiltered.get(position).getId());
         holder.search_title.setText(searchListFiltered.get(position).getTitle());
 
@@ -94,7 +99,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             intent.putExtra("id", searchListFiltered.get(position).getId());
             intent.putExtra("pw", searchListFiltered.get(position).getPw());
             intent.putExtra("memo", searchListFiltered.get(position).getMemo());
-            intent.putExtra("label", String.valueOf(content));
+            intent.putExtra("label", label);
             v.getContext().startActivity(intent, bundle);
         });
     }

@@ -126,24 +126,24 @@ public class MainFragment extends Fragment {
         options = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(query, Content.class)
                 .build();
-        adapter = new Adapter(options, getContext());
+        adapter = new Adapter(options, this);
         adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
         recycler_content.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
                 showEmptyView(options.getSnapshots().isEmpty());
                 recycler_content.scrollToPosition(0);
                 appBarLayout.setExpanded(true);
-                super.onItemRangeInserted(positionStart, itemCount);
             }
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
-                showEmptyView(options.getSnapshots().isEmpty());
                 super.onItemRangeRemoved(positionStart, itemCount);
+                showEmptyView(options.getSnapshots().isEmpty());
+                if (options.getSnapshots().isEmpty()) appBarLayout.setExpanded(true);
             }
         });
-        adapter.startListening();
         adapter.notifyDataSetChanged();
 
         recycler_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
