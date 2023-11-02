@@ -37,12 +37,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         searchListFiltered = searchList;
     }
 
-    public void setData(List<Content> data) {
-        searchList.clear();
-        searchList.addAll(data);
-        notifyDataSetChanged();
-    }
-
     @Override
     public Filter getFilter() {
         return new Filter() {
