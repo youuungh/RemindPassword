@@ -19,8 +19,6 @@ import com.example.passwordmanager.R;
 import com.example.passwordmanager.SearchFragment;
 import com.example.passwordmanager.model.Content;
 
-import org.checkerframework.checker.units.qual.C;
-
 import java.util.ArrayList;
 import java.util.List;
 
