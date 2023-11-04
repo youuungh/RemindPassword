@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -77,6 +78,25 @@ public class SearchFragment extends Fragment {
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
         });
 
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!TextUtils.isEmpty(newText)) {
+                    recycler_search.setAdapter(search_adapter);
+                    if (search_adapter != null)
+                        search_adapter.getFilter().filter(newText);
+                } else {
+                    recycler_search.setAdapter(null);
+                }
+                return true;
+            }
+        });
+
         search_emptyView = view.findViewById(R.id.search_view_empty);
         search_fab_top = view.findViewById(R.id.search_fab_top);
         search_fab_top.setOnClickListener(v -> {
@@ -129,28 +149,11 @@ public class SearchFragment extends Fragment {
     public void onResume() {
         super.onResume();
         ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        ((MainActivity)getActivity()).fab_write.hide();
         Query query = Utils.getContentReference().orderBy("search");
-        query.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                search_adapter = new SearchAdapter(this, task.getResult().toObjects(Content.class));
-            }
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!TextUtils.isEmpty(newText)) {
-                    recycler_search.setAdapter(search_adapter);
-                    search_adapter.getFilter().filter(newText);
-                } else {
-                    recycler_search.setAdapter(null);
-                }
-                return true;
+        query.addSnapshotListener((value, error) -> {
+            if (error == null && value != null) {
+                search_adapter = new SearchAdapter(this, value.toObjects(Content.class));
             }
         });
     }

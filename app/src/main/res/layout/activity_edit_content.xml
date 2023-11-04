@@ -71,165 +71,174 @@
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <RelativeLayout
-        android:id="@+id/edit_screen"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/content_layout_appbar"
-        android:paddingStart="24dp"
-        android:paddingEnd="24dp">
-
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_1"
+        android:layout_below="@id/content_layout_appbar">
+        <RelativeLayout
+            android:id="@+id/edit_screen"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/md_grey_50"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp"
-            android:focusable="false"
-            android:clickable="false">
+            android:layout_height="match_parent"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp">
 
-            <RelativeLayout
-                android:id="@+id/layout_title"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="@color/md_grey_50"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp"
+                android:focusable="false"
+                android:clickable="false">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                    android:id="@+id/content_layout_title"
+                <RelativeLayout
+                    android:id="@+id/layout_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:boxStrokeWidth="0dp"
-                    app:boxStrokeWidthFocused="0dp"
-                    app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/tv_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="24dp"
-                        android:paddingStart="24dp"
-                        android:paddingEnd="24dp"
-                        android:backgroundTint="@color/md_grey_200"
-                        android:fontFamily="@font/dm_sans"
-                        android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-                        android:focusable="false"
-                        android:longClickable="false"
-                        android:enabled="false"
-                        android:text="제목"
-                        android:textColor="@color/customTextColor"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/content_layout_title"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                        android:id="@+id/content_layout_id"
+                        android:id="@+id/content_layout_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        app:startIconDrawable="@drawable/ic_user"
                         app:boxStrokeWidth="0dp"
                         app:boxStrokeWidthFocused="0dp"
                         app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/tv_id"
+                            android:id="@+id/tv_title"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="30dp"
-                            android:paddingBottom="16dp"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:backgroundTint="@android:color/transparent"
-                            android:hint="이메일"
+                            android:paddingBottom="24dp"
+                            android:paddingStart="24dp"
+                            android:paddingEnd="24dp"
+                            android:backgroundTint="@color/md_grey_200"
                             android:fontFamily="@font/dm_sans"
-                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                            android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                             android:focusable="false"
-                            android:longClickable="false"/>
+                            android:longClickable="false"
+                            android:enabled="false"
+                            android:text="제목"
+                            android:textColor="@color/customTextColor"
+                            android:imeOptions="flagNoExtractUi" />
                     </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.divider.MaterialDivider
-                        android:layout_width="match_parent"
-                        android:layout_height="2dp"
-                        app:dividerColor="@color/md_grey_200"/>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                        android:id="@+id/content_layout_pw"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="8dp"
-                        app:startIconDrawable="@drawable/ic_key"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="0dp"
-                        app:boxBackgroundColor="@color/md_blue_grey_50"
-                        app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall"
-                        app:endIconMode="password_toggle"
-                        app:endIconDrawable="@drawable/custom_password_toggle"
-                        app:endIconCheckable="true">
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/tv_pw"
+                        android:layout_below="@id/content_layout_title"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:id="@+id/content_layout_id"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:paddingTop="30dp"
-                            android:paddingBottom="16dp"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:backgroundTint="@android:color/transparent"
-                            android:hint="비밀번호"
-                            android:fontFamily="@font/dm_sans"
-                            android:inputType="textPassword"
-                            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                            android:focusable="false"
-                            android:longClickable="false"/>
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:padding="8dp"
+                            app:startIconDrawable="@drawable/ic_user"
+                            app:boxStrokeWidth="0dp"
+                            app:boxStrokeWidthFocused="0dp"
+                            app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
 
-                </LinearLayout>
-            </RelativeLayout>
-        </com.google.android.material.card.MaterialCardView>
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/tv_id"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingTop="30dp"
+                                android:paddingBottom="16dp"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                android:backgroundTint="@android:color/transparent"
+                                android:hint="이메일"
+                                android:fontFamily="@font/dm_sans"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                                android:focusable="false"
+                                android:longClickable="false"
+                                android:imeOptions="flagNoExtractUi" />
+                        </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/cv_2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_below="@id/cv_1"
-            android:backgroundTint="@color/md_grey_50"
-            app:cardElevation="0dp"
-            app:strokeWidth="0dp">
+                        <com.google.android.material.divider.MaterialDivider
+                            android:layout_width="match_parent"
+                            android:layout_height="2dp"
+                            app:dividerColor="@color/md_grey_200"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:id="@+id/content_layout_memo"
+                        <com.google.android.material.textfield.TextInputLayout
+                            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                            android:id="@+id/content_layout_pw"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="8dp"
+                            app:startIconDrawable="@drawable/ic_key"
+                            app:boxStrokeWidth="0dp"
+                            app:boxStrokeWidthFocused="0dp"
+                            app:boxBackgroundColor="@color/md_blue_grey_50"
+                            app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall"
+                            app:endIconMode="password_toggle"
+                            app:endIconDrawable="@drawable/custom_password_toggle"
+                            app:endIconCheckable="true">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/tv_pw"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingTop="30dp"
+                                android:paddingBottom="16dp"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                android:backgroundTint="@android:color/transparent"
+                                android:hint="비밀번호"
+                                android:fontFamily="@font/dm_sans"
+                                android:inputType="textPassword"
+                                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                                android:focusable="false"
+                                android:longClickable="false"
+                                android:imeOptions="flagNoExtractUi" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                    </LinearLayout>
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="8dp"
-                app:startIconDrawable="@drawable/ic_memo"
-                app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="0dp"
-                app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
+                android:layout_marginTop="16dp"
+                android:layout_below="@id/cv_1"
+                android:backgroundTint="@color/md_grey_50"
+                app:cardElevation="0dp"
+                app:strokeWidth="0dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/tv_memo"
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    android:id="@+id/content_layout_memo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="30dp"
-                    android:paddingBottom="16dp"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:backgroundTint="@android:color/transparent"
-                    android:hint="메모"
-                    android:text=""
-                    android:fontFamily="@font/dm_sans"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                    android:focusable="false"
-                    android:longClickable="false"/>
-            </com.google.android.material.textfield.TextInputLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </RelativeLayout></RelativeLayout>
+                    android:padding="8dp"
+                    app:startIconDrawable="@drawable/ic_memo"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="0dp"
+                    app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/tv_memo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="30dp"
+                        android:paddingBottom="16dp"
+                        android:paddingStart="16dp"
+                        android:paddingEnd="16dp"
+                        android:backgroundTint="@android:color/transparent"
+                        android:hint="메모"
+                        android:text=""
+                        android:fontFamily="@font/dm_sans"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                        android:focusable="false"
+                        android:longClickable="false"
+                        android:imeOptions="flagNoExtractUi" />
+                </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.card.MaterialCardView>
+        </RelativeLayout>
+    </ScrollView>
+    </RelativeLayout>

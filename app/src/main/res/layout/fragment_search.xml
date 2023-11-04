@@ -36,6 +36,7 @@
                 app:closeIcon="@drawable/ic_clear_text"
                 app:queryBackground="@null"
                 app:queryHint="@string/search"
+                android:imeOptions="flagNoExtractUi"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium" />
         </com.google.android.material.appbar.MaterialToolbar>
     </com.google.android.material.appbar.AppBarLayout>

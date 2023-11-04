@@ -18,23 +18,21 @@ import com.example.passwordmanager.EditContentActivity;
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.SearchFragment;
 import com.example.passwordmanager.model.Content;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.firebase.ui.firestore.ObservableSnapshotArray;
+
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
     SearchFragment context;
     List<Content> searchList;
-    List<Content> searchListFiltered;
+    List<Content> filterList;
 
     public SearchAdapter(SearchFragment context, List<Content> searchList) {
         this.context = context;
         this.searchList = searchList;
-        searchListFiltered = searchList;
+        filterList = searchList;
     }
 
     @Override
@@ -44,26 +42,25 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             protected FilterResults performFiltering(CharSequence constraint) {
                 String pattern = constraint.toString().toLowerCase().trim();
                 if (pattern.isEmpty()) {
-                    searchListFiltered = searchList;
+                    filterList = searchList;
                 } else {
                     List<Content> filteredList = new ArrayList<>();
-
                     for (Content contents : searchList) {
                         if (contents.getSearch().contains(pattern)) {
                             filteredList.add(contents);
                         }
                     }
-                    searchListFiltered = filteredList;
+                    filterList = filteredList;
                 }
                 FilterResults results = new FilterResults();
-                results.values = searchListFiltered;
+                results.values = filterList;
                 return results;
             }
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                searchListFiltered = (ArrayList<Content>) results.values;
-                if (searchListFiltered.isEmpty()) {
+                filterList = (ArrayList<Content>) results.values;
+                if (filterList.isEmpty()) {
                     context.showEmptyView(true);
                 } else {
                     context.showEmptyView(false);
@@ -82,17 +79,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
-        String label = searchListFiltered.get(position).getDocId();
-        holder.search_id.setText(searchListFiltered.get(position).getId());
-        holder.search_title.setText(searchListFiltered.get(position).getTitle());
+        String label = filterList.get(position).getDocId();
+        holder.search_id.setText(filterList.get(position).getId());
+        holder.search_title.setText(filterList.get(position).getTitle());
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EditContentActivity.class);
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext()).toBundle();
-            intent.putExtra("title", searchListFiltered.get(position).getTitle());
-            intent.putExtra("id", searchListFiltered.get(position).getId());
-            intent.putExtra("pw", searchListFiltered.get(position).getPw());
-            intent.putExtra("memo", searchListFiltered.get(position).getMemo());
+            intent.putExtra("title", filterList.get(position).getTitle());
+            intent.putExtra("id", filterList.get(position).getId());
+            intent.putExtra("pw", filterList.get(position).getPw());
+            intent.putExtra("memo", filterList.get(position).getMemo());
             intent.putExtra("label", label);
             v.getContext().startActivity(intent, bundle);
         });
@@ -105,7 +102,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public int getItemCount() {
-        return searchListFiltered.size();
+        return filterList.size();
     }
 
 
