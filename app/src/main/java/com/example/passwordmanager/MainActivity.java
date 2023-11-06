@@ -106,7 +106,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerLayout.closeDrawer(GravityCompat.START);
-
         int id = item.getItemId();
         if (id == R.id.nav_main) {
             showFragments(new MainFragment());
@@ -134,9 +133,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showFragments(Fragment fragment) {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-        ft.replace(R.id.fragment_container, fragment).commit();
+        new Handler().postDelayed(() -> {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.fragment_container, fragment).commit();
+        }, 200);
     }
 
     @Override

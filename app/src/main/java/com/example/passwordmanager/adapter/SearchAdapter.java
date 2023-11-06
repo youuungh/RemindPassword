@@ -3,7 +3,13 @@ package com.example.passwordmanager.adapter;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,16 +27,17 @@ import com.example.passwordmanager.model.Content;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
     SearchFragment context;
     List<Content> searchList;
     List<Content> filterList;
 
-    public SearchAdapter(SearchFragment context, List<Content> searchList) {
+    public SearchAdapter(SearchFragment context, List<Content> dataList) {
         this.context = context;
-        this.searchList = searchList;
-        filterList = searchList;
+        this.searchList = dataList;
+        filterList = dataList;
     }
 
     @Override
@@ -77,18 +84,18 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
-        String label = filterList.get(position).getDocId();
-        holder.search_id.setText(filterList.get(position).getId());
-        holder.search_title.setText(filterList.get(position).getTitle());
+        Content content = filterList.get(position);
+        holder.search_title.setText(content.getTitle());
+        holder.search_id.setText(content.getId());
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EditContentActivity.class);
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext()).toBundle();
-            intent.putExtra("title", filterList.get(position).getTitle());
-            intent.putExtra("id", filterList.get(position).getId());
-            intent.putExtra("pw", filterList.get(position).getPw());
-            intent.putExtra("memo", filterList.get(position).getMemo());
-            intent.putExtra("label", label);
+            intent.putExtra("title", content.getTitle());
+            intent.putExtra("id", content.getId());
+            intent.putExtra("pw", content.getPw());
+            intent.putExtra("memo", content.getMemo());
+            intent.putExtra("label", content.getDocId());
             v.getContext().startActivity(intent, bundle);
         });
     }
@@ -102,7 +109,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     public int getItemCount() {
         return filterList.size();
     }
-
 
     public static class SearchViewHolder extends RecyclerView.ViewHolder {
         TextView search_title, search_id;

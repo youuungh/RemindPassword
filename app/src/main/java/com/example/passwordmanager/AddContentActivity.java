@@ -69,7 +69,7 @@ public class AddContentActivity extends AppCompatActivity {
         getWindow().setEnterTransition(enter);
         com.google.android.material.transition.platform.MaterialFadeThrough exit = new MaterialFadeThrough();
         exit.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.TOP));
-        exit.setDuration(650);
+        exit.setDuration(600);
         getWindow().setReturnTransition(exit);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
@@ -149,8 +149,9 @@ public class AddContentActivity extends AppCompatActivity {
                 button_save.setEnabled(false);
                 if (isEdit) {
                     Intent intent = new Intent(this, MainActivity.class);
+                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent);
+                    startActivity(intent, bundle);
                 }
                 finish();
             } else {

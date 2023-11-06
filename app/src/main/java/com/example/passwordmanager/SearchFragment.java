@@ -1,8 +1,10 @@
 package com.example.passwordmanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SearchView;
@@ -18,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.example.passwordmanager.adapter.SearchAdapter;
 import com.example.passwordmanager.model.Content;
@@ -25,6 +28,12 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.transition.MaterialSharedAxis;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import org.checkerframework.checker.units.qual.C;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SearchFragment extends Fragment {
@@ -34,6 +43,23 @@ public class SearchFragment extends Fragment {
     SearchView searchView;
     FloatingActionButton search_fab_top;
     LinearLayout search_emptyView;
+    InputMethodManager imm;
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+    }
+
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            searchView.clearFocus();
+            ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            ((MainActivity)getActivity()).fab_write.show();
+            getParentFragmentManager().popBackStack();
+        }
+    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +74,8 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
+        imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+
         mToolbar = view.findViewById(R.id.search_toolbar);
         mToolbar.setNavigationOnClickListener(v -> {
             searchView.clearFocus();
@@ -60,30 +88,18 @@ public class SearchFragment extends Fragment {
         recycler_search.setHasFixedSize(true);
         recycler_search.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        Query query = Utils.getContentReference().orderBy("search");
+        query.addSnapshotListener((value, error) -> {
+            if (error == null && value != null) {
+                search_adapter = new SearchAdapter(this, value.toObjects(Content.class));
+                recycler_search.setAdapter(search_adapter);
+            }
+        });
+
         searchView = view.findViewById(R.id.search_view);
         searchView.requestFocus();
         searchView.setOnQueryTextFocusChangeListener( (v, hasFocus) -> {
-            InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
-        });
-
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                if (!TextUtils.isEmpty(newText)) {
-                    recycler_search.setAdapter(search_adapter);
-                    if (search_adapter != null)
-                        search_adapter.getFilter().filter(newText);
-                } else {
-                    recycler_search.setAdapter(null);
-                }
-                return true;
-            }
         });
 
         search_emptyView = view.findViewById(R.id.search_view_empty);
@@ -108,11 +124,11 @@ public class SearchFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
-                    searchView.clearFocus();
+                    imm.hideSoftInputFromWindow(getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     search_fab_top.show();
                     handler.removeCallbacks(runnable);
                 } else if (dy < 0) {
-                    searchView.clearFocus();
+                    imm.hideSoftInputFromWindow(getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     search_fab_top.show();
                     handler.removeCallbacks(runnable);
                     if (!recyclerView.canScrollVertically(-1))
@@ -133,10 +149,18 @@ public class SearchFragment extends Fragment {
         super.onResume();
         ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         ((MainActivity)getActivity()).fab_write.hide();
-        Query query = Utils.getContentReference().orderBy("search");
-        query.addSnapshotListener((value, error) -> {
-            if (error == null && value != null) {
-                search_adapter = new SearchAdapter(this, value.toObjects(Content.class));
+        searchView.requestFocus();
+        searchView.setQuery("", true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                search_adapter.getFilter().filter(newText);
+                return true;
             }
         });
     }

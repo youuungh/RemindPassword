@@ -60,12 +60,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/content_layout_appbar">
+
         <RelativeLayout
             android:id="@+id/add_screen"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:paddingStart="24dp"
-            android:paddingEnd="24dp">
+            android:paddingEnd="24dp"
+            android:paddingBottom="24dp">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_1"
@@ -235,4 +237,4 @@
             </com.google.android.material.card.MaterialCardView>
         </RelativeLayout>
     </ScrollView>
-    </RelativeLayout>
+</RelativeLayout>

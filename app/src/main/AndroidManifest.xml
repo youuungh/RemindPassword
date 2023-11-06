@@ -21,7 +21,8 @@
             android:name=".HomeActivity"
             android:exported="true"
             android:theme="@style/BaseTheme"
-            android:windowSoftInputMode="adjustUnspecified">
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,16 +33,19 @@
             android:name=".LoginActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SignUpActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ResetPasswordActivity"
             android:exported="false"
             android:theme="@style/MainTheme"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"

@@ -238,6 +238,7 @@ public class TrashFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
+        ((MainActivity)getActivity()).fab_write.hide();
         Query query = Utils.getTrashReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {
             trash_loadingView.setVisibility(View.GONE);
