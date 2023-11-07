@@ -61,24 +61,6 @@
                 android:ems="12"
                 android:maxLines="1"
                 android:ellipsize="end"/>
-
-            <TextView
-                android:id="@+id/trash_timestamp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="3dp"
-                android:layout_below="@id/trash_id"
-                android:background="@drawable/rounded_bg"
-                android:layout_alignParentEnd="true"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
-                android:gravity="end"
-                android:text="99일"
-                android:textStyle="bold"
-                android:textColor="@color/white"
-                android:textAppearance="@style/TextAppearance.Material3.BodyMedium"/>
         </RelativeLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

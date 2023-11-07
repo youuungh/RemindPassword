@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab_write = findViewById(R.id.main_fab_write);
         fab_write.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddContentActivity.class);
-            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this, fab_write, "fab").toBundle();
+            Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
             startActivity(intent, bundle);
         });
 
@@ -107,11 +107,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerLayout.closeDrawer(GravityCompat.START);
         int id = item.getItemId();
-        if (id == R.id.nav_main) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (id == R.id.nav_main && !(fragment instanceof MainFragment)) {
             showFragments(new MainFragment());
             isSelect = false;
             fab_write.show();
-        } else if (id == R.id.nav_trash) {
+        } else if (id == R.id.nav_trash && !(fragment instanceof TrashFragment)) {
             showFragments(new TrashFragment());
             isSelect = true;
             fab_write.hide();
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void showFragments(Fragment fragment) {
         new Handler().postDelayed(() -> {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             ft.replace(R.id.fragment_container, fragment).commit();
         }, 200);
     }

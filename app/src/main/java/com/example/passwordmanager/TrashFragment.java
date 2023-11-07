@@ -49,7 +49,7 @@ public class TrashFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnterTransition(new MaterialFadeThrough());
+        setEnterTransition(new MaterialFadeThrough().setDuration(350));
     }
 
     @Override
@@ -253,7 +253,6 @@ public class TrashFragment extends Fragment {
                 String label = getSnapshots().getSnapshot(position).getId();
                 holder.trash_title.setText(trash.getTitle());
                 holder.trash_id.setText(trash.getId());
-                holder.trash_timestamp.setText("99일");
 
                 holder.trash_option.setOnClickListener(v -> {
                     BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
@@ -331,14 +330,13 @@ public class TrashFragment extends Fragment {
     }
 
     public static class TrashViewHolder extends RecyclerView.ViewHolder {
-        TextView trash_title, trash_id, trash_timestamp;
+        TextView trash_title, trash_id;
         ImageButton trash_option;
 
         public TrashViewHolder(@NonNull View itemView) {
             super(itemView);
             trash_title = itemView.findViewById(R.id.trash_title);
             trash_id = itemView.findViewById(R.id.trash_id);
-            trash_timestamp = itemView.findViewById(R.id.trash_timestamp);
             trash_option = itemView.findViewById(R.id.trash_option);
         }
     }
