@@ -21,6 +21,7 @@
     <color name="transparent_grey">#55A0A0A0</color>
     <color name="searchBarColor">#f5f5f5</color>
     <color name="error">#CF6679</color>
+    <color name="errorMsg">#ff5722</color>
     <color name="boxStrokeColor">#B3B4BA</color>
 
     <integer-array name="cv_colors">

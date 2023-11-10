@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/pin_layout_appbar"
@@ -35,21 +36,21 @@
             android:layout_weight="1"
             android:gravity="center_horizontal"
             android:orientation="vertical">
-            <com.google.android.material.textview.MaterialTextView
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="64dp"
                 android:text="비밀번호 설정"
-                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"/>
-            <com.google.android.material.textview.MaterialTextView
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
+            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
                 android:text="비밀번호 6자리를 설정하세요"
-                android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
-                android:textColor="@color/customHintColor"/>
+                android:textColor="@color/customHintColor"
+                android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="80dp"
                 android:gravity="center_horizontal"
@@ -57,39 +58,50 @@
                 <View
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_grey_oval"/>
                 <View
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_grey_oval"/>
                 <View
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_grey_oval"/>
                 <View
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_grey_oval"/>
                 <View
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_grey_oval"/>
                 <View
                     android:layout_width="16dp"
                     android:layout_height="16dp"
                     android:background="@drawable/bg_grey_oval"/>
             </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="message"
+                android:textColor="@color/errorMsg"
+                android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="24dp">
 
             <GridLayout
                 android:layout_width="match_parent"
@@ -102,59 +114,92 @@
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="1" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="1"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="2" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="2"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="3" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="3"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="4" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="4"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="5" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="5"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="6" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="6"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="7" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="7"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="8" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="8"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
-                    android:text="9" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="9"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
                 <Button
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:layout_column="1"
-                    android:text="0" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:text="0"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
 
-                <Button
+                <ImageButton
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:layout_column="2"
-                    android:text="<-" />
+                    android:background="?android:attr/selectableItemBackground"
+                    android:src="@drawable/ic_num_delete"
+                    android:textColor="@color/customHintColor"
+                    android:textSize="24sp" />
             </GridLayout>
         </LinearLayout>
     </LinearLayout>
