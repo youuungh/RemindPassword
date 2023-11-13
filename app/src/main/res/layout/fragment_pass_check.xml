@@ -9,12 +9,12 @@
     android:fitsSystemWindows="true">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/pin_layout_appbar"
+        android:id="@+id/pin_check_layout_appbar"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/pin_toolbar"
+            android:id="@+id/pin_check_toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/white"
@@ -24,7 +24,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/pin_layout_appbar"
+        android:layout_below="@id/pin_check_layout_appbar"
         android:orientation="vertical"
         android:weightSum="2">
 
@@ -38,13 +38,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="64dp"
-                android:text="비밀번호 설정"
+                android:text="비밀번호 확인"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="비밀번호 6자리를 설정하세요"
+                android:text="비밀번호 6자리를 다시 한번 입력하세요"
                 android:textColor="@color/customHintColor"
                 android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
             <LinearLayout
@@ -85,7 +85,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/pin_errorMsg"
+                android:id="@+id/pin_check_errorMsg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

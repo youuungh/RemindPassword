@@ -1,18 +1,15 @@
 package com.example.passwordmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
-import com.google.android.material.elevation.SurfaceColors;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -48,7 +45,10 @@ public class HomeActivity extends AppCompatActivity {
 
         home_login = findViewById(R.id.home_login);
         home_login.setOnClickListener(view -> {
-            startActivity(new Intent(this, LoginActivity.class));
+            //startActivity(new Intent(this, LoginActivity.class));
+            PassCodeFragment passCodeFragment = new PassCodeFragment();
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.add(android.R.id.content, passCodeFragment).addToBackStack(null).commit();
         });
     }
 }
