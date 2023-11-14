@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="비밀번호 6자리를 다시 한번 입력하세요"
+                android:text="비밀번호 4자리를 다시 한번 입력하세요"
                 android:textColor="@color/customHintColor"
                 android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
             <LinearLayout
@@ -54,33 +54,27 @@
                 android:gravity="center_horizontal"
                 android:orientation="horizontal">
                 <View
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:id="@+id/chk_pin_01"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_grey_oval"/>
                 <View
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:id="@+id/chk_pin_02"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_grey_oval"/>
                 <View
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:id="@+id/chk_pin_03"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:layout_marginEnd="20dp"
                     android:background="@drawable/bg_grey_oval"/>
                 <View
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/bg_grey_oval"/>
-                <View
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/bg_grey_oval"/>
-                <View
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
+                    android:id="@+id/chk_pin_04"
+                    android:layout_width="14dp"
+                    android:layout_height="14dp"
                     android:background="@drawable/bg_grey_oval"/>
             </LinearLayout>
 
@@ -110,78 +104,79 @@
                 android:weightSum="3">
 
                 <Button
+                    android:id="@+id/chk_btn_01"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="1"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_02"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="2"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_03"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="3"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_04"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="4"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_05"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="5"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_06"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="6"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_07"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="7"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_08"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="8"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_09"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
                     android:text="9"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <Button
+                    android:id="@+id/chk_btn_00"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
@@ -189,8 +184,8 @@
                     android:text="0"
                     android:textColor="@color/customHintColor"
                     android:textSize="24sp" />
-
                 <ImageButton
+                    android:id="@+id/chk_btn_clear"
                     android:background="@drawable/bg_pin_button"
                     android:layout_columnWeight="1"
                     android:layout_rowWeight="1"
