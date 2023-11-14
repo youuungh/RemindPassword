@@ -189,13 +189,13 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                     PassCheckFragment passCheckFragment = new PassCheckFragment();
                     FragmentTransaction ft = getParentFragmentManager().beginTransaction();
                     ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
-                    init();
+                    refresh();
                     break;
             }
         }
     }
 
-    private void init() {
+    private void refresh() {
         pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
         pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
         pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
