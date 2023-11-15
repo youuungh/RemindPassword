@@ -8,6 +8,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
@@ -179,6 +180,12 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                         String passCode = bundle.getString("PASSCODE");
                         if (passCode.equals(confirmCode)) {
                             startActivity(new Intent(getActivity(), LoginActivity.class));
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                                }
+                            }, 300);
                             refresh();
                         } else {
                             tv_error.setVisibility(View.VISIBLE);
