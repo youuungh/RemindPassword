@@ -176,7 +176,7 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                     Bundle bundle = new Bundle();
                     bundle.putString("PASSCODE", passCode);
                     passCheckFragment.setArguments(bundle);
-                    ft.add(android.R.id.content, passCheckFragment).addToBackStack("passCheck").commit();
+                    ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
                     refresh();
                     break;
             }

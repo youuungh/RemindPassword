@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
         home_login.setOnClickListener(view -> {
             PassCodeFragment passCodeFragment = new PassCodeFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(android.R.id.content, passCodeFragment).addToBackStack("passCode").commit();
+            ft.add(android.R.id.content, passCodeFragment).addToBackStack(null).commit();
         });
     }
 }

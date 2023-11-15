@@ -200,4 +200,9 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         num_list.clear();
         confirmCode = "";
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
 }
