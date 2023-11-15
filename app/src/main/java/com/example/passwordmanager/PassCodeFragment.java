@@ -25,7 +25,9 @@ import java.util.List;
 public class PassCodeFragment extends Fragment implements View.OnClickListener {
     MaterialToolbar mToolbar;
     View pin_01, pin_02, pin_03, pin_04;
-    Button btn_01, btn_02, btn_03, btn_04, btn_05, btn_06, btn_07, btn_08, btn_09, btn_00;
+    Button[] buttons = new Button[10];
+    Integer[] buttons_id = {R.id.btn_01, R.id.btn_02, R.id.btn_03, R.id.btn_04, R.id.btn_05,
+            R.id.btn_06, R.id.btn_07, R.id.btn_08, R.id.btn_09, R.id.btn_00};
     ImageButton btn_clear;
     List<String> num_list = new ArrayList<>();
     String passCode = "";
@@ -47,8 +49,8 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Y, true).setDuration(300));
-        setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Y, false).setDuration(300));
+        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Y, true).setDuration(350));
+        setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Y, false).setDuration(350));
     }
 
     @Override
@@ -66,28 +68,11 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
         pin_03 = view.findViewById(R.id.pin_03);
         pin_04 = view.findViewById(R.id.pin_04);
 
-        btn_01 = view.findViewById(R.id.btn_01);
-        btn_02 = view.findViewById(R.id.btn_02);
-        btn_03 = view.findViewById(R.id.btn_03);
-        btn_04 = view.findViewById(R.id.btn_04);
-        btn_05 = view.findViewById(R.id.btn_05);
-        btn_06 = view.findViewById(R.id.btn_06);
-        btn_07 = view.findViewById(R.id.btn_07);
-        btn_08 = view.findViewById(R.id.btn_08);
-        btn_09 = view.findViewById(R.id.btn_09);
-        btn_00 = view.findViewById(R.id.btn_00);
+        for (int i=0; i<10; i++) {
+            buttons[i] = view.findViewById(buttons_id[i]);
+            buttons[i].setOnClickListener(this);
+        }
         btn_clear = view.findViewById(R.id.btn_clear);
-
-        btn_01.setOnClickListener(this);
-        btn_02.setOnClickListener(this);
-        btn_03.setOnClickListener(this);
-        btn_04.setOnClickListener(this);
-        btn_05.setOnClickListener(this);
-        btn_06.setOnClickListener(this);
-        btn_07.setOnClickListener(this);
-        btn_08.setOnClickListener(this);
-        btn_09.setOnClickListener(this);
-        btn_00.setOnClickListener(this);
         btn_clear.setOnClickListener(this);
 
         return view;
@@ -188,7 +173,10 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
 
                     PassCheckFragment passCheckFragment = new PassCheckFragment();
                     FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-                    ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("PASSCODE", passCode);
+                    passCheckFragment.setArguments(bundle);
+                    ft.add(android.R.id.content, passCheckFragment).addToBackStack("passCheck").commit();
                     refresh();
                     break;
             }

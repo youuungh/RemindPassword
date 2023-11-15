@@ -43,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
 
         mToolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(view -> { this.finish(); });
+        mToolbar.setNavigationOnClickListener(view -> this.finish());
 
         fAuth = FirebaseAuth.getInstance();
 

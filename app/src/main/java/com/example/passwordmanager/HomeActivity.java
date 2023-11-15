@@ -46,10 +46,9 @@ public class HomeActivity extends AppCompatActivity {
 
         home_login = findViewById(R.id.home_login);
         home_login.setOnClickListener(view -> {
-            //startActivity(new Intent(this, LoginActivity.class));
             PassCodeFragment passCodeFragment = new PassCodeFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(android.R.id.content, passCodeFragment).addToBackStack(null).commit();
+            ft.add(android.R.id.content, passCodeFragment).addToBackStack("passCode").commit();
         });
     }
 }
