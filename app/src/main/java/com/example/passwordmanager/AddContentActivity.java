@@ -2,6 +2,7 @@ package com.example.passwordmanager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
@@ -12,6 +13,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.transition.ArcMotion;
@@ -50,6 +52,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.time.Duration;
+import java.util.Base64;
 
 public class AddContentActivity extends AppCompatActivity {
     DocumentReference docRef;
@@ -111,9 +114,13 @@ public class AddContentActivity extends AppCompatActivity {
                 Utils.showSnack(findViewById(R.id.add_screen), "제목을 입력하세요");
                 return;
             }
-            Content content = new Content(title, search, id, pw, memo, docId, timestamp);
+            Content content = new Content(title, search, id, encodeBase64(pw), memo, docId, timestamp);
             saveToFirebase(content);
         });
+    }
+
+    private String encodeBase64(String data) {
+        return Base64.getEncoder().encodeToString(data.getBytes());
     }
 
     private void clearFocus() {

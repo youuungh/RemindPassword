@@ -3,6 +3,7 @@ package com.example.passwordmanager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -76,10 +77,9 @@ public class LoginActivity extends AppCompatActivity {
                     clearFocus();
                     if(task.isSuccessful()) {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
-                            Intent intent = new Intent(this, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                            finish();
+                            PassCodeFragment passCodeFragment = new PassCodeFragment();
+                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                            ft.replace(android.R.id.content, passCodeFragment).commit();
                         } else {
                             loginChangeInProgress(false);
                             Utils.showSnack(findViewById(R.id.loginScreen), "이메일 인증이 필요합니다");

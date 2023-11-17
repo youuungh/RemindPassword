@@ -2,6 +2,7 @@ package com.example.passwordmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -179,14 +180,10 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                     if (bundle != null) {
                         String passCode = bundle.getString("PASSCODE");
                         if (passCode.equals(confirmCode)) {
-                            startActivity(new Intent(getActivity(), LoginActivity.class));
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-                                }
-                            }, 300);
-                            refresh();
+                            Utils.savePassCode(requireContext(), confirmCode);
+                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
                         } else {
                             tv_error.setVisibility(View.VISIBLE);
                             new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 500);
@@ -206,10 +203,5 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
 
         num_list.clear();
         confirmCode = "";
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 }

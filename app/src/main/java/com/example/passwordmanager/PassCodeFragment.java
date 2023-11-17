@@ -1,6 +1,7 @@
 package com.example.passwordmanager;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PassCodeFragment extends Fragment implements View.OnClickListener {
-    MaterialToolbar mToolbar;
+    Button button_later;
     View pin_01, pin_02, pin_03, pin_04;
     Button[] buttons = new Button[10];
     Integer[] buttons_id = {R.id.btn_01, R.id.btn_02, R.id.btn_03, R.id.btn_04, R.id.btn_05,
@@ -58,9 +59,11 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pass_code, container, false);
 
-        mToolbar = view.findViewById(R.id.pin_toolbar);
-        mToolbar.setNavigationOnClickListener(v -> {
-            getParentFragmentManager().popBackStack();
+        button_later = view.findViewById(R.id.button_later);
+        button_later.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         });
 
         pin_01 = view.findViewById(R.id.pin_01);
@@ -80,7 +83,6 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        Log.d("num_list.size():", ""+num_list.size());
         switch (v.getId()) {
             case R.id.btn_01:
                 num_list.add("1");
@@ -169,7 +171,6 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                     num04 = num_list.get(3);
                     pin_04.setBackgroundResource(R.drawable.bg_color_oval);
                     passCode = num01 + num02 + num03 + num04;
-                    Log.d("passcode:", ""+passCode);
 
                     PassCheckFragment passCheckFragment = new PassCheckFragment();
                     FragmentTransaction ft = getParentFragmentManager().beginTransaction();
