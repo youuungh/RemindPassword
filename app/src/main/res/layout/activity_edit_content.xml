@@ -116,13 +116,14 @@
                             android:paddingBottom="24dp"
                             android:paddingStart="24dp"
                             android:paddingEnd="24dp"
-                            android:backgroundTint="@color/md_grey_200"
+                            android:backgroundTint="@color/md_grey_300"
                             android:fontFamily="@font/dm_sans"
                             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                             android:focusable="false"
                             android:longClickable="false"
                             android:enabled="false"
                             android:text="제목"
+                            android:textStyle="bold"
                             android:textColor="@color/customTextColor"
                             android:imeOptions="flagNoExtractUi" />
                     </com.google.android.material.textfield.TextInputLayout>
@@ -140,6 +141,8 @@
                             android:layout_height="wrap_content"
                             android:padding="8dp"
                             app:startIconDrawable="@drawable/ic_user"
+                            app:endIconMode="custom"
+                            app:endIconDrawable="@drawable/ic_copy"
                             app:boxStrokeWidth="0dp"
                             app:boxStrokeWidthFocused="0dp"
                             app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">
@@ -196,6 +199,17 @@
                                 android:focusable="false"
                                 android:longClickable="false"
                                 android:imeOptions="flagNoExtractUi" />
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/button_decrypt"
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
+                                android:background="@drawable/rounded_decrypt_button"
+                                app:backgroundTint="@null"
+                                app:icon="@drawable/ic_unlock"
+                                app:iconTint="@color/customTextColor"
+                                app:iconGravity="textStart"
+                                android:text="비밀번호 복호화"
+                                android:textColor="@color/customTextColor"/>
                         </com.google.android.material.textfield.TextInputLayout>
 
                     </LinearLayout>
@@ -219,6 +233,8 @@
                     android:layout_height="wrap_content"
                     android:padding="8dp"
                     app:startIconDrawable="@drawable/ic_memo"
+                    app:endIconMode="custom"
+                    app:endIconDrawable="@drawable/ic_copy"
                     app:boxStrokeWidth="0dp"
                     app:boxStrokeWidthFocused="0dp"
                     app:hintTextAppearance="@style/TextAppearance.Material3.TitleSmall">

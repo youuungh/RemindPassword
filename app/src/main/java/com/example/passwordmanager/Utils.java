@@ -26,6 +26,12 @@ public class Utils {
         Snackbar.make(v, msg, Snackbar.LENGTH_SHORT).show();
     }
 
+    static void copyToClipboard(Context context, String msg) {
+        android.content.ClipboardManager clipboardManager = (android.content.ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        android.content.ClipData clipData = android.content.ClipData.newPlainText("", msg);
+        clipboardManager.setPrimaryClip(clipData);
+    }
+
     public static String timeStampToString(Timestamp timestamp) {
         return new SimpleDateFormat("yyyy년 MM월 dd일", Locale.KOREAN).format(timestamp.toDate());
     }
@@ -52,11 +58,5 @@ public class Utils {
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("PASSCODE", key);
         editor.commit();
-    }
-
-    public static String getPassCode(Context context) {
-        Log.d("getPref:", "데이터 불러오기 성공");
-        SharedPreferences pref = context.getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
-        return pref.getString("PASSCODE", "");
     }
 }

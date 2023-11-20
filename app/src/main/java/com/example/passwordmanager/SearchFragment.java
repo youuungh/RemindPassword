@@ -124,10 +124,12 @@ public class SearchFragment extends Fragment {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 if (dy > 0) {
+                    searchView.clearFocus();
                     imm.hideSoftInputFromWindow(getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     search_fab_top.show();
                     handler.removeCallbacks(runnable);
                 } else if (dy < 0) {
+                    searchView.clearFocus();
                     imm.hideSoftInputFromWindow(getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
                     search_fab_top.show();
                     handler.removeCallbacks(runnable);

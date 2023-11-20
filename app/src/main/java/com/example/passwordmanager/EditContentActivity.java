@@ -3,13 +3,19 @@ package com.example.passwordmanager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.app.ActivityOptions;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Interpolator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +26,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.transition.platform.MaterialElevationScale;
 import com.google.android.material.transition.platform.MaterialFade;
 import com.google.android.material.transition.platform.MaterialFadeThrough;
@@ -30,8 +37,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 public class EditContentActivity extends AppCompatActivity {
     MaterialToolbar toolbar;
+    TextInputLayout tl_id, tl_memo;
     TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
-    MaterialButton button_edit, button_options;
+    MaterialButton button_edit, button_options, button_decrypt;
     ProgressBar progressBar;
     String label;
 
@@ -47,6 +55,8 @@ public class EditContentActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         progressBar = findViewById(R.id.edit_progressBar);
+        tl_id = findViewById(R.id.content_layout_id);
+        tl_memo = findViewById(R.id.content_layout_memo);
         tv_title = findViewById(R.id.tv_title);
         tv_title.setKeyListener(null);
         tv_id = findViewById(R.id.tv_id);
@@ -61,6 +71,16 @@ public class EditContentActivity extends AppCompatActivity {
         tv_pw.setText(getIntent().getStringExtra("pw"));
         tv_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
+
+        tl_id.setEndIconOnClickListener(v -> {
+            Utils.copyToClipboard(getApplicationContext(), tv_id.getText().toString());
+            Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
+        });
+
+        tl_memo.setEndIconOnClickListener(v -> {
+            Utils.copyToClipboard(getApplicationContext(), tv_memo.getText().toString());
+            Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
+        });
 
         button_edit = findViewById(R.id.button_edit);
         button_edit.setOnClickListener(v -> {
@@ -87,6 +107,18 @@ public class EditContentActivity extends AppCompatActivity {
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.show();
         });
+
+        button_decrypt = findViewById(R.id.button_decrypt);
+        button_decrypt.setOnClickListener(v -> {
+            if (getPassCode().length() != 0) {
+                Log.d("passcode.length:", ""+getPassCode().length());
+                PassCheckFragment passCheckFragment = new PassCheckFragment();
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
+            } else {
+                Utils.showSnack(findViewById(R.id.edit_screen), "먼저 비밀번호를 설정하세요");
+            }
+        });
     }
 
     private void editChangeInProgress(boolean inProgress) {
@@ -111,5 +143,10 @@ public class EditContentActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private String getPassCode() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
+        return pref.getString("PASSCODE", "");
     }
 }

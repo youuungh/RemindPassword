@@ -11,7 +11,9 @@ import androidx.fragment.app.FragmentTransaction;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -90,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setMessage("로그아웃 하시겠습니까?")
                     .setCancelable(false)
                     .setPositiveButton("확인", (dialog, which) -> {
+                        clearPassCode();
                         fAuth.signOut();
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -140,6 +143,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
             ft.replace(R.id.fragment_container, fragment).commit();
         }, 200);
+    }
+
+    private void clearPassCode() {
+        SharedPreferences pref = getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.commit();
     }
 
     @Override
