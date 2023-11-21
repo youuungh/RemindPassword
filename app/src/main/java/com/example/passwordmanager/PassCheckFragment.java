@@ -30,7 +30,7 @@ import java.util.List;
 public class PassCheckFragment extends Fragment implements View.OnClickListener {
     MaterialToolbar mToolbar;
     View pin_01, pin_02, pin_03, pin_04;
-    TextView tv_error;
+    TextView tv_subtitle, tv_error;
     Button[] buttons = new Button[10];
     Integer[] buttons_id = {R.id.chk_btn_01, R.id.chk_btn_02, R.id.chk_btn_03, R.id.chk_btn_04, R.id.chk_btn_05,
             R.id.chk_btn_06, R.id.chk_btn_07, R.id.chk_btn_08, R.id.chk_btn_09, R.id.chk_btn_00};
@@ -68,6 +68,13 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         mToolbar.setNavigationOnClickListener(v -> {
             getParentFragmentManager().popBackStack();
         });
+
+        tv_subtitle = view.findViewById(R.id.tv_subtitle);
+        if (getPassCode().length() != 0) {
+            tv_subtitle.setText("비밀번호 4자리를 입력하세요");
+        } else {
+            tv_subtitle.setText("비밀번호 4자리를 다시 한번 입력하세요");
+        }
 
         pin_01 = view.findViewById(R.id.chk_pin_01);
         pin_02 = view.findViewById(R.id.chk_pin_02);
@@ -177,22 +184,41 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                     confirmCode = num01 + num02 + num03 + num04;
 
                     Bundle bundle = getArguments();
-                    if (bundle != null) {
-                        String passCode = bundle.getString("PASSCODE");
-                        if (passCode.equals(confirmCode)) {
-                            Utils.savePassCode(requireContext(), confirmCode);
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
-                        } else {
-                            tv_error.setVisibility(View.VISIBLE);
-                            new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 500);
-                            refresh();
+                    if (getPassCode().length() == 0) {
+                        if (bundle != null) {
+                            String passCode = bundle.getString("PASSCODE");
+                            if (passCode.equals(confirmCode)) {
+                                Utils.savePassCode(requireContext(), confirmCode);
+                                Intent intent = new Intent(getActivity(), MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            } else {
+                                tv_error.setVisibility(View.VISIBLE);
+                                new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 500);
+                                refresh();
+                            }
                         }
+                    } else {
+                        matchPassCode();
                     }
                     break;
             }
         }
+    }
+
+    private void matchPassCode() {
+        if (getPassCode().equals(confirmCode)) {
+            getParentFragmentManager().popBackStack();
+        } else {
+            tv_error.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 500);
+            refresh();
+        }
+    }
+
+    private String getPassCode() {
+        SharedPreferences pref = requireContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
+        return pref.getString("PASSCODE", "");
     }
 
     private void refresh() {
@@ -200,7 +226,6 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
         pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
         pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
-
         num_list.clear();
         confirmCode = "";
     }

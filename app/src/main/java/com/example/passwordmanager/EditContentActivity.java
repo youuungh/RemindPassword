@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Interpolator;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.InputType;
@@ -74,12 +75,14 @@ public class EditContentActivity extends AppCompatActivity {
 
         tl_id.setEndIconOnClickListener(v -> {
             Utils.copyToClipboard(getApplicationContext(), tv_id.getText().toString());
-            Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+                Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
         });
 
         tl_memo.setEndIconOnClickListener(v -> {
             Utils.copyToClipboard(getApplicationContext(), tv_memo.getText().toString());
-            Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
+            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
+                Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
         });
 
         button_edit = findViewById(R.id.button_edit);
@@ -111,7 +114,6 @@ public class EditContentActivity extends AppCompatActivity {
         button_decrypt = findViewById(R.id.button_decrypt);
         button_decrypt.setOnClickListener(v -> {
             if (getPassCode().length() != 0) {
-                Log.d("passcode.length:", ""+getPassCode().length());
                 PassCheckFragment passCheckFragment = new PassCheckFragment();
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();

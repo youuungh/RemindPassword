@@ -53,7 +53,6 @@ public class Utils {
     }
 
     public static void savePassCode(Context context, String key) {
-        Log.d("setPref:", "데이터 저장 성공");
         SharedPreferences pref = context.getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
         editor.putString("PASSCODE", key);
