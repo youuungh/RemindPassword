@@ -137,7 +137,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                 @Override
                 public void onTick(long millisUntilFinished) {
                     timeLeftInMillis = millisUntilFinished;
-                    tv_pw.setText(Utils.decodeBase64(String.valueOf(tv_pw.getText())));
+                    tv_pw.setText(Utils.decodeBase64(tv_pw.getText().toString()));
                     button_decrypt.setEnabled(false);
                     button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_timer));
                     updateCountDown();
@@ -145,7 +145,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                 @Override
                 public void onFinish() {
                     timeLeftInMillis = TIME_IN_MILLIS;
-                    //tv_pw.setText(Utils.encodeBase64(String.valueOf(tv_pw.getText())));
+                    tv_pw.setText(Utils.encodeBase64(tv_pw.getText().toString()));
                     button_decrypt.setEnabled(true);
                     button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_unlock));
                     button_decrypt.setText("비밀번호 복호화");

@@ -53,7 +53,7 @@ public class Utils {
     }
 
     public static String encodeBase64(String data) {
-        return java.util.Base64.getEncoder().encodeToString(data.getBytes());
+        return Base64.getEncoder().withoutPadding().encodeToString(data.getBytes());
     }
 
     public static String decodeBase64(String data) {
