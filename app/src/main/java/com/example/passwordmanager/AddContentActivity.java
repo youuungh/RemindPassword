@@ -114,13 +114,9 @@ public class AddContentActivity extends AppCompatActivity {
                 Utils.showSnack(findViewById(R.id.add_screen), "제목을 입력하세요");
                 return;
             }
-            Content content = new Content(title, search, id, encodeBase64(pw), memo, docId, timestamp);
+            Content content = new Content(title, search, id, Utils.encodeBase64(pw), memo, docId, timestamp);
             saveToFirebase(content);
         });
-    }
-
-    private String encodeBase64(String data) {
-        return Base64.getEncoder().encodeToString(data.getBytes());
     }
 
     private void clearFocus() {

@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PassCheckFragment extends Fragment implements View.OnClickListener {
+    Callback callback;
     MaterialToolbar mToolbar;
     View pin_01, pin_02, pin_03, pin_04;
     TextView tv_subtitle, tv_error;
@@ -39,10 +40,24 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     String confirmCode = "";
     String num01, num02, num03, num04;
 
+    public interface Callback {
+        void getCallback(boolean value);
+    }
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+        if (context instanceof Callback) {
+            callback = (Callback) context;
+        } else {
+            requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
     }
 
     private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
@@ -208,6 +223,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
 
     private void matchPassCode() {
         if (getPassCode().equals(confirmCode)) {
+            callback.getCallback(true);
             getParentFragmentManager().popBackStack();
         } else {
             tv_error.setVisibility(View.VISIBLE);

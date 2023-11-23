@@ -3,7 +3,6 @@ package com.example.passwordmanager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -15,6 +14,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Locale;
 
 public class Utils {
@@ -50,6 +50,14 @@ public class Utils {
                 .collection("Users")
                 .document("trash")
                 .collection(fUser.getUid());
+    }
+
+    public static String encodeBase64(String data) {
+        return java.util.Base64.getEncoder().encodeToString(data.getBytes());
+    }
+
+    public static String decodeBase64(String data) {
+        return new String(Base64.getDecoder().decode(data.getBytes()));
     }
 
     public static void savePassCode(Context context, String key) {

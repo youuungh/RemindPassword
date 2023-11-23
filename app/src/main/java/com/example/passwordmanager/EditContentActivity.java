@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.graphics.Interpolator;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.text.InputType;
 import android.util.Log;
@@ -36,13 +37,19 @@ import com.google.android.material.transition.platform.SlideDistanceProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-public class EditContentActivity extends AppCompatActivity {
+import java.util.Base64;
+import java.util.Locale;
+
+public class EditContentActivity extends AppCompatActivity implements PassCheckFragment.Callback {
+    private static final long TIME_IN_MILLIS = 10000;
     MaterialToolbar toolbar;
     TextInputLayout tl_id, tl_memo;
     TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
     MaterialButton button_edit, button_options, button_decrypt;
     ProgressBar progressBar;
     String label;
+    CountDownTimer countDownTimer;
+    private long timeLeftInMillis = TIME_IN_MILLIS;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +128,36 @@ public class EditContentActivity extends AppCompatActivity {
                 Utils.showSnack(findViewById(R.id.edit_screen), "먼저 비밀번호를 설정하세요");
             }
         });
+    }
+
+    @Override
+    public void getCallback(boolean value) {
+        if (value) {
+            countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    timeLeftInMillis = millisUntilFinished;
+                    tv_pw.setText(Utils.decodeBase64(String.valueOf(tv_pw.getText())));
+                    button_decrypt.setEnabled(false);
+                    button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_timer));
+                    updateCountDown();
+                }
+                @Override
+                public void onFinish() {
+                    timeLeftInMillis = TIME_IN_MILLIS;
+                    //tv_pw.setText(Utils.encodeBase64(String.valueOf(tv_pw.getText())));
+                    button_decrypt.setEnabled(true);
+                    button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_unlock));
+                    button_decrypt.setText("비밀번호 복호화");
+                }
+            }.start();
+        }
+    }
+
+    private void updateCountDown() {
+        int seconds = (int) (timeLeftInMillis / 1000) % 60 + 1;
+        String timeLeft = String.format(Locale.getDefault(), "%2d", seconds);
+        button_decrypt.setText(timeLeft);
     }
 
     private void editChangeInProgress(boolean inProgress) {
