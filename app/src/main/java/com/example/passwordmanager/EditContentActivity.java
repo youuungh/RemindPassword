@@ -6,19 +6,13 @@ import androidx.core.view.WindowCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.app.ActivityOptions;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Interpolator;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.text.InputType;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -26,24 +20,18 @@ import android.widget.ProgressBar;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.transition.platform.MaterialElevationScale;
-import com.google.android.material.transition.platform.MaterialFade;
-import com.google.android.material.transition.platform.MaterialFadeThrough;
-import com.google.android.material.transition.platform.MaterialSharedAxis;
-import com.google.android.material.transition.platform.SlideDistanceProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.Base64;
 import java.util.Locale;
 
 public class EditContentActivity extends AppCompatActivity implements PassCheckFragment.Callback {
     private static final long TIME_IN_MILLIS = 10000;
     MaterialToolbar toolbar;
-    TextInputLayout tl_id, tl_memo;
+    TextInputLayout tl_pw, tl_id, tl_memo;
     TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
     MaterialButton button_edit, button_options, button_decrypt;
     ProgressBar progressBar;
@@ -63,6 +51,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         progressBar = findViewById(R.id.edit_progressBar);
+        tl_pw = findViewById(R.id.content_layout_pw);
         tl_id = findViewById(R.id.content_layout_id);
         tl_memo = findViewById(R.id.content_layout_memo);
         tv_title = findViewById(R.id.tv_title);
@@ -133,11 +122,11 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     @Override
     public void getCallback(boolean value) {
         if (value) {
+            tv_pw.setText(Utils.decodeBase64(tv_pw.getText().toString()));
             countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
                     timeLeftInMillis = millisUntilFinished;
-                    tv_pw.setText(Utils.decodeBase64(tv_pw.getText().toString()));
                     button_decrypt.setEnabled(false);
                     button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_timer));
                     updateCountDown();

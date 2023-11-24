@@ -57,7 +57,7 @@ public class Utils {
     }
 
     public static String decodeBase64(String data) {
-        return new String(Base64.getDecoder().decode(data.getBytes()));
+        return new String(Base64.getDecoder().decode(data));
     }
 
     public static void savePassCode(Context context, String key) {
