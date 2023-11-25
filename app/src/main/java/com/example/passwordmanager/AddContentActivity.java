@@ -57,6 +57,7 @@ import java.util.Base64;
 public class AddContentActivity extends AppCompatActivity {
     DocumentReference docRef;
     MaterialToolbar toolbar;
+    TextInputLayout tl_pw;
     TextInputEditText edt_title, edt_id, edt_pw, edt_memo;
     MaterialButton button_save;
     ProgressBar progressBar;
@@ -81,6 +82,7 @@ public class AddContentActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         progressBar = findViewById(R.id.add_progressBar);
+        tl_pw = findViewById(R.id.content_layout_pw);
         edt_title = findViewById(R.id.edt_title);
         edt_id = findViewById(R.id.edt_id);
         edt_pw = findViewById(R.id.edt_pw);
@@ -88,13 +90,13 @@ public class AddContentActivity extends AppCompatActivity {
 
         edt_title.setText(getIntent().getStringExtra("title"));
         edt_id.setText(getIntent().getStringExtra("id"));
-        edt_pw.setText(getIntent().getStringExtra("pw"));
         edt_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
 
         if(label != null && !label.isEmpty()) {
             isEdit = true;
             edt_title.requestFocus();
+            tl_pw.setHint("새로운 비밀번호 설정");
             toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
         } else {
             edt_title.requestFocus();
@@ -114,6 +116,7 @@ public class AddContentActivity extends AppCompatActivity {
                 Utils.showSnack(findViewById(R.id.add_screen), "제목을 입력하세요");
                 return;
             }
+
             Content content = new Content(title, search, id, Utils.encodeBase64(pw), memo, docId, timestamp);
             saveToFirebase(content);
         });
@@ -139,15 +142,15 @@ public class AddContentActivity extends AppCompatActivity {
         progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
-    private void saveToFirebase(Content content) {
+    private void saveToFirebase(Content contents) {
         addChangeInProgress(true);
         if(isEdit) {
             docRef = Utils.getContentReference().document(label);
         } else {
             docRef = Utils.getContentReference().document();
         }
-        content.setDocId(docRef.getId());
-        docRef.set(content).addOnCompleteListener(task -> {
+        contents.setDocId(docRef.getId());
+        docRef.set(contents).addOnCompleteListener(task -> {
             if(task.isSuccessful()) {
                 button_save.setEnabled(false);
                 if (isEdit) {

@@ -9,10 +9,13 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.InputType;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -20,6 +23,7 @@ import android.widget.ProgressBar;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.transition.platform.MaterialElevationScale;
@@ -31,7 +35,7 @@ import java.util.Locale;
 public class EditContentActivity extends AppCompatActivity implements PassCheckFragment.Callback {
     private static final long TIME_IN_MILLIS = 10000;
     MaterialToolbar toolbar;
-    TextInputLayout tl_pw, tl_id, tl_memo;
+    TextInputLayout tl_id, tl_memo;
     TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
     MaterialButton button_edit, button_options, button_decrypt;
     ProgressBar progressBar;
@@ -51,7 +55,6 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
         progressBar = findViewById(R.id.edit_progressBar);
-        tl_pw = findViewById(R.id.content_layout_pw);
         tl_id = findViewById(R.id.content_layout_id);
         tl_memo = findViewById(R.id.content_layout_memo);
         tv_title = findViewById(R.id.tv_title);
@@ -87,7 +90,6 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
             intent.putExtra("title", tv_title.getText().toString());
             intent.putExtra("id", tv_id.getText().toString());
-            intent.putExtra("pw", tv_pw.getText().toString());
             intent.putExtra("memo", tv_memo.getText().toString());
             intent.putExtra("label", label);
             startActivity(intent, bundle);
@@ -109,12 +111,20 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
 
         button_decrypt = findViewById(R.id.button_decrypt);
         button_decrypt.setOnClickListener(v -> {
-            if (getPassCode().length() != 0) {
-                PassCheckFragment passCheckFragment = new PassCheckFragment();
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
+            if (tv_pw.getText().length() != 0) {
+                if (getPassCode().length() != 0) {
+                    PassCheckFragment passCheckFragment = new PassCheckFragment();
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
+                } else {
+                    Snackbar sb = Snackbar.make(findViewById(R.id.edit_screen), "먼저 비밀번호를 설정하세요", Snackbar.LENGTH_SHORT);
+                    sb.setAction("설정", v12 -> {
+                        Utils.showToast(this, "클릭");
+                    });
+                    sb.show();
+                }
             } else {
-                Utils.showSnack(findViewById(R.id.edit_screen), "먼저 비밀번호를 설정하세요");
+                Utils.showSnack(findViewById(R.id.edit_screen), "비밀번호가 비어 있습니다");
             }
         });
     }
@@ -122,6 +132,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     @Override
     public void getCallback(boolean value) {
         if (value) {
+            tv_pw.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             tv_pw.setText(Utils.decodeBase64(tv_pw.getText().toString()));
             countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
                 @Override
@@ -134,6 +145,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                 @Override
                 public void onFinish() {
                     timeLeftInMillis = TIME_IN_MILLIS;
+                    tv_pw.setTransformationMethod(PasswordTransformationMethod.getInstance());
                     tv_pw.setText(Utils.encodeBase64(tv_pw.getText().toString()));
                     button_decrypt.setEnabled(true);
                     button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_unlock));
