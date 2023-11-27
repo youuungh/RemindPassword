@@ -1,5 +1,6 @@
 package com.example.passwordmanager;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
@@ -42,6 +43,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     String label;
     CountDownTimer countDownTimer;
     private long timeLeftInMillis = TIME_IN_MILLIS;
+    private boolean timerRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,25 +136,31 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         if (value) {
             tv_pw.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             tv_pw.setText(Utils.decodeBase64(tv_pw.getText().toString()));
-            countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    timeLeftInMillis = millisUntilFinished;
-                    button_decrypt.setEnabled(false);
-                    button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_timer));
-                    updateCountDown();
-                }
-                @Override
-                public void onFinish() {
-                    timeLeftInMillis = TIME_IN_MILLIS;
-                    tv_pw.setTransformationMethod(PasswordTransformationMethod.getInstance());
-                    tv_pw.setText(Utils.encodeBase64(tv_pw.getText().toString()));
-                    button_decrypt.setEnabled(true);
-                    button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_unlock));
-                    button_decrypt.setText("비밀번호 복호화");
-                }
-            }.start();
+            startTimer();
         }
+    }
+
+    private void startTimer() {
+        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftInMillis = millisUntilFinished;
+                timerRunning = true;
+                button_decrypt.setEnabled(false);
+                button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_timer));
+                updateCountDown();
+            }
+            @Override
+            public void onFinish() {
+                timeLeftInMillis = TIME_IN_MILLIS;
+                timerRunning = false;
+                tv_pw.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                tv_pw.setText(Utils.encodeBase64(tv_pw.getText().toString()));
+                button_decrypt.setEnabled(true);
+                button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_unlock));
+                button_decrypt.setText("비밀번호 복호화");
+            }
+        }.start();
     }
 
     private void updateCountDown() {
@@ -188,5 +196,21 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     private String getPassCode() {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
         return pref.getString("PASSCODE", "");
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong("MILLIS_LEFT", timeLeftInMillis);
+        outState.putBoolean("TIMER_STATE", timerRunning);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        timeLeftInMillis = savedInstanceState.getLong("MILLIS_LEFT");
+        timerRunning = savedInstanceState.getBoolean("TIMER_STATE");
+        if (timerRunning)
+            startTimer();
     }
 }
