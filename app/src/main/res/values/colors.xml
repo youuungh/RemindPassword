@@ -24,6 +24,7 @@
     <color name="errorMsg">#ff5722</color>
     <color name="boxStrokeColor">#B3B4BA</color>
     <color name="textHighlight">#9DCEFF</color>
+    <color name="customRippleColor">#e3ffffff</color>
 
     <integer-array name="cv_colors">
         <item>@color/md_red_50</item>

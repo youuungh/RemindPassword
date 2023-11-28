@@ -49,7 +49,9 @@ public class TrashFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnterTransition(new MaterialFadeThrough().setDuration(350));
+        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
+        setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
+        setReenterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
     }
 
     @Override

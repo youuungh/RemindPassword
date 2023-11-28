@@ -67,13 +67,13 @@ public class AddContentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        com.google.android.material.transition.platform.MaterialFadeThrough enter = new MaterialFadeThrough();
+        getWindow().setAllowEnterTransitionOverlap(true);
+        getWindow().setAllowReturnTransitionOverlap(true);
+        MaterialFadeThrough enter = new MaterialFadeThrough();
         enter.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.BOTTOM));
-        enter.setDuration(500);
         getWindow().setEnterTransition(enter);
-        com.google.android.material.transition.platform.MaterialFadeThrough exit = new MaterialFadeThrough();
+        MaterialFadeThrough exit = new MaterialFadeThrough();
         exit.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.TOP));
-        exit.setDuration(600);
         getWindow().setReturnTransition(exit);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);

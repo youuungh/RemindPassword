@@ -43,13 +43,15 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     String label;
     CountDownTimer countDownTimer;
     private long timeLeftInMillis = TIME_IN_MILLIS;
+    private long endTime;
     private boolean timerRunning;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setEnterTransition(new MaterialElevationScale(true).setDuration(200));
-        getWindow().setReturnTransition(new MaterialElevationScale(false).setDuration(300));
+        getWindow().setAllowEnterTransitionOverlap(true);
+        getWindow().setEnterTransition(new MaterialElevationScale(true).setDuration(150));
+        getWindow().setReturnTransition(new MaterialElevationScale(false).setDuration(150));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_content);
         toolbar = findViewById(R.id.content_edit_toolbar);
@@ -141,6 +143,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     }
 
     private void startTimer() {
+        endTime = System.currentTimeMillis() + timeLeftInMillis;
         countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -202,6 +205,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("MILLIS_LEFT", timeLeftInMillis);
+        outState.putLong("END_TIME", endTime);
         outState.putBoolean("TIMER_STATE", timerRunning);
     }
 
@@ -210,7 +214,11 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         super.onRestoreInstanceState(savedInstanceState);
         timeLeftInMillis = savedInstanceState.getLong("MILLIS_LEFT");
         timerRunning = savedInstanceState.getBoolean("TIMER_STATE");
-        if (timerRunning)
+
+        if (timerRunning) {
+            endTime = savedInstanceState.getLong("END_TIME");
+            timeLeftInMillis = endTime - System.currentTimeMillis();
             startTimer();
+        }
     }
 }

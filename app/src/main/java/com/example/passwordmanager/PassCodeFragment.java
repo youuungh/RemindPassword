@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,8 +51,9 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Y, true).setDuration(350));
-        setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Y, false).setDuration(350));
+        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true));
+        setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false));
+        setReenterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true));
     }
 
     @Override
@@ -172,13 +174,15 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                     pin_04.setBackgroundResource(R.drawable.bg_color_oval);
                     passCode = num01 + num02 + num03 + num04;
 
-                    PassCheckFragment passCheckFragment = new PassCheckFragment();
-                    FragmentTransaction ft = getParentFragmentManager().beginTransaction();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("PASSCODE", passCode);
-                    passCheckFragment.setArguments(bundle);
-                    ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
-                    refresh();
+                    new Handler().postDelayed(() -> {
+                        PassCheckFragment passCheckFragment = new PassCheckFragment();
+                        FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                        Bundle bundle = new Bundle();
+                        bundle.putString("PASSCODE", passCode);
+                        passCheckFragment.setArguments(bundle);
+                        ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
+                        refresh();
+                    }, 100);
                     break;
             }
         }

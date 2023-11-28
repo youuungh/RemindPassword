@@ -70,8 +70,9 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true).setDuration(350));
-        setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false).setDuration(350));
+        setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true));
+        setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false));
+        setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false));
     }
 
     @Override
@@ -198,27 +199,38 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                     pin_04.setBackgroundResource(R.drawable.bg_color_oval);
                     confirmCode = num01 + num02 + num03 + num04;
 
-                    Bundle bundle = getArguments();
-                    if (getPassCode().length() == 0) {
-                        if (bundle != null) {
-                            String passCode = bundle.getString("PASSCODE");
-                            if (passCode.equals(confirmCode)) {
-                                Utils.savePassCode(requireContext(), confirmCode);
-                                Intent intent = new Intent(getActivity(), MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
-                            } else {
-                                tv_error.setVisibility(View.VISIBLE);
-                                new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 500);
-                                refresh();
+                    new Handler().postDelayed(() -> {
+                        Bundle bundle = getArguments();
+                        if (getPassCode().length() == 0) {
+                            if (bundle != null) {
+                                String passCode = bundle.getString("PASSCODE");
+                                if (passCode.equals(confirmCode)) {
+                                    Utils.savePassCode(requireContext(), confirmCode);
+                                    FingerPassFragment fingerPassFragment = new FingerPassFragment();
+                                    FragmentTransaction ft = getParentFragmentManager().beginTransaction();
+                                    ft.add(android.R.id.content, fingerPassFragment).commit();
+                                } else {
+                                    tv_error.setVisibility(View.VISIBLE);
+                                    new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
+                                    refreshPassCode();
+                                }
                             }
+                        } else {
+                            matchPassCode();
                         }
-                    } else {
-                        matchPassCode();
-                    }
+                    }, 100);
                     break;
             }
         }
+    }
+
+    private void refreshPassCode() {
+        pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
+        num_list.clear();
+        confirmCode = "";
     }
 
     private void matchPassCode() {
@@ -227,22 +239,13 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
             getParentFragmentManager().popBackStack();
         } else {
             tv_error.setVisibility(View.VISIBLE);
-            new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 500);
-            refresh();
+            new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
+            refreshPassCode();
         }
     }
 
     private String getPassCode() {
         SharedPreferences pref = requireContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
         return pref.getString("PASSCODE", "");
-    }
-
-    private void refresh() {
-        pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
-        num_list.clear();
-        confirmCode = "";
     }
 }

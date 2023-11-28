@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -50,14 +48,13 @@ public class LoginActivity extends AppCompatActivity {
 
         layout_email = findViewById(R.id.login_layout_email);
         layout_password = findViewById(R.id.login_layout_password);
-
         edt_email = findViewById(R.id.login_email);
-        edt_email.addTextChangedListener(new LoginTextWatcher(edt_email));
         edt_password = findViewById(R.id.login_password);
-        edt_password.addTextChangedListener(new LoginTextWatcher(edt_password));
-
-        progressBar = findViewById(R.id.login_progressBar);
         button = findViewById(R.id.login_button);
+        progressBar = findViewById(R.id.login_progressBar);
+
+        edt_email.addTextChangedListener(new LoginTextWatcher(edt_email));
+        edt_password.addTextChangedListener(new LoginTextWatcher(edt_password));
 
         tv_reset  = findViewById(R.id.tv_reset);
         tv_reset.setOnClickListener(v -> {

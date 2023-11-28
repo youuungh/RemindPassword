@@ -26,17 +26,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="생체인증을 이용해 로그인해보세요"
+            android:layout_marginTop="32dp"
+            android:text="생체인증을 이용해 보안을 강화하세요"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
-
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="16dp"
-            android:src="@drawable/ic_arrow_left"
-            android:scaleType="centerInside"/>
     </LinearLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside"
+        app:lottie_rawRes="@raw/fingerprint"
+        app:lottie_loop="true"
+        app:lottie_autoPlay="true"/>
 
     <LinearLayout
         android:id="@+id/content_layout_bottom"
