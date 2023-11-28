@@ -10,6 +10,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -139,6 +140,8 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             tv_pw.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             tv_pw.setText(Utils.decodeBase64(tv_pw.getText().toString()));
             startTimer();
+        } else {
+            resetTimer();
         }
     }
 
@@ -164,6 +167,11 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                 button_decrypt.setText("비밀번호 복호화");
             }
         }.start();
+    }
+
+    private void resetTimer() {
+        timeLeftInMillis = TIME_IN_MILLIS;
+        updateCountDown();
     }
 
     private void updateCountDown() {

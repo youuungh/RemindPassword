@@ -2,6 +2,7 @@ package com.example.passwordmanager;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -51,6 +52,7 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true));
         setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false));
         setReenterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true));
@@ -196,5 +198,11 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
 
         num_list.clear();
         passCode = "";
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 }

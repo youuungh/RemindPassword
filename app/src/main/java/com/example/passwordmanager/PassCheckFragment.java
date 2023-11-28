@@ -3,6 +3,7 @@ package com.example.passwordmanager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -70,6 +71,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.X, true));
         setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false));
         setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.X, false));
@@ -247,5 +249,11 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     private String getPassCode() {
         SharedPreferences pref = requireContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
         return pref.getString("PASSCODE", "");
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
     }
 }
