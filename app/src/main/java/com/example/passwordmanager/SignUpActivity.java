@@ -24,14 +24,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
-    static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
-    FirebaseAuth fAuth;
-    TextInputLayout layout_email, layout_password, layout_passCheck;
-    TextInputEditText edt_email, edt_password, edt_passCheck;
-    MaterialToolbar mToolbar;
-    Button button;
-    ProgressBar progressBar;
-    TextView tv_login;
+    private static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
+    private FirebaseAuth fAuth;
+    private TextInputLayout layout_email, layout_password, layout_passCheck;
+    private TextInputEditText edt_email, edt_password, edt_passCheck;
+    private Button button;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +37,7 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        mToolbar = findViewById(R.id.signup_toolbar);
+        MaterialToolbar mToolbar = findViewById(R.id.signup_toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(v -> { onBackPressed(); });
 
@@ -56,7 +54,7 @@ public class SignUpActivity extends AppCompatActivity {
         edt_passCheck = findViewById(R.id.signup_passCheck);
         edt_passCheck.addTextChangedListener(new SignUpTextWatcher(edt_passCheck));
 
-        tv_login = findViewById(R.id.tv_login);
+        TextView tv_login = findViewById(R.id.tv_login);
         tv_login.setPaintFlags(tv_login.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tv_login.setOnClickListener(view -> {
             Intent intent = new Intent(this, LoginActivity.class);
@@ -95,7 +93,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private class SignUpTextWatcher implements TextWatcher {
-        private View v;
+        private final View v;
 
         private SignUpTextWatcher(View v) {
             this.v = v;
@@ -145,7 +143,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void validateEmail(String emailInput) {
         boolean isValid = Patterns.EMAIL_ADDRESS.matcher(emailInput).matches();
-
         if (emailInput.isEmpty()) {
             layout_email.setErrorEnabled(false);
             layout_email.setBoxStrokeColor(Color.BLACK);
@@ -162,7 +159,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void validatePassword(String passwordInput, String passCheckInput) {
         boolean isValid = PASSWORD.matcher(passwordInput).matches();
-
         if (passwordInput.isEmpty()) {
             layout_password.setErrorEnabled(false);
             layout_password.setBoxStrokeColor(Color.BLACK);
@@ -187,7 +183,6 @@ public class SignUpActivity extends AppCompatActivity {
 
     private void validatePassCheck(String passwordInput, String passCheckInput) {
         boolean isValid = passCheckInput.equals(passwordInput);
-
         if (passCheckInput.isEmpty()) {
             layout_passCheck.setErrorEnabled(false);
             layout_passCheck.setBoxStrokeColor(Color.BLACK);

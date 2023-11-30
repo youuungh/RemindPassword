@@ -48,14 +48,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainFragment extends Fragment {
-    FirestoreRecyclerOptions<Content> options;
-    Adapter adapter;
-    AppBarLayout appBarLayout;
-    RecyclerView recycler_content;
-    SearchBar search_bar;
-    RelativeLayout main_empty_view, main_loading_view;
-    FloatingActionButton main_fab_write, main_fab_top;
-    boolean isSwitch = false;
+    private FirestoreRecyclerOptions<Content> options;
+    private Adapter adapter;
+    private AppBarLayout appBarLayout;
+    private RecyclerView recycler_content;
+    private SearchBar search_bar;
+    private RelativeLayout main_empty_view, main_loading_view;
+    private FloatingActionButton main_fab_write, main_fab_top;
+    private boolean isSwitch = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

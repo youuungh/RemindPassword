@@ -25,14 +25,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.regex.Pattern;
 
 public class LoginActivity extends AppCompatActivity {
-    static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
-    FirebaseAuth fAuth;
-    MaterialToolbar mToolbar;
-    TextInputLayout layout_email, layout_password;
-    TextInputEditText edt_email, edt_password;
-    ProgressBar progressBar;
-    Button button;
-    TextView tv_signup, tv_reset;
+    private static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
+    private FirebaseAuth fAuth;
+    private TextInputLayout layout_email, layout_password;
+    private TextInputEditText edt_email, edt_password;
+    private ProgressBar progressBar;
+    private Button button_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        mToolbar = findViewById(R.id.login_toolbar);
+        MaterialToolbar mToolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(view -> this.finish());
 
@@ -50,18 +48,18 @@ public class LoginActivity extends AppCompatActivity {
         layout_password = findViewById(R.id.login_layout_password);
         edt_email = findViewById(R.id.login_email);
         edt_password = findViewById(R.id.login_password);
-        button = findViewById(R.id.login_button);
+        button_login = findViewById(R.id.login_button);
         progressBar = findViewById(R.id.login_progressBar);
 
         edt_email.addTextChangedListener(new LoginTextWatcher(edt_email));
         edt_password.addTextChangedListener(new LoginTextWatcher(edt_password));
 
-        tv_reset  = findViewById(R.id.tv_reset);
+        TextView tv_reset = findViewById(R.id.tv_reset);
         tv_reset.setOnClickListener(v -> {
             startActivity(new Intent(this, ResetPasswordActivity.class));
         });
 
-        tv_signup = findViewById(R.id.tv_signup);
+        TextView tv_signup = findViewById(R.id.tv_signup);
         tv_signup.setOnClickListener(v -> {
             startActivity(new Intent(this, SignUpActivity.class));
         });
@@ -98,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private class LoginTextWatcher implements TextWatcher {
-        private View v;
+        private final View v;
 
         private LoginTextWatcher(View v) {
             this.v = v;
@@ -111,7 +109,6 @@ public class LoginActivity extends AppCompatActivity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String emailInput = edt_email.getText().toString().trim();
             String passwordInput = edt_password.getText().toString().trim();
-
             switch (v.getId()) {
                 case R.id.login_email:
                     validateEmail(emailInput);
@@ -120,10 +117,9 @@ public class LoginActivity extends AppCompatActivity {
                     validatePassword(passwordInput);
                     break;
             }
-
-            button.setEnabled(Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()
+            button_login.setEnabled(Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()
                     && PASSWORD.matcher(passwordInput).matches());
-            button.setOnClickListener(view -> {
+            button_login.setOnClickListener(view -> {
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();
                 if (focusedView != null)
@@ -138,7 +134,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void validateEmail(String emailInput) {
         boolean isValid = Patterns.EMAIL_ADDRESS.matcher(emailInput).matches();
-
         if (emailInput.isEmpty()) {
             layout_email.setErrorEnabled(false);
             layout_email.setBoxStrokeColor(Color.BLACK);
@@ -154,7 +149,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void validatePassword(String passwordInput) {
         boolean isValid = PASSWORD.matcher(passwordInput).matches();
-
         if (passwordInput.isEmpty()) {
             layout_password.setErrorEnabled(false);
             layout_password.setBoxStrokeColor(Color.BLACK);

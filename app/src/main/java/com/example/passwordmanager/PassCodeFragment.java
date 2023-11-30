@@ -26,15 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PassCodeFragment extends Fragment implements View.OnClickListener {
-    Button button_later;
-    View pin_01, pin_02, pin_03, pin_04;
-    Button[] buttons = new Button[10];
-    Integer[] buttons_id = {R.id.btn_01, R.id.btn_02, R.id.btn_03, R.id.btn_04, R.id.btn_05,
+    private View pin_01, pin_02, pin_03, pin_04;
+    private final Button[] buttons = new Button[10];
+    private final Integer[] buttons_id = {R.id.btn_01, R.id.btn_02, R.id.btn_03, R.id.btn_04, R.id.btn_05,
             R.id.btn_06, R.id.btn_07, R.id.btn_08, R.id.btn_09, R.id.btn_00};
-    ImageButton btn_clear;
-    List<String> num_list = new ArrayList<>();
-    String passCode = "";
-    String num01, num02, num03, num04;
+    private final List<String> num_list = new ArrayList<>();
+    private String passCode = "";
+    private String num01, num02, num03, num04;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -63,7 +61,7 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pass_code, container, false);
 
-        button_later = view.findViewById(R.id.button_later);
+        Button button_later = view.findViewById(R.id.button_later);
         button_later.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -79,7 +77,7 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
             buttons[i] = view.findViewById(buttons_id[i]);
             buttons[i].setOnClickListener(this);
         }
-        btn_clear = view.findViewById(R.id.btn_clear);
+        ImageButton btn_clear = view.findViewById(R.id.btn_clear);
         btn_clear.setOnClickListener(this);
 
         return view;

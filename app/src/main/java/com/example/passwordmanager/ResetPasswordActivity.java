@@ -20,11 +20,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class ResetPasswordActivity extends AppCompatActivity {
-    TextInputLayout layout_reset;
-    TextInputEditText edt_reset;
-    MaterialToolbar mToolbar;
-    Button button;
-    ProgressBar progressBar;
+    private TextInputEditText edt_reset;
+    private Button button_reset;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,20 +30,19 @@ public class ResetPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
-        mToolbar = findViewById(R.id.reset_toolbar);
+        MaterialToolbar mToolbar = findViewById(R.id.reset_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationOnClickListener(v -> {
             onBackPressed();
         });
 
-        layout_reset = findViewById(R.id.reset_layout_email);
         edt_reset = findViewById(R.id.reset_email);
         edt_reset.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         edt_reset.addTextChangedListener(new fPasswordTextWatcher(edt_reset));
 
-        button = findViewById(R.id.reset_button);
+        button_reset = findViewById(R.id.reset_button);
         progressBar = findViewById(R.id.reset_progressBar);
     }
 
@@ -69,7 +66,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
     }
 
     private class fPasswordTextWatcher implements TextWatcher {
-        private View v;
+        private final View v;
 
         private fPasswordTextWatcher(View v) {
             this.v = v;
@@ -83,9 +80,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String fPasswordInput = edt_reset.getText().toString().trim();
-
-            button.setEnabled(Patterns.EMAIL_ADDRESS.matcher(fPasswordInput).matches());
-            button.setOnClickListener(v -> {
+            button_reset.setEnabled(Patterns.EMAIL_ADDRESS.matcher(fPasswordInput).matches());
+            button_reset.setOnClickListener(v -> {
                 edt_reset.clearFocus();
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();

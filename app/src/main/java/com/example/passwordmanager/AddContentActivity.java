@@ -55,14 +55,11 @@ import java.time.Duration;
 import java.util.Base64;
 
 public class AddContentActivity extends AppCompatActivity {
-    DocumentReference docRef;
-    MaterialToolbar toolbar;
-    TextInputLayout tl_pw;
-    TextInputEditText edt_title, edt_id, edt_pw, edt_memo;
-    MaterialButton button_save;
-    ProgressBar progressBar;
-    String label, docId;
-    boolean isEdit = false;
+    private TextInputEditText edt_title, edt_id, edt_pw, edt_memo;
+    private MaterialButton button_save;
+    private ProgressBar progressBar;
+    private String label, docId;
+    private boolean isEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,16 +74,17 @@ public class AddContentActivity extends AppCompatActivity {
         getWindow().setReturnTransition(exit);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
-        toolbar = findViewById(R.id.content_add_toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-        progressBar = findViewById(R.id.add_progressBar);
-        tl_pw = findViewById(R.id.content_layout_pw);
+        MaterialToolbar mToolbar = findViewById(R.id.content_add_toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(view -> onBackPressed());
+
+        TextInputLayout layout_pw = findViewById(R.id.content_layout_pw);
         edt_title = findViewById(R.id.edt_title);
         edt_id = findViewById(R.id.edt_id);
         edt_pw = findViewById(R.id.edt_pw);
         edt_memo = findViewById(R.id.edt_memo);
+        progressBar = findViewById(R.id.add_progressBar);
 
         edt_title.setText(getIntent().getStringExtra("title"));
         edt_id.setText(getIntent().getStringExtra("id"));
@@ -96,8 +94,8 @@ public class AddContentActivity extends AppCompatActivity {
         if(label != null && !label.isEmpty()) {
             isEdit = true;
             edt_title.requestFocus();
-            tl_pw.setHint("새로운 비밀번호 설정");
-            toolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
+            layout_pw.setHint("새로운 비밀번호 설정");
+            mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
         } else {
             edt_title.requestFocus();
         }
@@ -144,6 +142,7 @@ public class AddContentActivity extends AppCompatActivity {
 
     private void saveToFirebase(Content contents) {
         addChangeInProgress(true);
+        DocumentReference docRef;
         if(isEdit) {
             docRef = Utils.getContentReference().document(label);
         } else {

@@ -36,13 +36,11 @@ import java.util.Locale;
 
 public class EditContentActivity extends AppCompatActivity implements PassCheckFragment.Callback {
     private static final long TIME_IN_MILLIS = 10000;
-    MaterialToolbar toolbar;
-    TextInputLayout tl_id, tl_memo;
-    TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
-    MaterialButton button_edit, button_options, button_decrypt;
-    ProgressBar progressBar;
-    String label;
-    CountDownTimer countDownTimer;
+    private TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
+    private MaterialButton button_options;
+    private MaterialButton button_decrypt;
+    private ProgressBar progressBar;
+    private String label;
     private long timeLeftInMillis = TIME_IN_MILLIS;
     private long endTime;
     private boolean timerRunning;
@@ -55,20 +53,20 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         getWindow().setReturnTransition(new MaterialElevationScale(false).setDuration(150));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_content);
-        toolbar = findViewById(R.id.content_edit_toolbar);
-        setSupportActionBar(toolbar);
-        toolbar.setNavigationOnClickListener(view -> onBackPressed());
 
-        progressBar = findViewById(R.id.edit_progressBar);
-        tl_id = findViewById(R.id.content_layout_id);
-        tl_memo = findViewById(R.id.content_layout_memo);
+        MaterialToolbar mToolbar = findViewById(R.id.content_edit_toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(view -> onBackPressed());
+
         tv_title = findViewById(R.id.tv_title);
-        tv_title.setKeyListener(null);
         tv_id = findViewById(R.id.tv_id);
-        tv_id.setKeyListener(null);
         tv_pw = findViewById(R.id.tv_pw);
-        tv_pw.setKeyListener(null);
         tv_memo = findViewById(R.id.tv_memo);
+        progressBar = findViewById(R.id.edit_progressBar);
+
+        tv_title.setKeyListener(null);
+        tv_id.setKeyListener(null);
+        tv_pw.setKeyListener(null);
         tv_memo.setKeyListener(null);
 
         tv_title.setText(getIntent().getStringExtra("title"));
@@ -77,19 +75,21 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         tv_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
 
-        tl_id.setEndIconOnClickListener(v -> {
+        TextInputLayout layout_id = findViewById(R.id.content_layout_id);
+        layout_id.setEndIconOnClickListener(v -> {
             Utils.copyToClipboard(getApplicationContext(), tv_id.getText().toString());
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
                 Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
         });
 
-        tl_memo.setEndIconOnClickListener(v -> {
+        TextInputLayout layout_memo = findViewById(R.id.content_layout_memo);
+        layout_memo.setEndIconOnClickListener(v -> {
             Utils.copyToClipboard(getApplicationContext(), tv_memo.getText().toString());
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
                 Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
         });
 
-        button_edit = findViewById(R.id.button_edit);
+        MaterialButton button_edit = findViewById(R.id.button_edit);
         button_edit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddContentActivity.class);
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
@@ -147,7 +147,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
 
     private void startTimer() {
         endTime = System.currentTimeMillis() + timeLeftInMillis;
-        countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+        CountDownTimer countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;
@@ -156,6 +156,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                 button_decrypt.setIcon(ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_timer));
                 updateCountDown();
             }
+
             @Override
             public void onFinish() {
                 timeLeftInMillis = TIME_IN_MILLIS;

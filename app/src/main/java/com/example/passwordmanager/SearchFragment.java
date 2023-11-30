@@ -37,13 +37,12 @@ import java.util.List;
 
 
 public class SearchFragment extends Fragment {
-    SearchAdapter search_adapter;
-    MaterialToolbar mToolbar;
-    RecyclerView recycler_search;
-    SearchView searchView;
-    FloatingActionButton search_fab_top;
-    LinearLayout search_emptyView;
-    InputMethodManager imm;
+    private SearchAdapter search_adapter;
+    private RecyclerView recycler_search;
+    private SearchView searchView;
+    private FloatingActionButton search_fab_top;
+    private LinearLayout search_emptyView;
+    private InputMethodManager imm;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -76,7 +75,7 @@ public class SearchFragment extends Fragment {
 
         imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        mToolbar = view.findViewById(R.id.search_toolbar);
+        MaterialToolbar mToolbar = view.findViewById(R.id.search_toolbar);
         mToolbar.setNavigationOnClickListener(v -> {
             searchView.clearFocus();
             ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);

@@ -13,9 +13,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 public class HomeActivity extends AppCompatActivity {
-    FirebaseAuth fAuth;
-    FirebaseUser fUser;
-    Button home_signup, home_login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,20 +26,20 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        fAuth = FirebaseAuth.getInstance();
-        fUser = fAuth.getCurrentUser();
+        FirebaseAuth fAuth = FirebaseAuth.getInstance();
+        FirebaseUser fUser = fAuth.getCurrentUser();
         if (fUser != null) {
             Intent intent = new Intent(this, MainActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
         }
 
-        home_signup = findViewById(R.id.home_signup);
+        Button home_signup = findViewById(R.id.home_signup);
         home_signup.setOnClickListener(view -> {
             startActivity(new Intent(this, SignUpActivity.class));
         });
 
-        home_login = findViewById(R.id.home_login);
+        Button home_login = findViewById(R.id.home_login);
         home_login.setOnClickListener(view -> {
             startActivity(new Intent(this, LoginActivity.class));
         });

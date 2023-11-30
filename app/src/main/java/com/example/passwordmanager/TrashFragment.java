@@ -38,13 +38,13 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class TrashFragment extends Fragment {
-    FirestoreRecyclerOptions<Content> options;
-    FirestoreRecyclerAdapter<Content, TrashViewHolder> trash_adapter;
-    MaterialToolbar mToolbar;
-    RecyclerView recyclerView;
-    RelativeLayout trash_emptyView, trash_loadingView;
-    FloatingActionButton trash_fab_top;
-    boolean isSwitch = false;
+    private FirestoreRecyclerOptions<Content> options;
+    private FirestoreRecyclerAdapter<Content, TrashViewHolder> trash_adapter;
+    private MaterialToolbar mToolbar;
+    private RecyclerView recyclerView;
+    private RelativeLayout trash_emptyView, trash_loadingView;
+    private FloatingActionButton trash_fab_top;
+    private boolean isSwitch = false;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

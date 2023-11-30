@@ -29,17 +29,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PassCheckFragment extends Fragment implements View.OnClickListener {
-    Callback callback;
-    MaterialToolbar mToolbar;
-    View pin_01, pin_02, pin_03, pin_04;
-    TextView tv_subtitle, tv_error;
-    Button[] buttons = new Button[10];
-    Integer[] buttons_id = {R.id.chk_btn_01, R.id.chk_btn_02, R.id.chk_btn_03, R.id.chk_btn_04, R.id.chk_btn_05,
+    private Callback callback;
+    private View pin_01, pin_02, pin_03, pin_04;
+    private TextView tv_error;
+    private final Button[] buttons = new Button[10];
+    private final Integer[] buttons_id = {R.id.chk_btn_01, R.id.chk_btn_02, R.id.chk_btn_03, R.id.chk_btn_04, R.id.chk_btn_05,
             R.id.chk_btn_06, R.id.chk_btn_07, R.id.chk_btn_08, R.id.chk_btn_09, R.id.chk_btn_00};
-    ImageButton btn_clear;
-    List<String> num_list = new ArrayList<>();
-    String confirmCode = "";
-    String num01, num02, num03, num04;
+    private final List<String> num_list = new ArrayList<>();
+    private String confirmCode = "";
+    private String num01, num02, num03, num04;
 
     public interface Callback {
         void getCallback(boolean value);
@@ -82,12 +80,12 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pass_check, container, false);
 
-        mToolbar = view.findViewById(R.id.pin_check_toolbar);
+        MaterialToolbar mToolbar = view.findViewById(R.id.pin_check_toolbar);
         mToolbar.setNavigationOnClickListener(v -> {
             getParentFragmentManager().popBackStack();
         });
 
-        tv_subtitle = view.findViewById(R.id.tv_subtitle);
+        TextView tv_subtitle = view.findViewById(R.id.tv_subtitle);
         if (getPassCode().length() != 0) {
             tv_subtitle.setText("비밀번호 4자리를 입력하세요");
         } else {
@@ -103,7 +101,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
             buttons[i] = view.findViewById(buttons_id[i]);
             buttons[i].setOnClickListener(this);
         }
-        btn_clear = view.findViewById(R.id.chk_btn_clear);
+        ImageButton btn_clear = view.findViewById(R.id.chk_btn_clear);
         btn_clear.setOnClickListener(this);
         tv_error = view.findViewById(R.id.pin_check_errorMsg);
 

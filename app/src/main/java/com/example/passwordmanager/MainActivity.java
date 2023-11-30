@@ -40,14 +40,11 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    FirebaseAuth fAuth;
-    FirebaseUser fUser;
+    private FirebaseAuth fAuth;
+    private TextView main_count;
+    private TextView trash_count;
     DrawerLayout drawerLayout;
-    NavigationView main_nav;
-    MaterialButton button;
-    TextView tv_userEmail, main_count, trash_count;
     FloatingActionButton fab_write, fab_top;
-    boolean isSelect = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,10 +57,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         fAuth = FirebaseAuth.getInstance();
-        fUser = fAuth.getCurrentUser();
+        FirebaseUser fUser = fAuth.getCurrentUser();
 
         drawerLayout = findViewById(R.id.layout_drawer);
-        main_nav = findViewById(R.id.main_nav);
+        NavigationView main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);
         main_nav.setCheckedItem(R.id.nav_main);
         main_nav.getMenu().getItem(0).setActionView(R.layout.menu_main_counter);
@@ -73,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         trash_count = main_nav.getMenu().getItem(1).getActionView().findViewById(R.id.tv_trash_count);
 
         View header = main_nav.getHeaderView(0);
-        tv_userEmail = header.findViewById(R.id.tv_userMail);
+        TextView tv_userEmail = header.findViewById(R.id.tv_userMail);
         if (fUser != null) {
             tv_userEmail.setText(fUser.getEmail());
         }
@@ -86,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             startActivity(intent, bundle);
         });
 
-        button = findViewById(R.id.nav_button);
+        MaterialButton button = findViewById(R.id.nav_button);
         button.setOnClickListener(v -> {
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.CustomAlertDialog)
                     .setMessage("로그아웃 하시겠습니까?")
@@ -114,11 +111,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
         if (id == R.id.nav_main && !(fragment instanceof MainFragment)) {
             showFragments(new MainFragment());
-            isSelect = false;
             fab_write.show();
         } else if (id == R.id.nav_trash && !(fragment instanceof TrashFragment)) {
             showFragments(new TrashFragment());
-            isSelect = true;
             fab_write.hide();
         } else if (id == R.id.nav_setting) {
             //startActivity(new Intent(MainActivity.this, SettingActivity.class));

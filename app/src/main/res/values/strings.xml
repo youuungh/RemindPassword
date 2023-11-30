@@ -8,4 +8,13 @@
     <string name="search">검색</string>
     <string name="logout">로그아웃</string>
     <string name="top">상단으로</string>
+    <string name="register">등록</string>
+    <string name="login">로그인</string>
+    <string name="existAccount">계정이 이미 있으신가요?</string>
+    <string name="checkPassword">비밀번호 확인</string>
+    <string name="inputPassword">비밀번호 입력</string>
+    <string name="inputMail">이메일 입력</string>
+    <string name="signup">회원가입</string>
+    <string name="resetPassword">비밀번호 재설정</string>
+    <string name="createAccount">이메일 계정생성</string>
 </resources>
