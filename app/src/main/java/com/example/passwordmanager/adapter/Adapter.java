@@ -6,12 +6,15 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -36,6 +39,7 @@ import java.util.Random;
 
 public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolder> {
     MainFragment context;
+    private long mLastClickTime = 0;
 
     public Adapter(@NonNull FirestoreRecyclerOptions<Content> options, MainFragment context) {
         super(options);
@@ -50,7 +54,6 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
         int randomColor = colorList[new Random().nextInt(colorList.length)];
         CardView cv_content = v.findViewById(R.id.cv_content);
         cv_content.setCardBackgroundColor(randomColor);
-
         return new ViewHolder(v);
     }
 
@@ -69,14 +72,37 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
             intent.putExtra("pw", content.getPw());
             intent.putExtra("memo", content.getMemo());
             intent.putExtra("label", label);
+            intent.putExtra("favorite", content.isFavorite());
             view.getContext().startActivity(intent, bundle);
         });
 
         holder.content_option.setOnClickListener(v -> {
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return;
+            mLastClickTime = SystemClock.elapsedRealtime();
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(v.getContext(), R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(v.getContext()).inflate(R.layout.content_item_bottom_sheet, v.findViewById(R.id.cibs_container));
             TextView item_title = bottomSheetView.findViewById(R.id.main_option_title);
+            ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
+            TextView tv_favorite = bottomSheetView.findViewById(R.id.tv_favorite);
+
             item_title.setText(content.getTitle());
+            if (content.isFavorite()) {
+                iv_favorite.setImageResource(R.drawable.ic_star_filled);
+                tv_favorite.setText("즐겨찾기에서 삭제");
+            } else {
+                iv_favorite.setImageResource(R.drawable.ic_star_not_filled);
+                tv_favorite.setText("즐겨찾기에 추가");
+            }
+
+            bottomSheetView.findViewById(R.id.main_option_favorite).setOnClickListener(v1 -> {
+                bottomSheetDialog.dismiss();
+                if (content.isFavorite()) {
+                    Toast.makeText(context.getActivity(), "클릭", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context.getActivity(), "클릭", Toast.LENGTH_SHORT).show();
+                }
+            });
+
             bottomSheetView.findViewById(R.id.main_option_edit).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
                 Intent intent = new Intent(v.getContext(), AddContentActivity.class);
@@ -86,8 +112,10 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
                 intent.putExtra("pw", content.getPw());
                 intent.putExtra("memo", content.getMemo());
                 intent.putExtra("label", label);
+                intent.putExtra("favorite", content.isFavorite());
                 v.getContext().startActivity(intent, bundle);
             });
+
             bottomSheetView.findViewById(R.id.main_option_trash).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
                 DocumentReference fromPath = Utils.getContentReference().document(label);

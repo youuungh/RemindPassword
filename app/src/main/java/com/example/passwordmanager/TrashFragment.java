@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,6 +46,7 @@ public class TrashFragment extends Fragment {
     private RelativeLayout trash_emptyView, trash_loadingView;
     private FloatingActionButton trash_fab_top;
     private boolean isSwitch = false;
+    private long mLastClickTime = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,6 +95,8 @@ public class TrashFragment extends Fragment {
         }
 
         mToolbar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return false;
+            mLastClickTime = SystemClock.elapsedRealtime();
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_bottom_sheet, getView().findViewById(R.id.tbs_container));
             bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
@@ -115,6 +119,7 @@ public class TrashFragment extends Fragment {
                      Utils.showSnack(view.findViewById(R.id.recycler_trash), "복원할 항목이 없습니다");
                 }
             });
+
             bottomSheetView.findViewById(R.id.option_delete).setOnClickListener(v -> {
                 bottomSheetDialog.dismiss();
                 if (!options.getSnapshots().isEmpty()) {
@@ -257,16 +262,20 @@ public class TrashFragment extends Fragment {
                 holder.trash_id.setText(trash.getId());
 
                 holder.trash_option.setOnClickListener(v -> {
+                    if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return;
+                    mLastClickTime = SystemClock.elapsedRealtime();
                     BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
                     View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_item_bottom_sheet, getView().findViewById(R.id.tibs_container));
                     TextView item_title = bottomSheetView.findViewById(R.id.trash_option_title);
                     item_title.setText(trash.getTitle());
+
                     bottomSheetView.findViewById(R.id.trash_option_restore).setOnClickListener(v1 -> {
                         bottomSheetDialog.dismiss();
                         DocumentReference fromPath = Utils.getTrashReference().document(label);
                         DocumentReference toPath = Utils.getContentReference().document();
                         moveFirebaseDocument(fromPath, toPath);
                     });
+
                     bottomSheetView.findViewById(R.id.trash_option_delete).setOnClickListener(v1 -> {
                         bottomSheetDialog.dismiss();
                         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.CustomAlertDialog)

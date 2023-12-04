@@ -15,12 +15,15 @@ import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.SystemClock;
 import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -41,9 +44,11 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     private MaterialButton button_decrypt;
     private ProgressBar progressBar;
     private String label;
+    private long mLastClickTime = 0;
     private long timeLeftInMillis = TIME_IN_MILLIS;
     private long endTime;
     private boolean timerRunning;
+    private boolean favorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +79,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         tv_pw.setText(getIntent().getStringExtra("pw"));
         tv_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
+        favorite = getIntent().getBooleanExtra("favorite", false);
 
         TextInputLayout layout_id = findViewById(R.id.content_layout_id);
         layout_id.setEndIconOnClickListener(v -> {
@@ -97,13 +103,27 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             intent.putExtra("id", tv_id.getText().toString());
             intent.putExtra("memo", tv_memo.getText().toString());
             intent.putExtra("label", label);
+            intent.putExtra("favorite", favorite);
             startActivity(intent, bundle);
         });
 
         button_options = findViewById(R.id.button_options);
         button_options.setOnClickListener(v -> {
+            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return;
+            mLastClickTime = SystemClock.elapsedRealtime();
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.cbs_container));
+            ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
+            TextView tv_favorite = bottomSheetView.findViewById(R.id.tv_favorite);
+
+            if (favorite) {
+                iv_favorite.setImageResource(R.drawable.ic_star_filled);
+                tv_favorite.setText("즐겨찾기에서 삭제");
+            } else {
+                iv_favorite.setImageResource(R.drawable.ic_star_not_filled);
+                tv_favorite.setText("즐겨찾기에 추가");
+            }
+
             bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
                 DocumentReference fromPath = Utils.getContentReference().document(label);
@@ -147,7 +167,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
 
     private void startTimer() {
         endTime = System.currentTimeMillis() + timeLeftInMillis;
-        CountDownTimer countDownTimer = new CountDownTimer(timeLeftInMillis, 1000) {
+        new CountDownTimer(timeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeftInMillis = millisUntilFinished;

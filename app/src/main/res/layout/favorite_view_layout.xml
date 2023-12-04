@@ -2,16 +2,18 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    android:orientation="horizontal"
+    android:weightSum="3">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_content"
-        android:layout_width="match_parent"
+        android:id="@+id/cv_favorite"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/md_blue_grey_50"
+        android:layout_weight="2"
+        app:cardBackgroundColor="@color/md_grey_300"
         app:cardCornerRadius="10dp"
         app:cardElevation="0dp"
         app:strokeWidth="0dp"
@@ -31,7 +33,7 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    android:id="@+id/content_title"
+                    android:id="@+id/favorite_title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -46,7 +48,7 @@
                     android:includeFontPadding="true"/>
 
                 <ImageButton
-                    android:id="@+id/content_option"
+                    android:id="@+id/favorite_option"
                     android:layout_width="40dp"
                     android:layout_height="match_parent"
                     android:layout_marginEnd="2dp"
@@ -56,7 +58,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/content_id"
+                android:id="@+id/favorite_id"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/linearlayout_title"
@@ -70,10 +72,10 @@
                 android:ellipsize="end"/>
 
             <TextView
-                android:id="@+id/content_timestamp"
+                android:id="@+id/favorite_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/content_id"
+                android:layout_below="@id/favorite_id"
                 android:layout_alignParentEnd="true"
                 android:paddingStart="5dp"
                 android:paddingEnd="8dp"

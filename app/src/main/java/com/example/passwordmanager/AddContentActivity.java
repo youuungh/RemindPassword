@@ -109,13 +109,14 @@ public class AddContentActivity extends AppCompatActivity {
             String pw = edt_pw.getText().toString();
             String memo = edt_memo.getText().toString();
             Timestamp timestamp = Timestamp.now();
+            boolean favorite = getIntent().getBooleanExtra("favorite", false);
 
             if (title.isEmpty()) {
                 Utils.showSnack(findViewById(R.id.add_screen), "제목을 입력하세요");
                 return;
             }
 
-            Content content = new Content(title, search, id, Utils.encodeBase64(pw), memo, docId, timestamp);
+            Content content = new Content(title, search, id, Utils.encodeBase64(pw), memo, docId, timestamp, favorite);
             saveToFirebase(content);
         });
     }
@@ -145,26 +146,33 @@ public class AddContentActivity extends AppCompatActivity {
         DocumentReference docRef;
         if(isEdit) {
             docRef = Utils.getContentReference().document(label);
-        } else {
-            docRef = Utils.getContentReference().document();
-        }
-        contents.setDocId(docRef.getId());
-        docRef.set(contents).addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
-                button_save.setEnabled(false);
-                if (isEdit) {
+            docRef.set(contents).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    button_save.setEnabled(false);
                     Intent intent = new Intent(this, MainActivity.class);
                     Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent, bundle);
+                } else {
+                    addChangeInProgress(false);
+                    button_save.setEnabled(true);
+                    Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
                 }
-                finish();
-            } else {
-                addChangeInProgress(false);
-                button_save.setEnabled(true);
-                Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
-            }
-        });
+            });
+        } else {
+            docRef = Utils.getContentReference().document();
+            contents.setDocId(docRef.getId());
+            docRef.set(contents).addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    button_save.setEnabled(false);
+                    finish();
+                } else {
+                    addChangeInProgress(false);
+                    button_save.setEnabled(true);
+                    Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
+                }
+            });
+        }
     }
 
     @Override

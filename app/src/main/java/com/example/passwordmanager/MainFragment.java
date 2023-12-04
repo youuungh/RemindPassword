@@ -51,7 +51,7 @@ public class MainFragment extends Fragment {
     private FirestoreRecyclerOptions<Content> options;
     private Adapter adapter;
     private AppBarLayout appBarLayout;
-    private RecyclerView recycler_content;
+    private RecyclerView rv_content;
     private SearchBar search_bar;
     private RelativeLayout main_empty_view, main_loading_view;
     private FloatingActionButton main_fab_write, main_fab_top;
@@ -74,8 +74,8 @@ public class MainFragment extends Fragment {
         main_loading_view = view.findViewById(R.id.main_view_loading);
 
         appBarLayout = view.findViewById(R.id.main_layout_appbar);
-        recycler_content = view.findViewById(R.id.recycler_contents);
-        recycler_content.setHasFixedSize(true);
+        rv_content = view.findViewById(R.id.rv_contents);
+        rv_content.setHasFixedSize(true);
 
         search_bar = view.findViewById(R.id.main_searchbar);
         search_bar.setNavigationOnClickListener(v -> ((MainActivity) getActivity()).drawerLayout.open());
@@ -91,10 +91,10 @@ public class MainFragment extends Fragment {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
                 if (!isSwitch) {
-                    recycler_content.setLayoutManager(new LinearLayoutManager(getContext()));
+                    rv_content.setLayoutManager(new LinearLayoutManager(getContext()));
                     item.setIcon(R.drawable.ic_column_grid);
                 } else {
-                    recycler_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
+                    rv_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
                     item.setIcon(R.drawable.ic_column_linear);
                 }
                 isSwitch = !isSwitch;
@@ -114,9 +114,9 @@ public class MainFragment extends Fragment {
         main_fab_write = ((MainActivity)getActivity()).fab_write;
         main_fab_top = ((MainActivity)getActivity()).fab_top;
         main_fab_top.setOnClickListener(v -> {
-            recycler_content.scrollToPosition(0);
+            rv_content.scrollToPosition(0);
             appBarLayout.setExpanded(true);
-            if (recycler_content.getVerticalScrollbarPosition() == 0)
+            if (rv_content.getVerticalScrollbarPosition() == 0)
                 main_fab_top.hide();
         });
 
@@ -130,13 +130,13 @@ public class MainFragment extends Fragment {
                 .build();
         adapter = new Adapter(options, this);
         adapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
-        recycler_content.setAdapter(adapter);
+        rv_content.setAdapter(adapter);
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
                 showEmptyView(options.getSnapshots().isEmpty());
-                recycler_content.scrollToPosition(0);
+                rv_content.scrollToPosition(0);
                 appBarLayout.setExpanded(true);
             }
             @Override
@@ -148,7 +148,7 @@ public class MainFragment extends Fragment {
         });
         adapter.notifyDataSetChanged();
 
-        recycler_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        rv_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler();
             final Runnable runnable = () -> main_fab_top.hide();
             @Override
@@ -184,10 +184,10 @@ public class MainFragment extends Fragment {
 
     private void onChangeMainMenuItem() {
         if (isSwitch) {
-            recycler_content.setLayoutManager(new LinearLayoutManager(getContext()));
+            rv_content.setLayoutManager(new LinearLayoutManager(getContext()));
             search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
         } else {
-            recycler_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
+            rv_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
             search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
         }
     }

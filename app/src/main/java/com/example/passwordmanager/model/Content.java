@@ -12,12 +12,13 @@ public class Content {
     private String memo;
     private String docId;
     private Timestamp timestamp;
+    private boolean favorite;
 
     public Content() {
 
     }
 
-    public Content(String title, String search, String id, String pw, String memo, String docId, Timestamp timestamp) {
+    public Content(String title, String search, String id, String pw, String memo, String docId, Timestamp timestamp, boolean favorite) {
         this.title = title;
         this.search = search;
         this.id = id;
@@ -25,6 +26,7 @@ public class Content {
         this.memo = memo;
         this.docId = docId;
         this.timestamp = timestamp;
+        this.favorite = favorite;
     }
 
     public String getTitle() {
@@ -55,5 +57,13 @@ public class Content {
 
     public Timestamp getTimestamp() {
         return timestamp;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 }
