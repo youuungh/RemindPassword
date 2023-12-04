@@ -96,6 +96,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             intent.putExtra("pw", content.getPw());
             intent.putExtra("memo", content.getMemo());
             intent.putExtra("label", content.getDocId());
+            intent.putExtra("favorite", content.isFavorite());
             v.getContext().startActivity(intent, bundle);
         });
     }
