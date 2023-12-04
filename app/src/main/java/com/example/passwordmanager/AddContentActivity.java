@@ -136,13 +136,13 @@ public class AddContentActivity extends AppCompatActivity {
         clearFocus();
     }
 
-    private void addChangeInProgress(boolean inProgress) {
+    private void onChangeInProgress(boolean inProgress) {
         button_save.setIcon(inProgress ? null : ContextCompat.getDrawable(this, R.drawable.ic_check_bold));
         progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
     private void saveToFirebase(Content contents) {
-        addChangeInProgress(true);
+        onChangeInProgress(true);
         DocumentReference docRef;
         if(isEdit) {
             docRef = Utils.getContentReference().document(label);
@@ -154,7 +154,7 @@ public class AddContentActivity extends AppCompatActivity {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(intent, bundle);
                 } else {
-                    addChangeInProgress(false);
+                    onChangeInProgress(false);
                     button_save.setEnabled(true);
                     Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
                 }
@@ -167,7 +167,7 @@ public class AddContentActivity extends AppCompatActivity {
                     button_save.setEnabled(false);
                     finish();
                 } else {
-                    addChangeInProgress(false);
+                    onChangeInProgress(false);
                     button_save.setEnabled(true);
                     Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
                 }

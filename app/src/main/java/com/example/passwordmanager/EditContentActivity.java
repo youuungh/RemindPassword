@@ -201,14 +201,14 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         button_decrypt.setText(timeLeft);
     }
 
-    private void editChangeInProgress(boolean inProgress) {
+    private void onChangeInProgress(boolean inProgress) {
         button_options.setIcon(inProgress ? null : ContextCompat.getDrawable(this, R.drawable.ic_dot_horizon_bold));
         progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
     private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
         button_options.setEnabled(false);
-        editChangeInProgress(true);
+        onChangeInProgress(true);
         fromPath.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 DocumentSnapshot documentSnapshot = task.getResult();
@@ -218,7 +218,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                                     .addOnSuccessListener(unused1 -> finish())
                                     .addOnFailureListener(e -> {
                                         Utils.showSnack(findViewById(R.id.edit_screen), "오류, 다시 시도하세요");
-                                        editChangeInProgress(false);
+                                        onChangeInProgress(false);
                                     }));
                 }
             }
