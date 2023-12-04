@@ -40,15 +40,13 @@ import java.util.Locale;
 public class EditContentActivity extends AppCompatActivity implements PassCheckFragment.Callback {
     private static final long TIME_IN_MILLIS = 10000;
     private TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
-    private MaterialButton button_options;
-    private MaterialButton button_decrypt;
+    private MaterialButton button_options, button_decrypt;
     private ProgressBar progressBar;
     private String label;
     private long mLastClickTime = 0;
     private long timeLeftInMillis = TIME_IN_MILLIS;
     private long endTime;
-    private boolean timerRunning;
-    private boolean favorite;
+    private boolean timerRunning, favorite;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
