@@ -146,33 +146,24 @@ public class AddContentActivity extends AppCompatActivity {
         DocumentReference docRef;
         if(isEdit) {
             docRef = Utils.getContentReference().document(label);
-            docRef.set(contents).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    button_save.setEnabled(false);
-                    Intent intent = new Intent(this, MainActivity.class);
-                    Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(intent, bundle);
-                } else {
-                    onChangeInProgress(false);
-                    button_save.setEnabled(true);
-                    Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
-                }
-            });
         } else {
             docRef = Utils.getContentReference().document();
-            contents.setDocId(docRef.getId());
-            docRef.set(contents).addOnCompleteListener(task -> {
-                if(task.isSuccessful()) {
-                    button_save.setEnabled(false);
-                    finish();
-                } else {
-                    onChangeInProgress(false);
-                    button_save.setEnabled(true);
-                    Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
-                }
-            });
         }
+        contents.setDocId(docRef.getId());
+        docRef.set(contents).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                button_save.setEnabled(false);
+                Intent intent = new Intent(this, MainActivity.class);
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent, bundle);
+                finish();
+            } else {
+                onChangeInProgress(false);
+                button_save.setEnabled(true);
+                Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
+            }
+        });
     }
 
     @Override

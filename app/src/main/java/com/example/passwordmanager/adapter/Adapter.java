@@ -29,12 +29,15 @@ import com.example.passwordmanager.Utils;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.util.HashMap;
 import java.util.Random;
 
 public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolder> {
@@ -84,7 +87,6 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
             TextView item_title = bottomSheetView.findViewById(R.id.main_option_title);
             ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
             TextView tv_favorite = bottomSheetView.findViewById(R.id.tv_favorite);
-
             item_title.setText(content.getTitle());
             if (content.isFavorite()) {
                 iv_favorite.setImageResource(R.drawable.ic_star_filled);
@@ -96,10 +98,11 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
 
             bottomSheetView.findViewById(R.id.main_option_favorite).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
+                DocumentReference docRef = Utils.getContentReference().document(label);
                 if (content.isFavorite()) {
-                    Toast.makeText(context.getActivity(), "클릭", Toast.LENGTH_SHORT).show();
+                    deleteFavorite(docRef, label);
                 } else {
-                    Toast.makeText(context.getActivity(), "클릭", Toast.LENGTH_SHORT).show();
+                    addFavorite(docRef, label);
                 }
             });
 
@@ -125,6 +128,24 @@ public class Adapter extends FirestoreRecyclerAdapter<Content, Adapter.ViewHolde
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.show();
         });
+    }
+
+    private void deleteFavorite(DocumentReference docRef, String label) {
+        docRef.get().addOnSuccessListener(documentSnapshot ->
+                Utils.getContentReference().document(label)
+                        .update("favorite", false)
+                        .addOnSuccessListener(unused -> {
+                            Utils.showSnack(context.getActivity().findViewById(R.id.fragment_container), "즐겨찾기에서 삭제되었습니다");
+                        }));
+    }
+
+    private void addFavorite(DocumentReference docRef, String label) {
+        docRef.get().addOnSuccessListener(documentSnapshot ->
+                Utils.getContentReference().document(label)
+                        .update("favorite", true)
+                        .addOnSuccessListener(unused -> {
+                            Utils.showSnack(context.getActivity().findViewById(R.id.fragment_container), "즐겨찾기에 추가되었습니다");
+                        }));
     }
 
     private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {

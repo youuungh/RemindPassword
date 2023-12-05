@@ -19,12 +19,15 @@ import android.os.SystemClock;
 import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
@@ -34,6 +37,9 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.transition.platform.MaterialElevationScale;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import org.w3c.dom.Text;
 
 import java.util.Locale;
 
@@ -42,7 +48,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     private TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
     private MaterialButton button_options, button_decrypt;
     private ProgressBar progressBar;
-    private String label;
+    private String label, docId;
     private long mLastClickTime = 0;
     private long timeLeftInMillis = TIME_IN_MILLIS;
     private long endTime;
@@ -114,13 +120,31 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
             TextView tv_favorite = bottomSheetView.findViewById(R.id.tv_favorite);
 
-            if (favorite) {
-                iv_favorite.setImageResource(R.drawable.ic_star_filled);
-                tv_favorite.setText("즐겨찾기에서 삭제");
-            } else {
-                iv_favorite.setImageResource(R.drawable.ic_star_not_filled);
-                tv_favorite.setText("즐겨찾기에 추가");
-            }
+            DocumentReference docRef = Utils.getContentReference().document(label);
+            docRef.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        favorite = document.getBoolean("favorite");
+                        if (favorite) {
+                            iv_favorite.setImageResource(R.drawable.ic_star_filled);
+                            tv_favorite.setText("즐겨찾기에서 삭제");
+                        } else {
+                            iv_favorite.setImageResource(R.drawable.ic_star_not_filled);
+                            tv_favorite.setText("즐겨찾기에 추가");
+                        }
+                    }
+                }
+            });
+
+            bottomSheetView.findViewById(R.id.option_favorite).setOnClickListener(v1 -> {
+                bottomSheetDialog.dismiss();
+                if (favorite) {
+                    deleteFavorite(docRef, label);
+                } else {
+                    addFavorite(docRef, label);
+                }
+            });
 
             bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
@@ -202,6 +226,24 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     private void onChangeInProgress(boolean inProgress) {
         button_options.setIcon(inProgress ? null : ContextCompat.getDrawable(this, R.drawable.ic_dot_horizon_bold));
         progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
+    }
+
+    private void deleteFavorite(DocumentReference docRef, String label) {
+        docRef.get().addOnSuccessListener(documentSnapshot ->
+                Utils.getContentReference().document(label)
+                        .update("favorite", false)
+                        .addOnSuccessListener(unused -> {
+                            Utils.showSnack(findViewById(R.id.edit_screen), "즐겨찾기에서 삭제되었습니다");
+                        }));
+    }
+
+    private void addFavorite(DocumentReference docRef, String label) {
+        docRef.get().addOnSuccessListener(documentSnapshot ->
+                Utils.getContentReference().document(label)
+                        .update("favorite", true)
+                        .addOnSuccessListener(unused -> {
+                            Utils.showSnack(findViewById(R.id.edit_screen), "즐겨찾기에 추가되었습니다");
+                        }));
     }
 
     private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {
