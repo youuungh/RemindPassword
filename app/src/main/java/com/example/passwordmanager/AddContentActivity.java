@@ -117,7 +117,12 @@ public class AddContentActivity extends AppCompatActivity {
             }
 
             Content content = new Content(title, search, id, Utils.encodeBase64(pw), memo, docId, timestamp, favorite);
-            saveToFirebase(content);
+
+            if (favorite) {
+                editFavToFirebase(content);
+            } else {
+                saveToFirebase(content);
+            }
         });
     }
 
@@ -158,6 +163,25 @@ public class AddContentActivity extends AppCompatActivity {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(intent, bundle);
                 finish();
+            } else {
+                onChangeInProgress(false);
+                button_save.setEnabled(true);
+                Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
+            }
+        });
+    }
+
+    private void editFavToFirebase(Content contents) {
+        onChangeInProgress(true);
+        DocumentReference docRef = Utils.getFavoriteReference().document(label);
+        contents.setDocId(docRef.getId());
+        docRef.set(contents).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                button_save.setEnabled(false);
+                Intent intent = new Intent(this, MainActivity.class);
+                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent, bundle);
             } else {
                 onChangeInProgress(false);
                 button_save.setEnabled(true);

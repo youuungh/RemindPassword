@@ -52,6 +52,14 @@ public class Utils {
                 .collection(fUser.getUid());
     }
 
+    public static CollectionReference getFavoriteReference() {
+        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+        return FirebaseFirestore.getInstance()
+                .collection("Users")
+                .document("favorite")
+                .collection(fUser.getUid());
+    }
+
     public static String encodeBase64(String data) {
         return Base64.getEncoder().withoutPadding().encodeToString(data.getBytes());
     }

@@ -115,13 +115,17 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         button_options.setOnClickListener(v -> {
             if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return;
             mLastClickTime = SystemClock.elapsedRealtime();
+
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.cbs_container));
+
             ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
             TextView tv_favorite = bottomSheetView.findViewById(R.id.tv_favorite);
 
-            DocumentReference docRef = Utils.getContentReference().document(label);
-            docRef.get().addOnCompleteListener(task -> {
+            DocumentReference contentPath = Utils.getContentReference().document(label);
+            DocumentReference favPath = Utils.getFavoriteReference().document(label);
+
+            favPath.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
@@ -129,7 +133,17 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                         if (favorite) {
                             iv_favorite.setImageResource(R.drawable.ic_star_filled);
                             tv_favorite.setText("즐겨찾기에서 삭제");
-                        } else {
+                        }
+                    }
+                }
+            });
+
+            contentPath.get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document.exists()) {
+                        favorite = document.getBoolean("favorite");
+                        if (!favorite) {
                             iv_favorite.setImageResource(R.drawable.ic_star_not_filled);
                             tv_favorite.setText("즐겨찾기에 추가");
                         }
@@ -140,9 +154,9 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             bottomSheetView.findViewById(R.id.option_favorite).setOnClickListener(v1 -> {
                 bottomSheetDialog.dismiss();
                 if (favorite) {
-                    deleteFavorite(docRef, label);
+                    deleteFavorite(favPath, contentPath);
                 } else {
-                    addFavorite(docRef, label);
+                    addFavorite(contentPath, favPath);
                 }
             });
 
@@ -228,22 +242,34 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
-    private void deleteFavorite(DocumentReference docRef, String label) {
-        docRef.get().addOnSuccessListener(documentSnapshot ->
-                Utils.getContentReference().document(label)
-                        .update("favorite", false)
-                        .addOnSuccessListener(unused -> {
-                            Utils.showSnack(findViewById(R.id.edit_screen), "즐겨찾기에서 삭제되었습니다");
-                        }));
+    private void deleteFavorite(DocumentReference fromPath, DocumentReference toPath) {
+        fromPath.update("favorite", false);
+        fromPath.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot != null) {
+                    toPath.set(documentSnapshot.getData()).addOnSuccessListener(unused -> {
+                        fromPath.delete();
+                        Utils.showSnack(findViewById(R.id.edit_screen), "즐겨찾기에서 삭제되었습니다");
+                    });
+                }
+            }
+        });
     }
 
-    private void addFavorite(DocumentReference docRef, String label) {
-        docRef.get().addOnSuccessListener(documentSnapshot ->
-                Utils.getContentReference().document(label)
-                        .update("favorite", true)
-                        .addOnSuccessListener(unused -> {
-                            Utils.showSnack(findViewById(R.id.edit_screen), "즐겨찾기에 추가되었습니다");
-                        }));
+    private void addFavorite(DocumentReference fromPath, DocumentReference toPath) {
+        fromPath.update("favorite", true);
+        fromPath.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot != null) {
+                    toPath.set(documentSnapshot.getData()).addOnSuccessListener(unused -> {
+                        fromPath.delete();
+                        Utils.showSnack(findViewById(R.id.edit_screen), "즐겨찾기에 추가되었습니다");
+                    });
+                }
+            }
+        });
     }
 
     private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {

@@ -1,89 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
     android:orientation="horizontal"
-    android:weightSum="3">
+    app:cardBackgroundColor="@color/md_grey_200"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="0dp"
+    app:strokeWidth="0dp"
+    app:strokeColor="@color/customTextColor"
+    app:cardUseCompatPadding="true">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cv_favorite"
-        android:layout_width="0dp"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        app:cardBackgroundColor="@color/md_grey_300"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="0dp"
-        app:strokeWidth="0dp"
-        app:strokeColor="@color/customTextColor"
-        app:cardUseCompatPadding="true">
+        android:background="?android:attr/selectableItemBackground"
+        android:padding="10dp">
 
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/linearlayout_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:padding="10dp">
-
-            <LinearLayout
-                android:id="@+id/linearlayout_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/favorite_title"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingStart="3dp"
-                    android:paddingEnd="5dp"
-                    android:text="제목"
-                    android:textColor="@color/customTextColor"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
-                    android:textStyle="bold"
-                    android:maxLines="1"
-                    android:ellipsize="end"
-                    android:includeFontPadding="true"/>
-
-                <ImageButton
-                    android:id="@+id/favorite_option"
-                    android:layout_width="40dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="2dp"
-                    android:src="@drawable/ic_dot_horizon"
-                    android:background="@drawable/rounded_option_button"
-                    android:contentDescription="option" />
-            </LinearLayout>
+            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/favorite_id"
-                android:layout_width="wrap_content"
+                android:id="@+id/favorite_title"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/linearlayout_title"
-                android:paddingStart="5dp"
+                android:layout_weight="1"
+                android:paddingStart="3dp"
                 android:paddingEnd="5dp"
-                android:text="메일"
+                android:text="제목"
                 android:textColor="@color/customTextColor"
-                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-                android:ems="12"
+                android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
+                android:textStyle="bold"
                 android:maxLines="1"
-                android:ellipsize="end"/>
+                android:ellipsize="end"
+                android:includeFontPadding="true"/>
 
-            <TextView
-                android:id="@+id/favorite_timestamp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/favorite_id"
-                android:layout_alignParentEnd="true"
-                android:paddingStart="5dp"
-                android:paddingEnd="8dp"
-                android:paddingTop="8dp"
-                android:gravity="end"
-                android:text="날짜"
-                android:textColor="@color/customTextColor"
-                android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
-        </RelativeLayout>
-    </com.google.android.material.card.MaterialCardView>
-</LinearLayout>
+            <ImageButton
+                android:id="@+id/favorite_option"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="2dp"
+                android:src="@drawable/ic_dot_horizon"
+                android:background="@drawable/rounded_option_button"
+                android:contentDescription="option" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/favorite_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/linearlayout_title"
+            android:paddingStart="5dp"
+            android:paddingEnd="5dp"
+            android:text="메일"
+            android:textColor="@color/customTextColor"
+            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+            android:ems="8"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+
+        <ImageView
+            android:id="@+id/favorite_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/favorite_id"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_star_round"/>
+    </RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -84,19 +84,19 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
-        Content content = filterList.get(position);
-        holder.search_title.setText(content.getTitle());
-        holder.search_id.setText(content.getId());
+        Content search = filterList.get(position);
+        holder.search_title.setText(search.getTitle());
+        holder.search_id.setText(search.getId());
 
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(v.getContext(), EditContentActivity.class);
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation((Activity) v.getContext()).toBundle();
-            intent.putExtra("title", content.getTitle());
-            intent.putExtra("id", content.getId());
-            intent.putExtra("pw", content.getPw());
-            intent.putExtra("memo", content.getMemo());
-            intent.putExtra("label", content.getDocId());
-            intent.putExtra("favorite", content.isFavorite());
+            intent.putExtra("title", search.getTitle());
+            intent.putExtra("id", search.getId());
+            intent.putExtra("pw", search.getPw());
+            intent.putExtra("memo", search.getMemo());
+            intent.putExtra("label", search.getDocId());
+            intent.putExtra("favorite", search.isFavorite());
             v.getContext().startActivity(intent, bundle);
         });
     }

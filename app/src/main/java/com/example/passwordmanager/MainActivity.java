@@ -123,8 +123,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     public void updateCounter() {
         Utils.getContentReference().get().addOnCompleteListener(task -> {
-            if (task.isSuccessful())
-                main_count.setText(String.valueOf(task.getResult().size()));
+            if (task.isSuccessful()) {
+                int value = task.getResult().size();
+                Utils.getFavoriteReference().get().addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        main_count.setText(String.valueOf(value + task1.getResult().size()));
+                    }
+                });
+            }
         });
         Utils.getTrashReference().get().addOnCompleteListener(task -> {
             if (task.isSuccessful())
