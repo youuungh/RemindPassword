@@ -112,7 +112,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     }
 
     public static class SearchViewHolder extends RecyclerView.ViewHolder {
-        TextView search_title, search_id;
+        private final TextView search_title;
+        private final TextView search_id;
 
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);

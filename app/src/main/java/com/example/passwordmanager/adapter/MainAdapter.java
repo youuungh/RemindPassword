@@ -123,8 +123,10 @@ public class MainAdapter extends FirestoreRecyclerAdapter<Content, MainAdapter.V
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView content_title, content_id, content_timestamp;
-        ImageButton content_option;
+        private final TextView content_title;
+        private final TextView content_id;
+        private final TextView content_timestamp;
+        private final ImageButton content_option;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

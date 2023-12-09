@@ -115,8 +115,9 @@ public class FavoriteAdapter extends FirestoreRecyclerAdapter<Content, FavoriteA
     }
 
     public static class FavoriteViewHolder extends RecyclerView.ViewHolder {
-        TextView favorite_title, favorite_id;
-        ImageButton favorite_option;
+        private final TextView favorite_title;
+        private final TextView favorite_id;
+        private final ImageButton favorite_option;
         public FavoriteViewHolder(@NonNull View itemView) {
             super(itemView);
             favorite_title = itemView.findViewById(R.id.favorite_title);

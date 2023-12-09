@@ -341,8 +341,9 @@ public class TrashFragment extends Fragment {
     }
 
     public static class TrashViewHolder extends RecyclerView.ViewHolder {
-        TextView trash_title, trash_id;
-        ImageButton trash_option;
+        private final TextView trash_title;
+        private final TextView trash_id;
+        private final ImageButton trash_option;
 
         public TrashViewHolder(@NonNull View itemView) {
             super(itemView);
