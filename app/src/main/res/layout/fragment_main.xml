@@ -10,7 +10,7 @@
         android:id="@+id/main_layout_appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white">
+        android:background="@null">
 
         <com.google.android.material.search.SearchBar
             android:id="@+id/main_searchbar"
@@ -27,44 +27,63 @@
             app:navigationIconTint="@color/customTextColor"
             app:forceDefaultNavigationOnClickListener="false"
             app:contentInsetStartWithNavigation="70dp"
-            app:layout_scrollFlags="scroll|enterAlways"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
             app:defaultMarginsEnabled="false"/>
-        
+
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:contentScrim="@android:color/transparent"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|snap">
+            android:layout_height="wrap_content"
+            app:contentScrim="@android:color/transparent">
 
-            <RelativeLayout
-                android:id="@+id/layout_favorite"
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cv_favorite"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="9dp"
+                android:layout_marginEnd="9dp"
+                app:strokeColor="@color/boxStrokeColor"
+                app:cardBackgroundColor="@color/white"
+                app:cardUseCompatPadding="true"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <TextView
-                    android:id="@+id/tv_favorite"
+                <RelativeLayout
+                    android:id="@+id/layout_favorite"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:background="@color/white"
-                    android:text="즐겨찾기"
-                    android:textStyle="bold"
-                    android:textColor="@color/customTextColor"
-                    android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+                    android:layout_height="match_parent">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_favorites"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/tv_favorite"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"
-                    android:paddingBottom="10dp"
-                    android:background="@color/white"
-                    android:clipToPadding="false"
-                    app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/tv_favorite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:text="즐겨찾기"
+                        android:textStyle="bold"
+                        android:textColor="@color/customTextColor"
+                        android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
+
+                    <ImageView
+                        android:id="@+id/button_expand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignTop="@id/tv_favorite"
+                        android:layout_alignBottom="@id/tv_favorite"
+                        android:src="@drawable/ic_expand_down"
+                        android:layout_toEndOf="@id/tv_favorite"/>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/rv_favorites"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/tv_favorite"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:paddingBottom="10dp"
+                        android:background="@color/white"
+                        android:clipToPadding="false"
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                        android:visibility="visible"/>
+                </RelativeLayout>
+            </com.google.android.material.card.MaterialCardView>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -72,10 +91,9 @@
         android:id="@+id/rv_contents"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/rv_favorites"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:paddingBottom="10dp"
+        android:paddingBottom="80dp"
         android:background="@color/white"
         android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
@@ -103,8 +121,6 @@
         android:id="@+id/main_view_empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize"
-        android:layout_marginBottom="?attr/actionBarSize"
         android:clickable="true"
         android:focusable="true"
         android:visibility="invisible">

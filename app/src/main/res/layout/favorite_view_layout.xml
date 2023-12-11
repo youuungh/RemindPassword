@@ -50,26 +50,31 @@
                 android:contentDescription="option" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/favorite_id"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/linearlayout_title"
-            android:paddingStart="5dp"
-            android:paddingEnd="5dp"
-            android:text="메일"
-            android:textColor="@color/customTextColor"
-            android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
-            android:ems="8"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/favorite_timestamp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/favorite_id"
-            android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_star_round"/>
+            <TextView
+                android:id="@+id/favorite_id"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:text="메일"
+                android:textColor="@color/customTextColor"
+                android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
+                android:ems="8"
+                android:maxLines="1"
+                android:ellipsize="end"/>
+
+            <ImageView
+                android:id="@+id/favorite_timestamp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_star_round"/>
+        </LinearLayout>
     </RelativeLayout>
 </com.google.android.material.card.MaterialCardView>

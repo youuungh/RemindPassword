@@ -2,10 +2,17 @@ package com.example.passwordmanager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.BlendMode;
+import android.graphics.BlurMaskFilter;
+import android.graphics.Color;
+import android.graphics.RenderEffect;
+import android.graphics.Shader;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ConcatAdapter;
@@ -17,6 +24,7 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -36,10 +44,11 @@ public class MainFragment extends Fragment {
     private MainAdapter mAdapter;
     private FavoriteAdapter favAdapter;
     private AppBarLayout appBarLayout;
-    private RecyclerView rv_content;
+    private RecyclerView rv_content, rv_favorite;
     private SearchBar search_bar;
     private RelativeLayout main_empty_view, main_loading_view;
     private TextView tv_fav;
+    private ImageView expand_button;
     private FloatingActionButton main_fab_write, main_fab_top;
     private boolean isSwitch = false;
 
@@ -60,7 +69,7 @@ public class MainFragment extends Fragment {
         main_loading_view = view.findViewById(R.id.main_view_loading);
         tv_fav = view.findViewById(R.id.tv_favorite);
         appBarLayout = view.findViewById(R.id.main_layout_appbar);
-        RecyclerView rv_favorite = view.findViewById(R.id.rv_favorites);
+        rv_favorite = view.findViewById(R.id.rv_favorites);
         rv_content = view.findViewById(R.id.rv_contents);
 
         search_bar = view.findViewById(R.id.main_searchbar);
@@ -97,6 +106,9 @@ public class MainFragment extends Fragment {
             onChangeMainMenuItem();
         }
 
+        expand_button = view.findViewById(R.id.button_expand);
+        expand_button.setOnClickListener(v -> onExpandRecycler());
+
         main_fab_write = ((MainActivity)getActivity()).fab_write;
         main_fab_top = ((MainActivity)getActivity()).fab_top;
         main_fab_top.setOnClickListener(v -> {
@@ -132,7 +144,7 @@ public class MainFragment extends Fragment {
         });
         mAdapter.notifyDataSetChanged();
 
-        Query fquery = Utils.getFavoriteReference().orderBy("favorite");
+        Query fquery = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
         fquery.get().addOnCompleteListener(task -> {
             onChangeTextView(fOptions.getSnapshots().isEmpty());
         });
@@ -143,6 +155,10 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
+                if (rv_favorite.getVisibility() == View.GONE) {
+                    rv_favorite.setVisibility(View.VISIBLE);
+                    expand_button.setImageResource(R.drawable.ic_expand_up);
+                }
                 onChangeTextView(fOptions.getSnapshots().isEmpty());
                 rv_content.scrollToPosition(0);
                 appBarLayout.setExpanded(true);
@@ -189,6 +205,16 @@ public class MainFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void onExpandRecycler() {
+        if (rv_favorite.getVisibility() == View.GONE) {
+            rv_favorite.setVisibility(View.VISIBLE);
+            expand_button.setImageResource(R.drawable.ic_expand_up);
+        } else {
+            rv_favorite.setVisibility(View.GONE);
+            expand_button.setImageResource(R.drawable.ic_expand_down);
+        }
     }
 
     private void onChangeTextView(boolean flag) {
