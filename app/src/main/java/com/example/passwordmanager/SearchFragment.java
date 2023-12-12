@@ -50,8 +50,8 @@ public class SearchFragment extends Fragment {
     private LinearLayout search_emptyView;
     private InputMethodManager imm;
     private final List<Content> searchList = new ArrayList<>();
-    private final Query content_query =  Utils.getContentReference();
-    private final Query fav_query = Utils.getFavoriteReference();
+    private final Query content_query =  Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
+    private final Query fav_query = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
 
     @Override
     public void onAttach(@NonNull Context context) {
