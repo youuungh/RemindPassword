@@ -33,7 +33,9 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentScrim="@android:color/transparent">
+            app:contentScrim="@android:color/transparent"
+            app:statusBarScrim="@android:color/transparent"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cv_favorite"
@@ -44,7 +46,8 @@
                 app:strokeColor="@color/boxStrokeColor"
                 app:cardBackgroundColor="@color/white"
                 app:cardUseCompatPadding="true"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                android:visibility="visible">
 
                 <RelativeLayout
                     android:id="@+id/layout_favorite"
@@ -80,8 +83,7 @@
                         android:paddingBottom="10dp"
                         android:background="@color/white"
                         android:clipToPadding="false"
-                        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                        android:visibility="visible"/>
+                        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
                 </RelativeLayout>
             </com.google.android.material.card.MaterialCardView>
         </com.google.android.material.appbar.CollapsingToolbarLayout>

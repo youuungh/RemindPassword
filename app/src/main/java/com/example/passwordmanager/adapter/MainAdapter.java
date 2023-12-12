@@ -27,6 +27,7 @@ import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
@@ -47,7 +48,7 @@ public class MainAdapter extends FirestoreRecyclerAdapter<Content, MainAdapter.V
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.content_view_layout, parent, false);
         int[] colorList = v.getResources().getIntArray(R.array.cv_colors);
         int randomColor = colorList[new Random().nextInt(colorList.length)];
-        CardView cv_content = v.findViewById(R.id.cv_content);
+        MaterialCardView cv_content = v.findViewById(R.id.cv_content);
         cv_content.setCardBackgroundColor(randomColor);
         return new ViewHolder(v);
     }

@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -174,7 +175,7 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                     pin_04.setBackgroundResource(R.drawable.bg_color_oval);
                     passCode = num01 + num02 + num03 + num04;
 
-                    new Handler().postDelayed(() -> {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
                         PassCheckFragment passCheckFragment = new PassCheckFragment();
                         FragmentTransaction ft = getParentFragmentManager().beginTransaction();
                         Bundle bundle = new Bundle();

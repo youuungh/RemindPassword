@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -151,7 +152,7 @@ public class TrashFragment extends Fragment {
                 trash_fab_top.hide();
         });
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            final Handler handler = new Handler();
+            final Handler handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = () -> trash_fab_top.hide();
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {

@@ -14,6 +14,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -199,7 +200,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                     pin_04.setBackgroundResource(R.drawable.bg_color_oval);
                     confirmCode = num01 + num02 + num03 + num04;
 
-                    new Handler().postDelayed(() -> {
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> {
                         Bundle bundle = getArguments();
                         if (getPassCode().length() == 0) {
                             if (bundle != null) {
@@ -211,7 +212,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                                     ft.add(android.R.id.content, fingerPassFragment).commit();
                                 } else {
                                     tv_error.setVisibility(View.VISIBLE);
-                                    new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
+                                    new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
                                     refreshPassCode();
                                 }
                             }
@@ -239,7 +240,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
             getParentFragmentManager().popBackStack();
         } else {
             tv_error.setVisibility(View.VISIBLE);
-            new Handler().postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
+            new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
             refreshPassCode();
         }
     }

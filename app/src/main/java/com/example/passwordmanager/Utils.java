@@ -47,7 +47,7 @@ public class Utils {
     public static CollectionReference getTrashReference() {
         FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
         return FirebaseFirestore.getInstance()
-                .collection("Users")
+                .collection("Trashes")
                 .document("trash")
                 .collection(fUser.getUid());
     }

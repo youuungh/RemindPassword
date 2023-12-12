@@ -3,13 +3,7 @@ package com.example.passwordmanager.adapter;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,17 +21,16 @@ import com.example.passwordmanager.model.Content;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
     SearchFragment context;
-    List<Content> searchList;
-    List<Content> filterList;
+    List<Content> originalList;
+    List<Content> filteredList;
 
-    public SearchAdapter(SearchFragment context, List<Content> dataList) {
+    public SearchAdapter(SearchFragment context, List<Content> searchList) {
         this.context = context;
-        this.searchList = dataList;
-        filterList = dataList;
+        this.originalList = searchList;
+        filteredList = searchList;
     }
 
     @Override
@@ -47,25 +40,26 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             protected FilterResults performFiltering(CharSequence constraint) {
                 String pattern = constraint.toString().toLowerCase().trim();
                 if (pattern.isEmpty()) {
-                    filterList = searchList;
+                    filteredList = originalList;
                 } else {
-                    List<Content> filteredList = new ArrayList<>();
-                    for (Content contents : searchList) {
-                        if (contents.getSearch().contains(pattern)) {
-                            filteredList.add(contents);
+                    List<Content> tempList = new ArrayList<>();
+                    for (Content content : originalList) {
+                        if (content.getSearch().contains(pattern)) {
+                            tempList.add(content);
                         }
                     }
-                    filterList = filteredList;
+                    filteredList = tempList;
                 }
                 FilterResults results = new FilterResults();
-                results.values = filterList;
+                results.values = filteredList;
                 return results;
             }
 
+            @SuppressWarnings("unchecked")
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                filterList = (ArrayList<Content>) results.values;
-                if (filterList.isEmpty()) {
+                filteredList = (ArrayList<Content>) results.values;
+                if (filteredList.isEmpty()) {
                     context.showEmptyView(true);
                 } else {
                     context.showEmptyView(false);
@@ -84,7 +78,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
-        Content search = filterList.get(position);
+        Content search = filteredList.get(position);
         holder.search_title.setText(search.getTitle());
         holder.search_id.setText(search.getId());
 
@@ -108,7 +102,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public int getItemCount() {
-        return filterList.size();
+        return filteredList.size();
     }
 
     public static class SearchViewHolder extends RecyclerView.ViewHolder {

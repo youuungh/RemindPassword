@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,11 +25,16 @@ import android.widget.Toast;
 
 import com.example.passwordmanager.adapter.SearchAdapter;
 import com.example.passwordmanager.model.Content;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.transition.MaterialSharedAxis;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.checkerframework.checker.units.qual.C;
 
@@ -43,6 +49,9 @@ public class SearchFragment extends Fragment {
     private FloatingActionButton search_fab_top;
     private LinearLayout search_emptyView;
     private InputMethodManager imm;
+    private final List<Content> searchList = new ArrayList<>();
+    private final Query content_query =  Utils.getContentReference();
+    private final Query fav_query = Utils.getFavoriteReference();
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -71,34 +80,30 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        ((MainActivity) getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         MaterialToolbar mToolbar = view.findViewById(R.id.search_toolbar);
         mToolbar.setNavigationOnClickListener(v -> {
             searchView.clearFocus();
-            ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            ((MainActivity)getActivity()).fab_write.show();
+            ((MainActivity) getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            ((MainActivity) getActivity()).fab_write.show();
             getParentFragmentManager().popBackStack();
         });
 
         recycler_search = view.findViewById(R.id.recycler_search);
         recycler_search.setHasFixedSize(true);
         recycler_search.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        Query query = Utils.getContentReference().orderBy("search");
-        query.addSnapshotListener((value, error) -> {
-            if (error == null && value != null) {
-                search_adapter = new SearchAdapter(this, value.toObjects(Content.class));
-                recycler_search.setAdapter(search_adapter);
-            }
-        });
+        search_adapter = new SearchAdapter(this, searchList);
+        recycler_search.setAdapter(search_adapter);
 
         searchView = view.findViewById(R.id.search_view);
         searchView.requestFocus();
-        searchView.setOnQueryTextFocusChangeListener( (v, hasFocus) -> {
-            imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                imm.showSoftInput(view.findFocus(), InputMethodManager.SHOW_IMPLICIT);
+            }
         });
 
         search_emptyView = view.findViewById(R.id.search_view_empty);
@@ -110,8 +115,9 @@ public class SearchFragment extends Fragment {
         });
 
         recycler_search.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            final Handler handler = new Handler();
+            final Handler handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = () -> search_fab_top.hide();
+
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -150,6 +156,22 @@ public class SearchFragment extends Fragment {
         super.onResume();
         ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         ((MainActivity)getActivity()).fab_write.hide();
+        content_query.get().addOnCompleteListener(task -> {
+            searchList.clear();
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    searchList.add(document.toObject(Content.class));
+                }
+                fav_query.get().addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task1.getResult()) {
+                            searchList.add(document.toObject(Content.class));
+                        }
+                        search_adapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
         searchView.requestFocus();
         searchView.setQuery("", true);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

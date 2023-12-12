@@ -44,7 +44,6 @@
         <item>@color/md_orange_50</item>
         <item>@color/md_deep_orange_50</item>
         <item>@color/md_brown_50</item>
-        <item>@color/md_grey_50</item>
     </integer-array>
 
     <!--reds-->

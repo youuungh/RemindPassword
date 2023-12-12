@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.transition.MaterialSharedAxis;
@@ -44,10 +46,10 @@ public class MainFragment extends Fragment {
     private MainAdapter mAdapter;
     private FavoriteAdapter favAdapter;
     private AppBarLayout appBarLayout;
+    private MaterialCardView cv_favorite;
     private RecyclerView rv_content, rv_favorite;
     private SearchBar search_bar;
     private RelativeLayout main_empty_view, main_loading_view;
-    private TextView tv_fav;
     private ImageView expand_button;
     private FloatingActionButton main_fab_write, main_fab_top;
     private boolean isSwitch = false;
@@ -67,8 +69,8 @@ public class MainFragment extends Fragment {
 
         main_empty_view = view.findViewById(R.id.main_view_empty);
         main_loading_view = view.findViewById(R.id.main_view_loading);
-        tv_fav = view.findViewById(R.id.tv_favorite);
         appBarLayout = view.findViewById(R.id.main_layout_appbar);
+        cv_favorite = view.findViewById(R.id.cv_favorite);
         rv_favorite = view.findViewById(R.id.rv_favorites);
         rv_content = view.findViewById(R.id.rv_contents);
 
@@ -146,7 +148,7 @@ public class MainFragment extends Fragment {
 
         Query fquery = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
         fquery.get().addOnCompleteListener(task -> {
-            onChangeTextView(fOptions.getSnapshots().isEmpty());
+            onChangeFavView(fOptions.getSnapshots().isEmpty());
         });
         fOptions = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(fquery, Content.class).build();
@@ -159,14 +161,14 @@ public class MainFragment extends Fragment {
                     rv_favorite.setVisibility(View.VISIBLE);
                     expand_button.setImageResource(R.drawable.ic_expand_up);
                 }
-                onChangeTextView(fOptions.getSnapshots().isEmpty());
+                onChangeFavView(fOptions.getSnapshots().isEmpty());
                 rv_content.scrollToPosition(0);
                 appBarLayout.setExpanded(true);
             }
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
-                onChangeTextView(fOptions.getSnapshots().isEmpty());
+                onChangeFavView(fOptions.getSnapshots().isEmpty());
                 if (fOptions.getSnapshots().isEmpty()) appBarLayout.setExpanded(true);
             }
         });
@@ -177,12 +179,12 @@ public class MainFragment extends Fragment {
         rv_content.setHasFixedSize(true);
         rv_content.setAdapter(mAdapter);
         rv_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            final Handler handler = new Handler();
+            final Handler handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = () -> main_fab_top.hide();
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    new Handler().postDelayed(() -> main_fab_write.show(), 500);
+                    new Handler(Looper.getMainLooper()).postDelayed(() -> main_fab_write.show(), 500);
                     handler.postDelayed(runnable, 3000);
                 }
                 super.onScrollStateChanged(recyclerView, newState);
@@ -217,8 +219,8 @@ public class MainFragment extends Fragment {
         }
     }
 
-    private void onChangeTextView(boolean flag) {
-        tv_fav.setVisibility(flag ? View.GONE : View.VISIBLE);
+    private void onChangeFavView(boolean flag) {
+        cv_favorite.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
     private void onChangeEmptyView(boolean flag) {
