@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".HomeActivity"
+            android:name=".view.common.HomeActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
@@ -31,46 +31,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name=".view.common.LoginActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".SignUpActivity"
+            android:name=".view.common.SignUpActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".ResetPasswordActivity"
+            android:name=".view.common.ResetPasswordActivity"
             android:exported="false"
             android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".MainActivity"
+            android:name=".view.common.MainActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".AddContentActivity"
+            android:name=".view.navigation.AddContentActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".EditContentActivity"
+            android:name=".view.navigation.EditContentActivity"
             android:exported="false"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".SettingActivity"
+            android:name=".view.navigation.SettingActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+                android:value=".view.common.MainActivity" />
         </activity>
     </application>
 

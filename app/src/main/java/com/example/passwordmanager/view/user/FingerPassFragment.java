@@ -1,6 +1,5 @@
-package com.example.passwordmanager;
+package com.example.passwordmanager.view.user;
 
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +7,6 @@ import android.os.Bundle;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.biometric.BiometricManager;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -17,6 +15,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.passwordmanager.R;
+import com.example.passwordmanager.view.common.MainActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.transition.platform.MaterialSharedAxis;
 

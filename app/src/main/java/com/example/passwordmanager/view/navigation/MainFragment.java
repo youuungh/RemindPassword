@@ -1,21 +1,13 @@
-package com.example.passwordmanager;
+package com.example.passwordmanager.view.navigation;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.BlendMode;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Color;
-import android.graphics.RenderEffect;
-import android.graphics.Shader;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.ConcatAdapter;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,12 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
+import com.example.passwordmanager.R;
+import com.example.passwordmanager.util.Utils;
 import com.example.passwordmanager.adapter.MainAdapter;
 import com.example.passwordmanager.adapter.FavoriteAdapter;
 import com.example.passwordmanager.model.Content;
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.example.passwordmanager.view.common.MainActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.card.MaterialCardView;

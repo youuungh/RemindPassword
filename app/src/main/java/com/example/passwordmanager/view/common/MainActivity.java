@@ -1,15 +1,13 @@
-package com.example.passwordmanager;
+package com.example.passwordmanager.view.common;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
@@ -17,35 +15,31 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.google.android.material.appbar.AppBarLayout;
+import com.example.passwordmanager.R;
+import com.example.passwordmanager.util.Utils;
+import com.example.passwordmanager.view.navigation.AddContentActivity;
+import com.example.passwordmanager.view.navigation.MainFragment;
+import com.example.passwordmanager.view.navigation.SettingActivity;
+import com.example.passwordmanager.view.navigation.TrashFragment;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.search.SearchBar;
-import com.google.android.material.transition.platform.MaterialContainerTransformSharedElementCallback;
 import com.google.android.material.transition.platform.MaterialElevationScale;
-import com.google.android.material.transition.platform.MaterialFade;
-import com.google.android.material.transition.platform.MaterialFadeThrough;
-import com.google.android.material.transition.platform.MaterialSharedAxis;
-import com.google.android.material.transition.platform.SlideDistanceProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth fAuth;
     private TextView main_count;
     private TextView trash_count;
-    DrawerLayout drawerLayout;
-    FloatingActionButton fab_write, fab_top;
+    public DrawerLayout drawerLayout;
+    public FloatingActionButton fab_write;
+    public FloatingActionButton fab_top;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,7 +111,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showFragments(new TrashFragment());
             fab_write.hide();
         } else if (id == R.id.nav_setting) {
-            //startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            startActivity(new Intent(MainActivity.this, SettingActivity.class));
         }
         return true;
     }

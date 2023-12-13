@@ -15,12 +15,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.passwordmanager.AddContentActivity;
-import com.example.passwordmanager.EditContentActivity;
-import com.example.passwordmanager.MainActivity;
-import com.example.passwordmanager.MainFragment;
+import com.example.passwordmanager.view.navigation.AddContentActivity;
+import com.example.passwordmanager.view.navigation.EditContentActivity;
+import com.example.passwordmanager.view.common.MainActivity;
+import com.example.passwordmanager.view.navigation.MainFragment;
 import com.example.passwordmanager.R;
-import com.example.passwordmanager.Utils;
+import com.example.passwordmanager.util.Utils;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;

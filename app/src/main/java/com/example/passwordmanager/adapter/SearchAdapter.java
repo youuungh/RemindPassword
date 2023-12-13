@@ -14,9 +14,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.passwordmanager.EditContentActivity;
+import com.example.passwordmanager.view.navigation.EditContentActivity;
 import com.example.passwordmanager.R;
-import com.example.passwordmanager.SearchFragment;
+import com.example.passwordmanager.view.navigation.SearchFragment;
 import com.example.passwordmanager.model.Content;
 
 import java.util.ArrayList;
