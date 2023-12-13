@@ -32,6 +32,7 @@
             android:layout_toEndOf="@+id/iv_profile"
             android:layout_centerVertical="true"
             android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:text="email@email.com"
             android:maxLines="1"
             android:ellipsize="end"

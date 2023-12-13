@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.util.Utils;
+import com.example.passwordmanager.view.common.SignUpActivity;
 import com.example.passwordmanager.view.user.PassCheckFragment;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
@@ -173,9 +174,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                     ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
                 } else {
                     Snackbar sb = Snackbar.make(findViewById(R.id.edit_screen), "먼저 비밀번호를 설정하세요", Snackbar.LENGTH_SHORT);
-                    sb.setAction("설정", v12 -> {
-                        Utils.showToast(this, "클릭");
-                    });
+                    sb.setAction("설정", v1 -> startActivity(new Intent(this, SettingActivity.class)));
                     sb.show();
                 }
             } else {

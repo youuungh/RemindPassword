@@ -3,7 +3,9 @@ package com.example.passwordmanager.view.common;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
 
@@ -21,20 +23,25 @@ public class HomeActivity extends AppCompatActivity {
 
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = fAuth.getCurrentUser();
-        if (fUser != null) {
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+        if (getPassCode().length() != 0) {
+            if (fUser != null) {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        } else {
+            fAuth.signOut();
         }
 
         Button home_signup = findViewById(R.id.home_signup);
-        home_signup.setOnClickListener(view -> {
-            startActivity(new Intent(this, SignUpActivity.class));
-        });
+        home_signup.setOnClickListener(view -> startActivity(new Intent(this, SignUpActivity.class)));
 
         Button home_login = findViewById(R.id.home_login);
-        home_login.setOnClickListener(view -> {
-            startActivity(new Intent(this, LoginActivity.class));
-        });
+        home_login.setOnClickListener(view -> startActivity(new Intent(this, LoginActivity.class)));
+    }
+
+    private String getPassCode() {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
+        return pref.getString("PASSCODE", "");
     }
 }

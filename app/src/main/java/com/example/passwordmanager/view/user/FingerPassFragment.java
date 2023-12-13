@@ -83,9 +83,7 @@ public class FingerPassFragment extends Fragment {
         });
 
         MaterialButton button_finger = view.findViewById(R.id.button_finger);
-        button_finger.setOnClickListener(v -> {
-            biometricPrompt.authenticate(promptInfo);
-        });
+        button_finger.setOnClickListener(v -> biometricPrompt.authenticate(promptInfo));
 
         return view;
     }

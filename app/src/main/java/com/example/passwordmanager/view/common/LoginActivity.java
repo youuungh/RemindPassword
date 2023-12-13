@@ -58,14 +58,10 @@ public class LoginActivity extends AppCompatActivity {
         edt_password.addTextChangedListener(new LoginTextWatcher(edt_password));
 
         TextView tv_reset = findViewById(R.id.tv_reset);
-        tv_reset.setOnClickListener(v -> {
-            startActivity(new Intent(this, ResetPasswordActivity.class));
-        });
+        tv_reset.setOnClickListener(v -> startActivity(new Intent(this, ResetPasswordActivity.class)));
 
         TextView tv_signup = findViewById(R.id.tv_signup);
-        tv_signup.setOnClickListener(v -> {
-            startActivity(new Intent(this, SignUpActivity.class));
-        });
+        tv_signup.setOnClickListener(v -> startActivity(new Intent(this, SignUpActivity.class)));
     }
 
     private void loginAccountInFirebase(String email, String password) {
@@ -77,7 +73,8 @@ public class LoginActivity extends AppCompatActivity {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
                             PassCodeFragment passCodeFragment = new PassCodeFragment();
                             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.replace(android.R.id.content, passCodeFragment).commit();
+                            ft.add(android.R.id.content, passCodeFragment).addToBackStack(null).commit();
+                            loginChangeInProgress(false);
                         } else {
                             loginChangeInProgress(false);
                             Utils.showSnack(findViewById(R.id.loginScreen), "이메일 인증이 필요합니다");

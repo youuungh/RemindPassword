@@ -82,9 +82,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         View view = inflater.inflate(R.layout.fragment_pass_check, container, false);
 
         MaterialToolbar mToolbar = view.findViewById(R.id.pin_check_toolbar);
-        mToolbar.setNavigationOnClickListener(v -> {
-            getParentFragmentManager().popBackStack();
-        });
+        mToolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         TextView tv_subtitle = view.findViewById(R.id.tv_subtitle);
         if (getPassCode().length() != 0) {

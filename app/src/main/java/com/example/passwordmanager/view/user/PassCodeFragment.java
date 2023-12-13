@@ -22,6 +22,7 @@ import android.widget.ImageButton;
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.view.common.MainActivity;
 import com.example.passwordmanager.view.user.PassCheckFragment;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.transition.platform.MaterialSharedAxis;
 
 import java.util.ArrayList;
@@ -63,12 +64,8 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_pass_code, container, false);
 
-        Button button_later = view.findViewById(R.id.button_later);
-        button_later.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        });
+        MaterialToolbar mToolbar = view.findViewById(R.id.pin_toolbar);
+        mToolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         pin_01 = view.findViewById(R.id.pin_01);
         pin_02 = view.findViewById(R.id.pin_02);
@@ -195,7 +192,6 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
         pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
         pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
         pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
-
         num_list.clear();
         passCode = "";
     }

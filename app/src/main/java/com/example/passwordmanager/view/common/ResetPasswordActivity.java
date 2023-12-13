@@ -33,9 +33,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         MaterialToolbar mToolbar = findViewById(R.id.reset_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        mToolbar.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        mToolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         edt_reset = findViewById(R.id.reset_email);
         edt_reset.requestFocus();

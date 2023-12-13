@@ -41,7 +41,7 @@ public class SignUpActivity extends AppCompatActivity {
 
         MaterialToolbar mToolbar = findViewById(R.id.signup_toolbar);
         setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(v -> { onBackPressed(); });
+        mToolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         fAuth = FirebaseAuth.getInstance();
 

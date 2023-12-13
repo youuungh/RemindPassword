@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private FirebaseAuth fAuth;
+    public NavigationView main_nav;
     private TextView main_count;
     private TextView trash_count;
     public DrawerLayout drawerLayout;
@@ -47,15 +48,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getWindow().setEnterTransition(new MaterialElevationScale(true));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) {
-            showFragments(new MainFragment());
-        }
+        if (savedInstanceState == null) showFragments(new MainFragment());
 
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = fAuth.getCurrentUser();
 
         drawerLayout = findViewById(R.id.layout_drawer);
-        NavigationView main_nav = findViewById(R.id.main_nav);
+        main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);
         main_nav.setCheckedItem(R.id.nav_main);
         main_nav.getMenu().getItem(0).setActionView(R.layout.menu_main_counter);
@@ -66,9 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         View header = main_nav.getHeaderView(0);
         TextView tv_userEmail = header.findViewById(R.id.tv_userMail);
-        if (fUser != null) {
-            tv_userEmail.setText(fUser.getEmail());
-        }
+        if (fUser != null) tv_userEmail.setText(fUser.getEmail());
 
         fab_top = findViewById(R.id.main_fab_top);
         fab_write = findViewById(R.id.main_fab_write);
@@ -152,6 +149,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onResume() {
         super.onResume();
         updateCounter();
+        if (main_nav.getCheckedItem().getItemId() == R.id.nav_setting) {
+            main_nav.setCheckedItem(R.id.nav_main);
+        }
     }
 
     @Override
