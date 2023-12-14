@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 import androidx.biometric.BiometricPrompt;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import java.util.concurrent.Executor;
 public class FingerPassFragment extends Fragment {
     private BiometricPrompt biometricPrompt;
     private BiometricPrompt.PromptInfo promptInfo;
+    private boolean checkData;
 
     @Override
     public void onAttach(@NonNull Context context) {
@@ -48,6 +50,10 @@ public class FingerPassFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            checkData = bundle.getBoolean("NEW_FINGERPRINT", false);
+        }
         View view = inflater.inflate(R.layout.fragment_finger_pass, container, false);
 
         Executor executor = ContextCompat.getMainExecutor(requireContext());
@@ -77,9 +83,13 @@ public class FingerPassFragment extends Fragment {
 
         MaterialButton button_later = view.findViewById(R.id.button_later);
         button_later.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
+            if (checkData) {
+                getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            } else {
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
         });
 
         MaterialButton button_finger = view.findViewById(R.id.button_finger);

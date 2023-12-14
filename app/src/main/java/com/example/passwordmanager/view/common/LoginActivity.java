@@ -72,8 +72,10 @@ public class LoginActivity extends AppCompatActivity {
                     if(task.isSuccessful()) {
                         if(fAuth.getCurrentUser().isEmailVerified()) {
                             PassCodeFragment passCodeFragment = new PassCodeFragment();
-                            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                            ft.add(android.R.id.content, passCodeFragment).addToBackStack(null).commit();
+                            getSupportFragmentManager().beginTransaction()
+                                    .add(R.id.layout_login, passCodeFragment)
+                                    .addToBackStack(null)
+                                    .commit();
                             loginChangeInProgress(false);
                         } else {
                             loginChangeInProgress(false);

@@ -1,11 +1,13 @@
 package com.example.passwordmanager.view.navigation;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.view.Menu;
 import android.widget.Button;
 import android.widget.TextView;
@@ -48,8 +50,13 @@ public class SettingActivity extends AppCompatActivity {
         Button button_password = findViewById(R.id.button_password);
         button_password.setOnClickListener(v -> {
             PassCheckFragment passCheckFragment = new PassCheckFragment();
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.add(android.R.id.content, passCheckFragment).commit();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("SET_PASSWORD", true);
+            passCheckFragment.setArguments(bundle);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.layout_setting, passCheckFragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         Button button_quit = findViewById(R.id.button_quit);

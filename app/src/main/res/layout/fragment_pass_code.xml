@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_passCode"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -82,8 +83,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
+                android:text="이전에 사용한 비밀번호는 사용할 수 없습니다"
                 android:textColor="@color/errorMsg"
-                android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
+                android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -191,7 +194,8 @@
                     android:layout_column="2"
                     android:src="@drawable/ic_num_delete"
                     android:textColor="@color/customHintColor"
-                    android:textSize="24sp" />
+                    android:textSize="24sp"
+                    android:contentDescription="clear"/>
             </GridLayout>
         </LinearLayout>
     </LinearLayout>

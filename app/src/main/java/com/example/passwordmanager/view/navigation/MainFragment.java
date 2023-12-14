@@ -72,8 +72,8 @@ public class MainFragment extends Fragment {
         search_bar.setOnClickListener(v -> {
             main_fab_write.hide();
             SearchFragment searchFragment = new SearchFragment();
-            FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-            ft.add(R.id.layout_content, searchFragment).addToBackStack(null).commit();
+            getChildFragmentManager().beginTransaction()
+                    .add(R.id.layout_content, searchFragment).addToBackStack(null).commit();
         });
         search_bar.getMenu().clear();
         search_bar.inflateMenu(R.menu.menu_searchbar);

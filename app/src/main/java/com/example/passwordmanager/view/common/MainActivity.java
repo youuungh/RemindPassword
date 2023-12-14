@@ -108,7 +108,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showFragments(new TrashFragment());
             fab_write.hide();
         } else if (id == R.id.nav_setting) {
-            startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            }, 200);
         }
         return true;
     }
@@ -132,9 +134,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void showFragments(Fragment fragment) {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.replace(R.id.fragment_container, fragment).commit();
+            getSupportFragmentManager().beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .replace(R.id.fragment_container, fragment).commit();
         }, 200);
     }
 
@@ -151,6 +153,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         updateCounter();
         if (main_nav.getCheckedItem().getItemId() == R.id.nav_setting) {
             main_nav.setCheckedItem(R.id.nav_main);
+            MainFragment mainFragment = new MainFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .replace(R.id.fragment_container, mainFragment).commit();
         }
     }
 
