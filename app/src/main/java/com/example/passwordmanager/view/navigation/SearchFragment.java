@@ -36,11 +36,11 @@ import java.util.List;
 
 
 public class SearchFragment extends Fragment {
-    private SearchAdapter search_adapter;
-    private RecyclerView recycler_search;
+    private SearchAdapter searchAdapter;
+    private RecyclerView recyclerSearch;
     private SearchView searchView;
-    private FloatingActionButton search_fab_top;
-    private LinearLayout search_emptyView;
+    private FloatingActionButton searchFabTop;
+    private LinearLayout searchEmptyView;
     private InputMethodManager imm;
     private final List<Content> searchList = new ArrayList<>();
     private final Query content_query =  Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
@@ -56,8 +56,11 @@ public class SearchFragment extends Fragment {
         @Override
         public void handleOnBackPressed() {
             searchView.clearFocus();
-            ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            ((MainActivity)getActivity()).fab_write.show();
+            MainActivity mainActivity = (MainActivity) getActivity();
+            if (mainActivity != null) {
+                mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                mainActivity.fab_write.show();
+            }
             getParentFragmentManager().popBackStack();
         }
     };
@@ -73,23 +76,29 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        ((MainActivity) getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
 
-        imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         MaterialToolbar mToolbar = view.findViewById(R.id.search_toolbar);
         mToolbar.setNavigationOnClickListener(v -> {
             searchView.clearFocus();
-            ((MainActivity) getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            ((MainActivity) getActivity()).fab_write.show();
+            MainActivity mainActivity1 = (MainActivity) getActivity();
+            if (mainActivity1 != null) {
+                mainActivity1.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+                mainActivity1.fab_write.show();
+            }
             getParentFragmentManager().popBackStack();
         });
 
-        recycler_search = view.findViewById(R.id.recycler_search);
-        recycler_search.setHasFixedSize(true);
-        recycler_search.setLayoutManager(new LinearLayoutManager(getContext()));
-        search_adapter = new SearchAdapter(this, searchList);
-        recycler_search.setAdapter(search_adapter);
+        recyclerSearch = view.findViewById(R.id.recycler_search);
+        recyclerSearch.setHasFixedSize(true);
+        recyclerSearch.setLayoutManager(new LinearLayoutManager(getContext()));
+        searchAdapter = new SearchAdapter(this, searchList);
+        recyclerSearch.setAdapter(searchAdapter);
 
         searchView = view.findViewById(R.id.search_view);
         searchView.requestFocus();
@@ -99,17 +108,17 @@ public class SearchFragment extends Fragment {
             }
         });
 
-        search_emptyView = view.findViewById(R.id.search_view_empty);
-        search_fab_top = view.findViewById(R.id.search_fab_top);
-        search_fab_top.setOnClickListener(v -> {
-            recycler_search.scrollToPosition(0);
-            if (recycler_search.getVerticalScrollbarPosition() == 0)
-                search_fab_top.hide();
+        searchEmptyView = view.findViewById(R.id.search_view_empty);
+        searchFabTop = view.findViewById(R.id.search_fab_top);
+        searchFabTop.setOnClickListener(v -> {
+            recyclerSearch.scrollToPosition(0);
+            if (recyclerSearch.getVerticalScrollbarPosition() == 0)
+                searchFabTop.hide();
         });
 
-        recycler_search.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        recyclerSearch.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler(Looper.getMainLooper());
-            final Runnable runnable = () -> search_fab_top.hide();
+            final Runnable runnable = () -> searchFabTop.hide();
 
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
@@ -124,15 +133,15 @@ public class SearchFragment extends Fragment {
                 if (dy > 0) {
                     searchView.clearFocus();
                     imm.hideSoftInputFromWindow(getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    search_fab_top.show();
+                    searchFabTop.show();
                     handler.removeCallbacks(runnable);
                 } else if (dy < 0) {
                     searchView.clearFocus();
                     imm.hideSoftInputFromWindow(getView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                    search_fab_top.show();
+                    searchFabTop.show();
                     handler.removeCallbacks(runnable);
                     if (!recyclerView.canScrollVertically(-1))
-                        search_fab_top.hide();
+                        searchFabTop.hide();
                 }
                 super.onScrolled(recyclerView, dx, dy);
             }
@@ -141,7 +150,7 @@ public class SearchFragment extends Fragment {
     }
 
     public void showEmptyView(boolean isEmpty) {
-        search_emptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        searchEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -160,7 +169,7 @@ public class SearchFragment extends Fragment {
                         for (QueryDocumentSnapshot document : task1.getResult()) {
                             searchList.add(document.toObject(Content.class));
                         }
-                        search_adapter.notifyDataSetChanged();
+                        searchAdapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -175,7 +184,7 @@ public class SearchFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                search_adapter.getFilter().filter(newText);
+                searchAdapter.getFilter().filter(newText);
                 return true;
             }
         });

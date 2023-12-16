@@ -43,7 +43,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
     private TextInputEditText tv_title, tv_id, tv_pw, tv_memo;
     private MaterialButton button_options, button_decrypt;
     private ProgressBar progressBar;
-    private String label, docId;
+    private String label;
     private long mLastClickTime = 0;
     private long timeLeftInMillis = TIME_IN_MILLIS;
     private long endTime;
@@ -51,23 +51,49 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setupWindowTransitions();
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_edit_content);
+
+        initializeViews();
+
+        initializeUI();
+
+        populateDataFromIntent();
+
+        setEndIconClickListeners();
+
+        setEditButtonClickListener();
+
+        setOptionsButtonClickListener();
+
+        setDecryptButtonClickListener();
+    }
+
+    private void setupWindowTransitions() {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         getWindow().setAllowEnterTransitionOverlap(true);
         getWindow().setEnterTransition(new MaterialElevationScale(true).setDuration(150));
         getWindow().setReturnTransition(new MaterialElevationScale(false).setDuration(150));
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_content);
+    }
 
+    private void initializeUI() {
         MaterialToolbar mToolbar = findViewById(R.id.content_edit_toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(view -> onBackPressed());
+    }
 
+    private void initializeViews() {
         tv_title = findViewById(R.id.tv_title);
         tv_id = findViewById(R.id.tv_id);
         tv_pw = findViewById(R.id.tv_pw);
         tv_memo = findViewById(R.id.tv_memo);
         progressBar = findViewById(R.id.edit_progressBar);
+        button_options = findViewById(R.id.button_options);
+        button_decrypt = findViewById(R.id.button_decrypt);
+    }
 
+    private void populateDataFromIntent() {
         tv_title.setKeyListener(null);
         tv_id.setKeyListener(null);
         tv_pw.setKeyListener(null);
@@ -79,21 +105,23 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         tv_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
         favorite = getIntent().getBooleanExtra("favorite", false);
+    }
 
-        TextInputLayout layout_id = findViewById(R.id.content_layout_id);
-        layout_id.setEndIconOnClickListener(v -> {
-            Utils.copyToClipboard(getApplicationContext(), tv_id.getText().toString());
+    private void setEndIconClickListeners() {
+        setEndIconClickListener(tv_id, R.id.content_layout_id);
+        setEndIconClickListener(tv_memo, R.id.content_layout_memo);
+    }
+
+    private void setEndIconClickListener(TextInputEditText editText, int layoutId) {
+        TextInputLayout layout = findViewById(layoutId);
+        layout.setEndIconOnClickListener(v -> {
+            Utils.copyToClipboard(getApplicationContext(), editText.getText().toString());
             if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
                 Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
         });
+    }
 
-        TextInputLayout layout_memo = findViewById(R.id.content_layout_memo);
-        layout_memo.setEndIconOnClickListener(v -> {
-            Utils.copyToClipboard(getApplicationContext(), tv_memo.getText().toString());
-            if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2)
-                Utils.showSnack(findViewById(R.id.edit_screen), "클립보드에 복사되었습니다");
-        });
-
+    private void setEditButtonClickListener() {
         MaterialButton button_edit = findViewById(R.id.button_edit);
         button_edit.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddContentActivity.class);
@@ -105,82 +133,98 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             intent.putExtra("favorite", favorite);
             startActivity(intent, bundle);
         });
+    }
 
-        button_options = findViewById(R.id.button_options);
-        button_options.setOnClickListener(v -> {
-            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return;
-            mLastClickTime = SystemClock.elapsedRealtime();
+    private void setOptionsButtonClickListener() {
+        button_options.setOnClickListener(v -> showOptionsBottomSheet());
+    }
 
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
-            View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.cbs_container));
+    private void showOptionsBottomSheet() {
+        if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return;
+        mLastClickTime = SystemClock.elapsedRealtime();
 
-            ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
-            TextView tv_favorite = bottomSheetView.findViewById(R.id.tv_favorite);
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
+        View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.cbs_container));
 
-            DocumentReference contentPath = Utils.getContentReference().document(label);
-            DocumentReference favPath = Utils.getFavoriteReference().document(label);
+        ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
+        TextView tv_favorite = bottomSheetView.findViewById(R.id.tv_favorite);
 
-            favPath.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        favorite = document.getBoolean("favorite");
-                        if (favorite) {
-                            iv_favorite.setImageResource(R.drawable.ic_star_filled);
-                            tv_favorite.setText("즐겨찾기에서 삭제");
-                        }
+        DocumentReference contentPath = Utils.getContentReference().document(label);
+        DocumentReference favPath = Utils.getFavoriteReference().document(label);
+
+        favPath.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    favorite = document.getBoolean("favorite");
+                    if (favorite) {
+                        iv_favorite.setImageResource(R.drawable.ic_star_filled);
+                        tv_favorite.setText("즐겨찾기에서 삭제");
                     }
                 }
-            });
-
-            contentPath.get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    DocumentSnapshot document = task.getResult();
-                    if (document.exists()) {
-                        favorite = document.getBoolean("favorite");
-                        if (!favorite) {
-                            iv_favorite.setImageResource(R.drawable.ic_star_not_filled);
-                            tv_favorite.setText("즐겨찾기에 추가");
-                        }
-                    }
-                }
-            });
-
-            bottomSheetView.findViewById(R.id.option_favorite).setOnClickListener(v1 -> {
-                bottomSheetDialog.dismiss();
-                if (favorite) {
-                    deleteFavorite(favPath, contentPath);
-                } else {
-                    addFavorite(contentPath, favPath);
-                }
-            });
-
-            bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v1 -> {
-                bottomSheetDialog.dismiss();
-                DocumentReference fromPath = Utils.getContentReference().document(label);
-                DocumentReference toPath = Utils.getTrashReference().document(label);
-                moveFirebaseDocument(fromPath, toPath);
-            });
-            bottomSheetDialog.setContentView(bottomSheetView);
-            bottomSheetDialog.show();
-        });
-
-        button_decrypt = findViewById(R.id.button_decrypt);
-        button_decrypt.setOnClickListener(v -> {
-            if (tv_pw.getText().length() != 0) {
-                if (getPassCode().length() != 0) {
-                    PassCheckFragment passCheckFragment = new PassCheckFragment();
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    ft.add(android.R.id.content, passCheckFragment).addToBackStack(null).commit();
-                } else {
-                    Snackbar sb = Snackbar.make(findViewById(R.id.edit_screen), "먼저 비밀번호를 설정하세요", Snackbar.LENGTH_SHORT);
-                    sb.setAction("설정", v1 -> startActivity(new Intent(this, SettingActivity.class)));
-                    sb.show();
-                }
-            } else {
-                Utils.showSnack(findViewById(R.id.edit_screen), "비밀번호가 비어 있습니다");
             }
         });
+
+        contentPath.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DocumentSnapshot document = task.getResult();
+                if (document.exists()) {
+                    favorite = document.getBoolean("favorite");
+                    if (!favorite) {
+                        iv_favorite.setImageResource(R.drawable.ic_star_not_filled);
+                        tv_favorite.setText("즐겨찾기에 추가");
+                    }
+                }
+            }
+        });
+
+        bottomSheetView.findViewById(R.id.option_favorite).setOnClickListener(v1 -> {
+            bottomSheetDialog.dismiss();
+            if (favorite) {
+                deleteFavorite(favPath, contentPath);
+            } else {
+                addFavorite(contentPath, favPath);
+            }
+        });
+
+        bottomSheetView.findViewById(R.id.option_trash).setOnClickListener(v1 -> {
+            bottomSheetDialog.dismiss();
+            DocumentReference fromPath = Utils.getContentReference().document(label);
+            DocumentReference toPath = Utils.getTrashReference().document(label);
+            moveFirebaseDocument(fromPath, toPath);
+        });
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
+    }
+
+    private void setDecryptButtonClickListener() {
+        button_decrypt.setOnClickListener(v -> handleDecryptButtonClick());
+    }
+
+    private void handleDecryptButtonClick() {
+        if (tv_pw.getText().length() != 0) {
+            if (getPassCode().length() != 0) {
+                showPassCheckFragment();
+            } else {
+                showPasscodeNotSetSnackbar();
+            }
+        } else {
+            Utils.showSnack(findViewById(R.id.edit_screen), "비밀번호가 비어 있습니다");
+        }
+    }
+
+    private void showPassCheckFragment() {
+        PassCheckFragment passCheckFragment = new PassCheckFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, passCheckFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void showPasscodeNotSetSnackbar() {
+        Snackbar sb = Snackbar.make(findViewById(R.id.edit_screen), "먼저 비밀번호를 설정하세요", Snackbar.LENGTH_SHORT);
+        sb.setAction("설정", v -> startActivity(new Intent(this, SettingActivity.class)));
+        sb.show();
     }
 
     @Override

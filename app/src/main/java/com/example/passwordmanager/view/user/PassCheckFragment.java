@@ -68,7 +68,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
         @Override
         public void handleOnBackPressed() {
-            getParentFragmentManager().popBackStackImmediate();
+            getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
     };
 
@@ -77,8 +77,8 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
-        setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
         setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
+        setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
     }
 
     @Override
@@ -221,15 +221,6 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    private void clearPassCode() {
-        pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
-        num_list.clear();
-        confirmCode = "";
-    }
-
     private void reRegisterPassCode() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Bundle bundle = getArguments();
@@ -246,9 +237,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                             .addToBackStack(null)
                             .commit();
                 } else {
-                    tv_error.setVisibility(View.VISIBLE);
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
-                    clearPassCode();
+                    misMatchPassCode();
                 }
             }
         }, 100);
@@ -266,9 +255,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                             .add(R.id.layout_passCheck, fingerPassFragment)
                             .commit();
                 } else {
-                    tv_error.setVisibility(View.VISIBLE);
-                    new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
-                    clearPassCode();
+                    misMatchPassCode();
                 }
             } else {
                 matchPassCode();
@@ -279,24 +266,38 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     private void matchPassCode() {
         if (getPassCode().equals(confirmCode)) {
             if (checkData) {
+                setEnterTransition(null);
+                setReturnTransition(null);
                 PassCodeFragment passCodeFragment = new PassCodeFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("NEW_PASSWORD", true);
                 passCodeFragment.setArguments(bundle);
                 getParentFragmentManager().beginTransaction()
-                        .add(R.id.layout_passCheck, passCodeFragment)
+                        .replace(R.id.layout_passCheck, passCodeFragment)
                         .addToBackStack(null)
                         .commit();
-                Log.d("matchPassCode()", "이동:PASSCODE");
             } else {
                 callback.getCallback(true);
                 getParentFragmentManager().popBackStack();
             }
         } else {
-            tv_error.setVisibility(View.VISIBLE);
-            new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
-            clearPassCode();
+            misMatchPassCode();
         }
+    }
+
+    private void misMatchPassCode() {
+        tv_error.setVisibility(View.VISIBLE);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
+        clearPassCode();
+    }
+
+    private void clearPassCode() {
+        pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
+        num_list.clear();
+        confirmCode = "";
     }
 
     private String getPassCode() {

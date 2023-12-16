@@ -60,14 +60,42 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        initializeViews(view);
+
+        setSearchBarClickListener();
+
+        if (savedInstanceState == null) {
+            SharedPreferences prefer = getActivity().getSharedPreferences("MAIN_MENU_STATE", Context.MODE_PRIVATE);
+            isSwitch = prefer.getBoolean("SWITCH_DATA", true);
+            onChangeMainMenuItem();
+        } else {
+            isSwitch = savedInstanceState.getBoolean("MAIN_MENU_STATE");
+            onChangeMainMenuItem();
+        }
+
+        setExpandButtonClickListener();
+
+        setFabButtonClickEvents();
+
+        initializeFirestoreAdapters();
+
+        return view;
+    }
+
+    private void initializeViews(View view) {
         main_empty_view = view.findViewById(R.id.main_view_empty);
         main_loading_view = view.findViewById(R.id.main_view_loading);
         appBarLayout = view.findViewById(R.id.main_layout_appbar);
         cv_favorite = view.findViewById(R.id.cv_favorite);
         rv_favorite = view.findViewById(R.id.rv_favorites);
         rv_content = view.findViewById(R.id.rv_contents);
-
         search_bar = view.findViewById(R.id.main_searchbar);
+        expand_button = view.findViewById(R.id.button_expand);
+        main_fab_write = ((MainActivity) getActivity()).fab_write;
+        main_fab_top = ((MainActivity) getActivity()).fab_top;
+    }
+
+    private void setSearchBarClickListener() {
         search_bar.setNavigationOnClickListener(v -> ((MainActivity) getActivity()).drawerLayout.open());
         search_bar.setOnClickListener(v -> {
             main_fab_write.hide();
@@ -80,39 +108,27 @@ public class MainFragment extends Fragment {
         search_bar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
-                if (!isSwitch) {
-                    rv_content.setLayoutManager(new LinearLayoutManager(getContext()));
-                    item.setIcon(R.drawable.ic_column_grid);
-                } else {
-                    rv_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
-                    item.setIcon(R.drawable.ic_column_linear);
-                }
-                isSwitch = !isSwitch;
+                toggleRecyclerViewLayout();
             }
             return false;
         });
+    }
 
-        if (savedInstanceState == null) {
-            SharedPreferences prefer = getActivity().getSharedPreferences("MAIN_MENU_STATE", Context.MODE_PRIVATE);
-            isSwitch = prefer.getBoolean("SWITCH_DATA", true);
-            onChangeMainMenuItem();
-        } else {
-            isSwitch = savedInstanceState.getBoolean("MAIN_MENU_STATE");
-            onChangeMainMenuItem();
-        }
-
-        expand_button = view.findViewById(R.id.button_expand);
+    private void setExpandButtonClickListener() {
         expand_button.setOnClickListener(v -> onExpandRecycler());
+    }
 
-        main_fab_write = ((MainActivity)getActivity()).fab_write;
-        main_fab_top = ((MainActivity)getActivity()).fab_top;
+    private void setFabButtonClickEvents() {
         main_fab_top.setOnClickListener(v -> {
             rv_content.scrollToPosition(0);
             appBarLayout.setExpanded(true);
             if (rv_content.getVerticalScrollbarPosition() == 0)
                 main_fab_top.hide();
         });
+    }
 
+    private void initializeFirestoreAdapters() {
+        // content
         Query mquery = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         mquery.get().addOnCompleteListener(task -> {
             main_loading_view.setVisibility(View.GONE);
@@ -130,6 +146,7 @@ public class MainFragment extends Fragment {
                 rv_content.scrollToPosition(0);
                 appBarLayout.setExpanded(true);
             }
+
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
@@ -139,6 +156,7 @@ public class MainFragment extends Fragment {
         });
         mAdapter.notifyDataSetChanged();
 
+        // favorite
         Query fquery = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
         fquery.get().addOnCompleteListener(task -> {
             onChangeFavView(fOptions.getSnapshots().isEmpty());
@@ -158,6 +176,7 @@ public class MainFragment extends Fragment {
                 rv_content.scrollToPosition(0);
                 appBarLayout.setExpanded(true);
             }
+
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
@@ -174,6 +193,7 @@ public class MainFragment extends Fragment {
         rv_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = () -> main_fab_top.hide();
+
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -198,8 +218,6 @@ public class MainFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-
-        return view;
     }
 
     private void onExpandRecycler() {
@@ -228,6 +246,17 @@ public class MainFragment extends Fragment {
             rv_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
             search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
         }
+    }
+
+    private void toggleRecyclerViewLayout() {
+        if (!isSwitch) {
+            rv_content.setLayoutManager(new LinearLayoutManager(getContext()));
+            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+        } else {
+            rv_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
+            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+        }
+        isSwitch = !isSwitch;
     }
 
     @Override

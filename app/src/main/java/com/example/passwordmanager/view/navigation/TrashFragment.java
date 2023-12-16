@@ -73,14 +73,7 @@ public class TrashFragment extends Fragment {
         mToolbar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
             int id = item.getItemId();
             if (id == R.id.menu_column) {
-                if (!isSwitch) {
-                    recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-                    item.setIcon(R.drawable.ic_column_grid);
-                } else {
-                    recyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
-                    item.setIcon(R.drawable.ic_column_linear);
-                }
-                isSwitch = !isSwitch;
+                toggleRecyclerViewLayout();
             }
             return false;
         });
@@ -88,59 +81,16 @@ public class TrashFragment extends Fragment {
         if (savedInstanceState == null) {
             SharedPreferences prefer = getActivity().getSharedPreferences("TRASH_MENU_STATE", Context.MODE_PRIVATE);
             isSwitch = prefer.getBoolean("SWITCH_DATA", true);
-            onChangeTrashMenuItem();
+            updateTrashMenuItem();
         } else {
             isSwitch = savedInstanceState.getBoolean("TRASH_MENU_STATE");
-            onChangeTrashMenuItem();
+            updateTrashMenuItem();
         }
 
         mToolbar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
             if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return false;
             mLastClickTime = SystemClock.elapsedRealtime();
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
-            View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_bottom_sheet, getView().findViewById(R.id.tbs_container));
-            bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
-                bottomSheetDialog.dismiss();
-                if (!options.getSnapshots().isEmpty()) {
-                    Utils.getTrashReference().get().addOnCompleteListener(task -> {
-                        trash_loadingView.setVisibility(View.VISIBLE);
-
-                        if (task.isSuccessful()) {
-                            QuerySnapshot querySnapshot = task.getResult();
-
-                            for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
-                                DocumentReference fromPath = Utils.getTrashReference().document(documentSnapshot.getReference().getId());
-                                DocumentReference toPath = Utils.getContentReference().document(documentSnapshot.getReference().getId());
-                                moveFirebaseDocument(fromPath, toPath);
-                            }
-                        }
-                    });
-                } else {
-                     Utils.showSnack(view.findViewById(R.id.recycler_trash), "복원할 항목이 없습니다");
-                }
-            });
-
-            bottomSheetView.findViewById(R.id.option_delete).setOnClickListener(v -> {
-                bottomSheetDialog.dismiss();
-                if (!options.getSnapshots().isEmpty()) {
-                    MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.CustomAlertDialog)
-                            .setMessage("휴지통에 있는 모든 항목이\n완전히 삭제됩니다")
-                            .setCancelable(false)
-                            .setPositiveButton("삭제", (dialog, which) -> {
-                                trash_loadingView.setVisibility(View.VISIBLE);
-                                deleteAllFirebaseDocument();
-                            })
-                            .setNegativeButton("취소", (dialog, which) -> {
-                                dialog.cancel();
-                            });
-                    builder.create();
-                    builder.show();
-                } else {
-                    Utils.showSnack(view.findViewById(R.id.recycler_trash), "휴지통이 비어 있습니다");
-                }
-            });
-            bottomSheetDialog.setContentView(bottomSheetView);
-            bottomSheetDialog.show();
+            showBottomSheetDialog();
             return false;
         });
 
@@ -150,6 +100,7 @@ public class TrashFragment extends Fragment {
             if (recyclerView.getVerticalScrollbarPosition() == 0)
                 trash_fab_top.hide();
         });
+
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = () -> trash_fab_top.hide();
@@ -182,14 +133,72 @@ public class TrashFragment extends Fragment {
         trash_emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
     }
 
-    private void onChangeTrashMenuItem() {
+    private void toggleRecyclerViewLayout() {
+        isSwitch = !isSwitch;
         if (isSwitch) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
             mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
         } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(this.getContext(), 2));
+            recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
             mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
         }
+    }
+
+    private void updateTrashMenuItem() {
+        if (isSwitch) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+            mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+        } else {
+            recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+            mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+        }
+    }
+
+    private void showBottomSheetDialog() {
+        BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
+        View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_bottom_sheet, getView().findViewById(R.id.tbs_container));
+        bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            if (!options.getSnapshots().isEmpty()) {
+                Utils.getTrashReference().get().addOnCompleteListener(task -> {
+                    trash_loadingView.setVisibility(View.VISIBLE);
+
+                    if (task.isSuccessful()) {
+                        QuerySnapshot querySnapshot = task.getResult();
+
+                        for (DocumentSnapshot documentSnapshot : querySnapshot.getDocuments()) {
+                            DocumentReference fromPath = Utils.getTrashReference().document(documentSnapshot.getReference().getId());
+                            DocumentReference toPath = Utils.getContentReference().document(documentSnapshot.getReference().getId());
+                            moveFirebaseDocument(fromPath, toPath);
+                        }
+                    }
+                });
+            } else {
+                Utils.showSnack(getView().findViewById(R.id.recycler_trash), "복원할 항목이 없습니다");
+            }
+        });
+
+        bottomSheetView.findViewById(R.id.option_delete).setOnClickListener(v -> {
+            bottomSheetDialog.dismiss();
+            if (!options.getSnapshots().isEmpty()) {
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.CustomAlertDialog)
+                        .setMessage("휴지통에 있는 모든 항목이\n완전히 삭제됩니다")
+                        .setCancelable(false)
+                        .setPositiveButton("삭제", (dialog, which) -> {
+                            trash_loadingView.setVisibility(View.VISIBLE);
+                            deleteAllFirebaseDocument();
+                        })
+                        .setNegativeButton("취소", (dialog, which) -> {
+                            dialog.cancel();
+                        });
+                builder.create();
+                builder.show();
+            } else {
+                Utils.showSnack(getView().findViewById(R.id.recycler_trash), "휴지통이 비어 있습니다");
+            }
+        });
+        bottomSheetDialog.setContentView(bottomSheetView);
+        bottomSheetDialog.show();
     }
 
     private void moveFirebaseDocument(DocumentReference fromPath, DocumentReference toPath) {

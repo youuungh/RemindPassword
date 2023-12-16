@@ -48,11 +48,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         getWindow().setEnterTransition(new MaterialElevationScale(true));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (savedInstanceState == null) showFragments(new MainFragment());
 
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = fAuth.getCurrentUser();
 
+        initializeUI();
+
+        if (savedInstanceState == null) showFragments(new MainFragment());
+
+        if (fUser != null) {
+            setHeaderEmail(fUser.getEmail());
+        }
+
+        setupFabWrite();
+
+        setupLogoutButton();
+    }
+
+    private void initializeUI() {
         drawerLayout = findViewById(R.id.layout_drawer);
         main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);
@@ -63,73 +76,64 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         main_count = main_nav.getMenu().getItem(0).getActionView().findViewById(R.id.tv_main_count);
         trash_count = main_nav.getMenu().getItem(1).getActionView().findViewById(R.id.tv_trash_count);
 
-        View header = main_nav.getHeaderView(0);
-        TextView tv_userEmail = header.findViewById(R.id.tv_userMail);
-        if (fUser != null) tv_userEmail.setText(fUser.getEmail());
-
         fab_top = findViewById(R.id.main_fab_top);
         fab_write = findViewById(R.id.main_fab_write);
+    }
+
+    private void setHeaderEmail(String email) {
+        View header = main_nav.getHeaderView(0);
+        TextView tv_userEmail = header.findViewById(R.id.tv_userMail);
+        tv_userEmail.setText(email);
+    }
+
+    private void setupFabWrite() {
         fab_write.setOnClickListener(v -> {
             Intent intent = new Intent(this, AddContentActivity.class);
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
             startActivity(intent, bundle);
         });
+    }
 
+    private void setupLogoutButton() {
         MaterialButton button = findViewById(R.id.nav_button);
-        button.setOnClickListener(v -> {
-            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.CustomAlertDialog)
-                    .setMessage("로그아웃 하시겠습니까?")
-                    .setCancelable(false)
-                    .setPositiveButton("확인", (dialog, which) -> {
-                        clearPassCode();
-                        fAuth.signOut();
-                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    })
-                    .setNegativeButton("취소", (dialog, which) -> {
-                        dialog.cancel();
-                    });
-            builder.create();
-            builder.show();
-        });
+        button.setOnClickListener(v -> showLogoutDialog());
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        drawerLayout.closeDrawer(GravityCompat.START);
-        int id = item.getItemId();
-        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-        if (id == R.id.nav_main && !(fragment instanceof MainFragment)) {
-            showFragments(new MainFragment());
-            fab_write.show();
-        } else if (id == R.id.nav_trash && !(fragment instanceof TrashFragment)) {
-            showFragments(new TrashFragment());
-            fab_write.hide();
-        } else if (id == R.id.nav_setting) {
-            new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                startActivity(new Intent(MainActivity.this, SettingActivity.class));
-            }, 200);
-        }
-        return true;
-    }
-
-    public void updateCounter() {
-        Utils.getContentReference().get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                int value = task.getResult().size();
-                Utils.getFavoriteReference().get().addOnCompleteListener(task1 -> {
-                    if (task1.isSuccessful()) {
-                        main_count.setText(String.valueOf(value + task1.getResult().size()));
-                    }
+    private void showLogoutDialog() {
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.CustomAlertDialog)
+                .setMessage("로그아웃 하시겠습니까?")
+                .setCancelable(false)
+                .setPositiveButton("확인", (dialog, which) -> {
+                    clearPassCode();
+                    clearBiometric();
+                    fAuth.signOut();
+                    navigateToHomeActivity();
+                })
+                .setNegativeButton("취소", (dialog, which) -> {
+                    dialog.cancel();
                 });
-            }
-        });
-        Utils.getTrashReference().get().addOnCompleteListener(task -> {
-            if (task.isSuccessful())
-                trash_count.setText(String.valueOf(task.getResult().size()));
-        });
+        builder.create().show();
+    }
+
+    private void clearPassCode() {
+        SharedPreferences pref = getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    private void clearBiometric() {
+        SharedPreferences prefs = getSharedPreferences("BIOMETRIC_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.clear();
+        editor.apply();
+    }
+
+    private void navigateToHomeActivity() {
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private void showFragments(Fragment fragment) {
@@ -138,13 +142,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     .replace(R.id.fragment_container, fragment).commit();
         }, 200);
-    }
-
-    private void clearPassCode() {
-        SharedPreferences pref = getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-        editor.clear();
-        editor.commit();
     }
 
     @Override
@@ -167,5 +164,41 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
+    }
+
+    public void updateCounter() {
+        Utils.getContentReference().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                int value = task.getResult().size();
+                Utils.getFavoriteReference().get().addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        main_count.setText(String.valueOf(value + task1.getResult().size()));
+                    }
+                });
+            }
+        });
+        Utils.getTrashReference().get().addOnCompleteListener(task -> {
+            if (task.isSuccessful())
+                trash_count.setText(String.valueOf(task.getResult().size()));
+        });
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        drawerLayout.closeDrawer(GravityCompat.START);
+        int id = item.getItemId();
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if (id == R.id.nav_main && !(fragment instanceof MainFragment)) {
+            showFragments(new MainFragment());
+            fab_write.show();
+        } else if (id == R.id.nav_trash && !(fragment instanceof TrashFragment)) {
+            showFragments(new TrashFragment());
+            fab_write.hide();
+        } else if (id == R.id.nav_setting) {
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                startActivity(new Intent(MainActivity.this, SettingActivity.class));
+            }, 200);
+        }
+        return true;
     }
 }

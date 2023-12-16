@@ -41,11 +41,19 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        fAuth = FirebaseAuth.getInstance();
+
+        initializeUI();
+
+        setupNavigation();
+
+        setupTextWatchers();
+    }
+
+    private void initializeUI() {
         MaterialToolbar mToolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(view -> this.finish());
-
-        fAuth = FirebaseAuth.getInstance();
 
         layout_email = findViewById(R.id.login_layout_email);
         layout_password = findViewById(R.id.login_layout_password);
@@ -53,10 +61,9 @@ public class LoginActivity extends AppCompatActivity {
         edt_password = findViewById(R.id.login_password);
         button_login = findViewById(R.id.login_button);
         progressBar = findViewById(R.id.login_progressBar);
+    }
 
-        edt_email.addTextChangedListener(new LoginTextWatcher(edt_email));
-        edt_password.addTextChangedListener(new LoginTextWatcher(edt_password));
-
+    private void setupNavigation() {
         TextView tv_reset = findViewById(R.id.tv_reset);
         tv_reset.setOnClickListener(v -> startActivity(new Intent(this, ResetPasswordActivity.class)));
 
@@ -64,19 +71,19 @@ public class LoginActivity extends AppCompatActivity {
         tv_signup.setOnClickListener(v -> startActivity(new Intent(this, SignUpActivity.class)));
     }
 
+    private void setupTextWatchers() {
+        edt_email.addTextChangedListener(new LoginTextWatcher(edt_email));
+        edt_password.addTextChangedListener(new LoginTextWatcher(edt_password));
+    }
+
     private void loginAccountInFirebase(String email, String password) {
         loginChangeInProgress(true);
         fAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     clearFocus();
-                    if(task.isSuccessful()) {
-                        if(fAuth.getCurrentUser().isEmailVerified()) {
-                            PassCodeFragment passCodeFragment = new PassCodeFragment();
-                            getSupportFragmentManager().beginTransaction()
-                                    .add(R.id.layout_login, passCodeFragment)
-                                    .addToBackStack(null)
-                                    .commit();
-                            loginChangeInProgress(false);
+                    if (task.isSuccessful()) {
+                        if (fAuth.getCurrentUser() != null && fAuth.getCurrentUser().isEmailVerified()) {
+                            navigateToPassCodeFragment();
                         } else {
                             loginChangeInProgress(false);
                             Utils.showSnack(findViewById(R.id.loginScreen), "이메일 인증이 필요합니다");
@@ -111,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
         public void onTextChanged(CharSequence s, int start, int before, int count) {
             String emailInput = edt_email.getText().toString().trim();
             String passwordInput = edt_password.getText().toString().trim();
+
             switch (v.getId()) {
                 case R.id.login_email:
                     validateEmail(emailInput);
@@ -121,6 +129,7 @@ public class LoginActivity extends AppCompatActivity {
             }
             button_login.setEnabled(Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()
                     && PASSWORD.matcher(passwordInput).matches());
+
             button_login.setOnClickListener(view -> {
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();
@@ -162,5 +171,14 @@ public class LoginActivity extends AppCompatActivity {
                 layout_password.setErrorEnabled(false);
             }
         }
+    }
+
+    private void navigateToPassCodeFragment() {
+        PassCodeFragment passCodeFragment = new PassCodeFragment();
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.layout_login, passCodeFragment)
+                .addToBackStack(null)
+                .commit();
+        loginChangeInProgress(false);
     }
 }

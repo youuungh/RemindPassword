@@ -29,26 +29,17 @@ public class AddContentActivity extends AppCompatActivity {
     private TextInputEditText edt_title, edt_id, edt_pw, edt_memo;
     private MaterialButton button_save;
     private ProgressBar progressBar;
-    private String label, docId;
+    private String label;
     private boolean isEdit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        getWindow().setAllowEnterTransitionOverlap(true);
-        getWindow().setAllowReturnTransitionOverlap(true);
-        MaterialFadeThrough enter = new MaterialFadeThrough();
-        enter.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.BOTTOM));
-        getWindow().setEnterTransition(enter);
-        MaterialFadeThrough exit = new MaterialFadeThrough();
-        exit.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.TOP));
-        getWindow().setReturnTransition(exit);
+        configureEnterExitTransitions();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
 
-        MaterialToolbar mToolbar = findViewById(R.id.content_add_toolbar);
-        setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(view -> onBackPressed());
+        setupToolbar();
 
         TextInputLayout layout_pw = findViewById(R.id.content_layout_pw);
         edt_title = findViewById(R.id.edt_title);
@@ -57,25 +48,54 @@ public class AddContentActivity extends AppCompatActivity {
         edt_memo = findViewById(R.id.edt_memo);
         progressBar = findViewById(R.id.add_progressBar);
 
-        edt_title.setText(getIntent().getStringExtra("title"));
-        edt_id.setText(getIntent().getStringExtra("id"));
-        edt_memo.setText(getIntent().getStringExtra("memo"));
-        label = getIntent().getStringExtra("label");
+        initializeUI();
 
         if(label != null && !label.isEmpty()) {
             isEdit = true;
             edt_title.requestFocus();
             layout_pw.setHint("새로운 비밀번호 설정");
-            mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
+            configureEditToolbar();
         } else {
             edt_title.requestFocus();
         }
 
         button_save = findViewById(R.id.button_save);
+        setupSaveButton();
+    }
+
+    private void configureEnterExitTransitions() {
+        MaterialFadeThrough enter = new MaterialFadeThrough();
+        enter.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.BOTTOM));
+        getWindow().setEnterTransition(enter);
+
+        MaterialFadeThrough exit = new MaterialFadeThrough();
+        exit.setSecondaryAnimatorProvider(new SlideDistanceProvider(Gravity.TOP));
+        getWindow().setReturnTransition(exit);
+    }
+
+    private void setupToolbar() {
+        MaterialToolbar mToolbar = findViewById(R.id.content_add_toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(view -> onBackPressed());
+    }
+
+    private void initializeUI() {
+        edt_title.setText(getIntent().getStringExtra("title"));
+        edt_id.setText(getIntent().getStringExtra("id"));
+        edt_memo.setText(getIntent().getStringExtra("memo"));
+        label = getIntent().getStringExtra("label");
+    }
+
+    private void configureEditToolbar() {
+        MaterialToolbar mToolbar = findViewById(R.id.content_add_toolbar);
+        mToolbar.setNavigationIcon(ContextCompat.getDrawable(this, R.drawable.ic_close));
+    }
+
+    private void setupSaveButton() {
         button_save.setOnClickListener(view -> {
             hideSoftKeyboard();
+
             String title = edt_title.getText().toString();
-            String search = title.toLowerCase();
             String id = edt_id.getText().toString();
             String pw = edt_pw.getText().toString();
             String memo = edt_memo.getText().toString();
@@ -87,7 +107,7 @@ public class AddContentActivity extends AppCompatActivity {
                 return;
             }
 
-            Content content = new Content(title, search, id, Utils.encodeBase64(pw), memo, docId, timestamp, favorite);
+            Content content = new Content(title, title.toLowerCase(), id, Utils.encodeBase64(pw), memo, "", timestamp, favorite);
 
             if (favorite) {
                 editFavToFirebase(content);
@@ -117,23 +137,19 @@ public class AddContentActivity extends AppCompatActivity {
         progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
-    private void saveToFirebase(Content contents) {
+    private void saveToFirebase(Content content) {
         onChangeInProgress(true);
         DocumentReference docRef;
-        if(isEdit) {
+        if (isEdit) {
             docRef = Utils.getContentReference().document(label);
         } else {
             docRef = Utils.getContentReference().document();
         }
-        contents.setDocId(docRef.getId());
-        docRef.set(contents).addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
+        content.setDocId(docRef.getId());
+        docRef.set(content).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
                 button_save.setEnabled(false);
-                Intent intent = new Intent(this, MainActivity.class);
-                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent, bundle);
-                finish();
+                navigateToMainActivity();
             } else {
                 onChangeInProgress(false);
                 button_save.setEnabled(true);
@@ -142,23 +158,28 @@ public class AddContentActivity extends AppCompatActivity {
         });
     }
 
-    private void editFavToFirebase(Content contents) {
+    private void editFavToFirebase(Content content) {
         onChangeInProgress(true);
         DocumentReference docRef = Utils.getFavoriteReference().document(label);
-        contents.setDocId(docRef.getId());
-        docRef.set(contents).addOnCompleteListener(task -> {
-            if(task.isSuccessful()) {
+        content.setDocId(docRef.getId());
+        docRef.set(content).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
                 button_save.setEnabled(false);
-                Intent intent = new Intent(this, MainActivity.class);
-                Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent, bundle);
+                navigateToMainActivity();
             } else {
                 onChangeInProgress(false);
                 button_save.setEnabled(true);
                 Utils.showSnack(findViewById(R.id.add_screen), "오류, 다시 시도하세요");
             }
         });
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent, bundle);
+        finish();
     }
 
     @Override

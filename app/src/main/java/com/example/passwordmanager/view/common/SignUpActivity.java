@@ -26,7 +26,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import java.util.regex.Pattern;
 
 public class SignUpActivity extends AppCompatActivity {
-    private static final Pattern PASSWORD = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
+    private static final Pattern PASSWORD_PATTERN = Pattern.compile("^(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,15}$");
     private FirebaseAuth fAuth;
     private TextInputLayout layout_email, layout_password, layout_passCheck;
     private TextInputEditText edt_email, edt_password, edt_passCheck;
@@ -39,23 +39,43 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        MaterialToolbar mToolbar = findViewById(R.id.signup_toolbar);
-        setSupportActionBar(mToolbar);
-        mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+        setupToolbar();
 
         fAuth = FirebaseAuth.getInstance();
 
+        initializeUI();
+
+        setupTextWatcher();
+
+        setupLoginTextView();
+    }
+
+    private void setupToolbar() {
+        MaterialToolbar mToolbar = findViewById(R.id.signup_toolbar);
+        setSupportActionBar(mToolbar);
+        mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+    }
+
+    private void initializeUI() {
         layout_email = findViewById(R.id.signup_layout_email);
         layout_password = findViewById(R.id.signup_layout_password);
         layout_passCheck = findViewById(R.id.signup_layout_passCheck);
 
         edt_email = findViewById(R.id.signup_email);
-        edt_email.addTextChangedListener(new SignUpTextWatcher(edt_email));
         edt_password = findViewById(R.id.signup_password);
-        edt_password.addTextChangedListener(new SignUpTextWatcher(edt_password));
         edt_passCheck = findViewById(R.id.signup_passCheck);
-        edt_passCheck.addTextChangedListener(new SignUpTextWatcher(edt_passCheck));
 
+        button = findViewById(R.id.signup_button);
+        progressBar = findViewById(R.id.signup_progressBar);
+    }
+
+    private void setupTextWatcher() {
+        edt_email.addTextChangedListener(new SignUpTextWatcher(edt_email));
+        edt_password.addTextChangedListener(new SignUpTextWatcher(edt_password));
+        edt_passCheck.addTextChangedListener(new SignUpTextWatcher(edt_passCheck));
+    }
+
+    private void setupLoginTextView() {
         TextView tv_login = findViewById(R.id.tv_login);
         tv_login.setPaintFlags(tv_login.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         tv_login.setOnClickListener(view -> {
@@ -64,9 +84,6 @@ public class SignUpActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         });
-
-        button = findViewById(R.id.signup_button);
-        progressBar = findViewById(R.id.signup_progressBar);
     }
 
     private void signUpInFirebase(String email, String password) {
@@ -102,9 +119,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -125,8 +140,9 @@ public class SignUpActivity extends AppCompatActivity {
             }
 
             button.setEnabled(Patterns.EMAIL_ADDRESS.matcher(emailInput).matches()
-                    && PASSWORD.matcher(passwordInput).matches()
+                    && PASSWORD_PATTERN.matcher(passwordInput).matches()
                     && passCheckInput.equals(passwordInput));
+
             button.setOnClickListener(v -> {
                 clearFocus();
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -138,9 +154,7 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-
-        }
+        public void afterTextChanged(Editable s) { }
     }
 
     private void validateEmail(String emailInput) {
@@ -160,7 +174,7 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void validatePassword(String passwordInput, String passCheckInput) {
-        boolean isValid = PASSWORD.matcher(passwordInput).matches();
+        boolean isValid = PASSWORD_PATTERN.matcher(passwordInput).matches();
         if (passwordInput.isEmpty()) {
             layout_password.setErrorEnabled(false);
             layout_password.setBoxStrokeColor(Color.BLACK);

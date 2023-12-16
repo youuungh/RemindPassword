@@ -12,11 +12,14 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.passwordmanager.R;
+import com.example.passwordmanager.util.Utils;
 import com.example.passwordmanager.view.common.MainActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.transition.platform.MaterialSharedAxis;
@@ -24,8 +27,6 @@ import com.google.android.material.transition.platform.MaterialSharedAxis;
 import java.util.concurrent.Executor;
 
 public class FingerPassFragment extends Fragment {
-    private BiometricPrompt biometricPrompt;
-    private BiometricPrompt.PromptInfo promptInfo;
     private boolean checkData;
 
     @Override
@@ -56,31 +57,6 @@ public class FingerPassFragment extends Fragment {
         }
         View view = inflater.inflate(R.layout.fragment_finger_pass, container, false);
 
-        Executor executor = ContextCompat.getMainExecutor(requireContext());
-        biometricPrompt = new BiometricPrompt(requireActivity(), executor, new BiometricPrompt.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationError(int errorCode, @NonNull CharSequence errString) {
-                super.onAuthenticationError(errorCode, errString);
-            }
-
-            @Override
-            public void onAuthenticationSucceeded(@NonNull BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-
-            @Override
-            public void onAuthenticationFailed() {
-                super.onAuthenticationFailed();
-            }
-        });
-        promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("지문 인증")
-                .setNegativeButtonText("취소")
-                .build();
-
         MaterialButton button_later = view.findViewById(R.id.button_later);
         button_later.setOnClickListener(v -> {
             if (checkData) {
@@ -93,8 +69,27 @@ public class FingerPassFragment extends Fragment {
         });
 
         MaterialButton button_finger = view.findViewById(R.id.button_finger);
-        button_finger.setOnClickListener(v -> biometricPrompt.authenticate(promptInfo));
+        button_finger.setOnClickListener(v -> authenticateWithBiometric());
 
         return view;
+    }
+
+    private void authenticateWithBiometric() {
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("지문 인증")
+                .setNegativeButtonText("취소")
+                .build();
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt(this, command -> new Handler(Looper.getMainLooper()).post(command), new BiometricPrompt.AuthenticationCallback() {
+            @Override
+            public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                super.onAuthenticationSucceeded(result);
+                Utils.saveBiometric(requireContext(), true);
+                Intent intent = new Intent(getActivity(), MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+        biometricPrompt.authenticate(promptInfo);
     }
 }

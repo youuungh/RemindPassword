@@ -69,9 +69,16 @@ public class Utils {
     }
 
     public static void savePassCode(Context context, String key) {
-        SharedPreferences pref = context.getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
+        SharedPreferences prefs = context.getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
         editor.putString("PASSCODE", key);
-        editor.commit();
+        editor.apply();
+    }
+
+    public static void saveBiometric(Context context, boolean key) {
+        SharedPreferences prefs = context.getSharedPreferences("BIOMETRIC_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean("BIOMETRIC", key);
+        editor.apply();
     }
 }

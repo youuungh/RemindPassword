@@ -23,12 +23,9 @@ public class HomeActivity extends AppCompatActivity {
 
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = fAuth.getCurrentUser();
-        if (getPassCode().length() != 0) {
-            if (fUser != null) {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
+
+        if (hasPassCode() && fUser != null) {
+            navigateToMainActivity();
         } else {
             fAuth.signOut();
         }
@@ -38,6 +35,16 @@ public class HomeActivity extends AppCompatActivity {
 
         Button home_login = findViewById(R.id.home_login);
         home_login.setOnClickListener(view -> startActivity(new Intent(this, LoginActivity.class)));
+    }
+
+    private boolean hasPassCode() {
+        return getPassCode().length() != 0;
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     private String getPassCode() {

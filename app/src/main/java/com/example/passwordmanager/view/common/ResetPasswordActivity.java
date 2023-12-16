@@ -30,22 +30,36 @@ public class ResetPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
+        setupToolbar();
+
+        initializeUI();
+
+        setupTextWatcher();
+    }
+
+    private void setupToolbar() {
         MaterialToolbar mToolbar = findViewById(R.id.reset_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+    }
 
+    private void initializeUI() {
         edt_reset = findViewById(R.id.reset_email);
         edt_reset.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-        edt_reset.addTextChangedListener(new fPasswordTextWatcher(edt_reset));
 
         button_reset = findViewById(R.id.reset_button);
         progressBar = findViewById(R.id.reset_progressBar);
     }
 
+    private void setupTextWatcher() {
+        edt_reset.addTextChangedListener(new ResetPasswordTextWatcher(edt_reset));
+    }
+
     private void resetInFirebase(String email) {
         resetChangeInProgress(true);
+
         FirebaseAuth fAuth = FirebaseAuth.getInstance();
         fAuth.sendPasswordResetEmail(email)
                 .addOnCompleteListener(this, task -> {
@@ -63,36 +77,32 @@ public class ResetPasswordActivity extends AppCompatActivity {
         progressBar.setVisibility(inProgress ? View.VISIBLE : View.GONE);
     }
 
-    private class fPasswordTextWatcher implements TextWatcher {
+    private class ResetPasswordTextWatcher implements TextWatcher {
         private final View v;
 
-        private fPasswordTextWatcher(View v) {
+        private ResetPasswordTextWatcher(View v) {
             this.v = v;
         }
 
         @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            String fPasswordInput = edt_reset.getText().toString().trim();
-            button_reset.setEnabled(Patterns.EMAIL_ADDRESS.matcher(fPasswordInput).matches());
+            String emailInput = edt_reset.getText().toString().trim();
+            button_reset.setEnabled(Patterns.EMAIL_ADDRESS.matcher(emailInput).matches());
             button_reset.setOnClickListener(v -> {
                 edt_reset.clearFocus();
                 InputMethodManager manager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 View focusedView = getCurrentFocus();
                 if (focusedView != null)
                     manager.hideSoftInputFromWindow(focusedView.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-                resetInFirebase(fPasswordInput);
+                resetInFirebase(emailInput);
             });
         }
 
         @Override
-        public void afterTextChanged(Editable s) {
-
-        }
+        public void afterTextChanged(Editable s) { }
     }
 }
 

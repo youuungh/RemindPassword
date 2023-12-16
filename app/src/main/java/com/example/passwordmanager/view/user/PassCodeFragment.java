@@ -65,8 +65,8 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
-        setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
         setReenterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
+        setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
     }
 
     @Override
@@ -188,11 +188,7 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                     passCode = num01 + num02 + num03 + num04;
 
                     if (getPassCode().equals(passCode)) {
-                        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-                            tv_error.setVisibility(View.VISIBLE);
-                            new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
-                            clearPassCode();
-                        }, 100);
+                        new Handler(Looper.getMainLooper()).postDelayed(this::misMatchPassCode, 100);
                     } else if (rePassCode) {
                         setRePassCode();
                     } else {
@@ -201,6 +197,42 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                     break;
             }
         }
+    }
+
+    private void transFragments(Fragment fragment) {
+        getParentFragmentManager().beginTransaction()
+                .add(R.id.layout_passCode, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void setRePassCode() {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            PassCheckFragment passCheckFragment = new PassCheckFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("NEW_PASSCODE", passCode);
+            bundle.putBoolean("NEW_PASSWORD", true);
+            passCheckFragment.setArguments(bundle);
+            transFragments(passCheckFragment);
+            clearPassCode();
+        }, 100);
+    }
+
+    private void setPassCode() {
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            PassCheckFragment passCheckFragment = new PassCheckFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("PASSCODE", passCode);
+            passCheckFragment.setArguments(bundle);
+            transFragments(passCheckFragment);
+            clearPassCode();
+        }, 100);
+    }
+
+    private void misMatchPassCode() {
+        tv_error.setVisibility(View.VISIBLE);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
+        clearPassCode();
     }
 
     private void clearPassCode() {
@@ -212,38 +244,13 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
         passCode = "";
     }
 
-    private void setRePassCode() {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            PassCheckFragment passCheckFragment = new PassCheckFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("NEW_PASSCODE", passCode);
-            bundle.putBoolean("NEW_PASSWORD", true);
-            passCheckFragment.setArguments(bundle);
-            getParentFragmentManager().beginTransaction()
-                    .add(R.id.layout_passCode, passCheckFragment)
-                    .addToBackStack(null)
-                    .commit();
-            clearPassCode();
-        }, 100);
-    }
-
-    private void setPassCode() {
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            PassCheckFragment passCheckFragment = new PassCheckFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("PASSCODE", passCode);
-            passCheckFragment.setArguments(bundle);
-            getParentFragmentManager().beginTransaction()
-                    .add(R.id.layout_passCode, passCheckFragment)
-                    .addToBackStack(null)
-                    .commit();
-            clearPassCode();
-        }, 100);
-    }
-
     private String getPassCode() {
         SharedPreferences pref = requireContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
         return pref.getString("PASSCODE", "");
+    }
+
+    private void ViewAnimation() {
+
     }
 
     @Override
