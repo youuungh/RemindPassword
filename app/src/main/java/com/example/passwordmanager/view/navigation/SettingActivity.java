@@ -1,5 +1,6 @@
 package com.example.passwordmanager.view.navigation;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
 
@@ -121,22 +122,26 @@ public class SettingActivity extends AppCompatActivity implements FingerPassFrag
                 .setView(customView)
                 .setIcon(R.drawable.ic_alert)
                 .setCancelable(false)
-                .setPositiveButton("확인", (dialog, which) -> {
-                    if (checkBoxClearData.isChecked()) {
+                .setPositiveButton("확인", null)
+                .setNegativeButton("취소", (dialog, which) -> {
+                    dialog.cancel();
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            if (checkBoxClearData.isChecked()) {
 //                        clearPassCode();
 //                        clearBiometric();
 //                        fAuth.signOut();
 //                        navigateToHomeActivity();
-                        Utils.showSnack(findViewById(R.id.layout_setting), "삭제 완료");
-                        dialog.dismiss();
-                    } else {
-                        Utils.showSnack(findViewById(android.R.id.content), "삭제 동의에 선택해주세요");
-                    }
-                })
-                .setNegativeButton("취소", (dialog, which) -> {
-                    dialog.cancel();
-                });
-        builder.create().show();
+                alertDialog.dismiss();
+                Utils.showSnack(findViewById(R.id.layout_setting), "삭제 완료");
+            } else {
+                Utils.showToast(getApplicationContext(), "삭제 동의에 선택해주세요");
+            }
+        });
     }
 
     private String getPassCode() {
