@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = fAuth.getCurrentUser();
 
-        initializeUI();
+        init();
 
         if (savedInstanceState == null) showFragments(new MainFragment());
 
@@ -61,11 +61,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         setupFabWrite();
-
         setupLogoutButton();
     }
 
-    private void initializeUI() {
+    private void init() {
         drawerLayout = findViewById(R.id.layout_drawer);
         main_nav = findViewById(R.id.main_nav);
         main_nav.setNavigationItemSelectedListener(this);
@@ -100,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void showLogoutDialog() {
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.CustomAlertDialog)
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.LogoutAlertDialog)
                 .setMessage("로그아웃 하시겠습니까?")
                 .setCancelable(false)
                 .setPositiveButton("확인", (dialog, which) -> {

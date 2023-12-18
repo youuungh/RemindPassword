@@ -43,27 +43,27 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
     private String num01, num02, num03, num04;
     private boolean rePassCode;
 
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            handleBackPressed();
+        }
+    };
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
 
-    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
-        @Override
-        public void handleOnBackPressed() {
-            if (rePassCode) {
-                getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            } else {
-                getParentFragmentManager().popBackStack();
-            }
-        }
-    };
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setSharedAxisTransitions();
+    }
+
+    private void setSharedAxisTransitions() {
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
         setReenterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
         setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
@@ -77,23 +77,32 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
             rePassCode = bundle.getBoolean("NEW_PASSWORD", false);
         View view = inflater.inflate(R.layout.fragment_pass_code, container, false);
 
-        MaterialToolbar mToolbar = view.findViewById(R.id.pin_toolbar);
-        mToolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE));
+        init(view);
+        setupToolbar(view);
+        setupButtons(view);
+        return view;
+    }
 
+    private void init(View view) {
         pin_01 = view.findViewById(R.id.pin_01);
         pin_02 = view.findViewById(R.id.pin_02);
         pin_03 = view.findViewById(R.id.pin_03);
         pin_04 = view.findViewById(R.id.pin_04);
+        tv_error = view.findViewById(R.id.pin_errorMsg);
+    }
 
-        for (int i=0; i<10; i++) {
+    private void setupToolbar(View view) {
+        MaterialToolbar mToolbar = view.findViewById(R.id.pin_toolbar);
+        mToolbar.setNavigationOnClickListener(v -> handleBackPressed());
+    }
+
+    private void setupButtons(View view) {
+        for (int i = 0; i < 10; i++) {
             buttons[i] = view.findViewById(buttons_id[i]);
             buttons[i].setOnClickListener(this);
         }
         ImageButton btn_clear = view.findViewById(R.id.btn_clear);
         btn_clear.setOnClickListener(this);
-        tv_error = view.findViewById(R.id.pin_errorMsg);
-
-        return view;
     }
 
     @Override
@@ -148,27 +157,28 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void clearNum(List<String> num_list) {
-        switch (num_list.size()) {
-            case 2:
-                pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
-                break;
-            case 1:
-                pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
-                break;
-            case 0:
-                pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
-                break;
+    private void clearNum(List<String> numList) {
+        int size = numList.size();
+        if (size > 0) {
+            switch (size) {
+                case 1:
+                    pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
+                    break;
+                case 2:
+                    pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
+                    break;
+                case 3:
+                    pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
+                    break;
+            }
         }
     }
 
-    private void passNum(List<String> num_list) {
-        if (num_list.size() == 0) {
-            pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
-            pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
-            pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
-            pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
-        } else {
+    private void passNum(List<String> numList) {
+        int size = numList.size();
+        if (size == 0) {
+            resetPinBackground();
+        } else if (size <= 4) {
             switch (num_list.size()) {
                 case 1:
                     num01 = num_list.get(0);
@@ -188,7 +198,7 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
                     passCode = num01 + num02 + num03 + num04;
 
                     if (getPassCode().equals(passCode)) {
-                        new Handler(Looper.getMainLooper()).postDelayed(this::misMatchPassCode, 100);
+                        handleMismatchPassCode();
                     } else if (rePassCode) {
                         setRePassCode();
                     } else {
@@ -199,20 +209,28 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
-    private void transFragments(Fragment fragment) {
-        getParentFragmentManager().beginTransaction()
-                .add(R.id.layout_passCode, fragment)
-                .addToBackStack(null)
-                .commit();
+    private void resetPinBackground() {
+        pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
+    }
+
+    private void handleMismatchPassCode() {
+        tv_error.setVisibility(View.VISIBLE);
+        new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
+        clearPassCode();
+    }
+
+    private void clearPassCode() {
+        resetPinBackground();
+        num_list.clear();
+        passCode = "";
     }
 
     private void setRePassCode() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            PassCheckFragment passCheckFragment = new PassCheckFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("NEW_PASSCODE", passCode);
-            bundle.putBoolean("NEW_PASSWORD", true);
-            passCheckFragment.setArguments(bundle);
+            PassCheckFragment passCheckFragment = createPassCheckFragment(true);
             transFragments(passCheckFragment);
             clearPassCode();
         }, 100);
@@ -220,37 +238,39 @@ public class PassCodeFragment extends Fragment implements View.OnClickListener {
 
     private void setPassCode() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            PassCheckFragment passCheckFragment = new PassCheckFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString("PASSCODE", passCode);
-            passCheckFragment.setArguments(bundle);
+            PassCheckFragment passCheckFragment = createPassCheckFragment(false);
             transFragments(passCheckFragment);
             clearPassCode();
         }, 100);
     }
 
-    private void misMatchPassCode() {
-        tv_error.setVisibility(View.VISIBLE);
-        new Handler(Looper.getMainLooper()).postDelayed(() -> tv_error.setVisibility(View.GONE), 600);
-        clearPassCode();
+    private PassCheckFragment createPassCheckFragment(boolean isNewPassword) {
+        PassCheckFragment passCheckFragment = new PassCheckFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString(isNewPassword ? "NEW_PASSCODE" : "PASSCODE", passCode);
+        bundle.putBoolean("NEW_PASSWORD", isNewPassword);
+        passCheckFragment.setArguments(bundle);
+        return passCheckFragment;
     }
 
-    private void clearPassCode() {
-        pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
-        num_list.clear();
-        passCode = "";
+    private void transFragments(Fragment fragment) {
+        getParentFragmentManager().beginTransaction()
+                .add(R.id.layout_passCode, fragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void handleBackPressed() {
+        if (rePassCode) {
+            getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } else {
+            getParentFragmentManager().popBackStack();
+        }
     }
 
     private String getPassCode() {
         SharedPreferences pref = requireContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
         return pref.getString("PASSCODE", "");
-    }
-
-    private void ViewAnimation() {
-
     }
 
     @Override

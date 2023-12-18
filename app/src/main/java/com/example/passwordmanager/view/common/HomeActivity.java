@@ -37,14 +37,14 @@ public class HomeActivity extends AppCompatActivity {
         home_login.setOnClickListener(view -> startActivity(new Intent(this, LoginActivity.class)));
     }
 
-    private boolean hasPassCode() {
-        return getPassCode().length() != 0;
-    }
-
     private void navigateToMainActivity() {
         Intent intent = new Intent(this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+    }
+
+    private boolean hasPassCode() {
+        return getPassCode().length() != 0;
     }
 
     private String getPassCode() {

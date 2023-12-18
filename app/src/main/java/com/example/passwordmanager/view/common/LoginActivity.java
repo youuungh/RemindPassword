@@ -43,18 +43,19 @@ public class LoginActivity extends AppCompatActivity {
 
         fAuth = FirebaseAuth.getInstance();
 
-        initializeUI();
-
+        init();
+        setupToolbar();
         setupNavigation();
-
         setupTextWatchers();
     }
 
-    private void initializeUI() {
+    private void setupToolbar() {
         MaterialToolbar mToolbar = findViewById(R.id.login_toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(view -> this.finish());
+    }
 
+    private void init() {
         layout_email = findViewById(R.id.login_layout_email);
         layout_password = findViewById(R.id.login_layout_password);
         edt_email = findViewById(R.id.login_email);

@@ -46,28 +46,36 @@ public class SearchFragment extends Fragment {
     private final Query content_query =  Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
     private final Query fav_query = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
 
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            handleBackPressed();
+        }
+    };
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
     }
 
-    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
-        @Override
-        public void handleOnBackPressed() {
-            searchView.clearFocus();
-            MainActivity mainActivity = (MainActivity) getActivity();
-            if (mainActivity != null) {
-                mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                mainActivity.fab_write.show();
-            }
-            getParentFragmentManager().popBackStack();
+    private void handleBackPressed() {
+        searchView.clearFocus();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            mainActivity.fab_write.show();
         }
-    };
+        getParentFragmentManager().popBackStack();
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setEnterReturnTransitions();
+    }
+
+    private void setEnterReturnTransitions() {
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true).setDuration(300));
         setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false).setDuration(300));
     }
@@ -76,46 +84,102 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        MainActivity mainActivity = (MainActivity) getActivity();
-        if (mainActivity != null) {
-            mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        }
 
+        init(view);
+        setupToolbar(view);
+        setSearchViewFocusChangeListener();
+        setFabButtonClickEvents(view);
+        return view;
+    }
+
+    private void init(View view) {
         imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        MaterialToolbar mToolbar = view.findViewById(R.id.search_toolbar);
-        mToolbar.setNavigationOnClickListener(v -> {
-            searchView.clearFocus();
-            MainActivity mainActivity1 = (MainActivity) getActivity();
-            if (mainActivity1 != null) {
-                mainActivity1.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-                mainActivity1.fab_write.show();
-            }
-            getParentFragmentManager().popBackStack();
-        });
-
         recyclerSearch = view.findViewById(R.id.recycler_search);
-        recyclerSearch.setHasFixedSize(true);
-        recyclerSearch.setLayoutManager(new LinearLayoutManager(getContext()));
-        searchAdapter = new SearchAdapter(this, searchList);
-        recyclerSearch.setAdapter(searchAdapter);
-
         searchView = view.findViewById(R.id.search_view);
-        searchView.requestFocus();
+        searchEmptyView = view.findViewById(R.id.search_view_empty);
+    }
+
+    private void setupToolbar(View view) {
+        MaterialToolbar mToolbar = view.findViewById(R.id.search_toolbar);
+        mToolbar.setNavigationOnClickListener(v -> handleBackPressed());
+    }
+
+    private void setSearchViewFocusChangeListener() {
         searchView.setOnQueryTextFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
-                imm.showSoftInput(view.findFocus(), InputMethodManager.SHOW_IMPLICIT);
+                imm.showSoftInput(v.findFocus(), InputMethodManager.SHOW_IMPLICIT);
             }
         });
+    }
 
-        searchEmptyView = view.findViewById(R.id.search_view_empty);
+    private void setFabButtonClickEvents(View view) {
         searchFabTop = view.findViewById(R.id.search_fab_top);
         searchFabTop.setOnClickListener(v -> {
             recyclerSearch.scrollToPosition(0);
             if (recyclerSearch.getVerticalScrollbarPosition() == 0)
                 searchFabTop.hide();
         });
+    }
 
+    public void showEmptyView(boolean isEmpty) {
+        searchEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        configureMainActivity();
+        initAdapters();
+        setSearchViewListeners();
+    }
+
+    private void configureMainActivity() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            mainActivity.fab_write.hide();
+        }
+    }
+
+    private void setSearchViewListeners() {
+        searchView.requestFocus();
+        searchView.setQuery("", true);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                searchAdapter.getFilter().filter(newText);
+                return true;
+            }
+        });
+    }
+
+    private void initAdapters() {
+        content_query.get().addOnCompleteListener(task -> {
+            searchList.clear();
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    searchList.add(document.toObject(Content.class));
+                }
+                fav_query.get().addOnCompleteListener(task1 -> {
+                    if (task1.isSuccessful()) {
+                        for (QueryDocumentSnapshot document : task1.getResult()) {
+                            searchList.add(document.toObject(Content.class));
+                        }
+                        searchAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+
+        recyclerSearch.setHasFixedSize(true);
+        recyclerSearch.setLayoutManager(new LinearLayoutManager(getContext()));
+        searchAdapter = new SearchAdapter(this, searchList);
+        recyclerSearch.setAdapter(searchAdapter);
         recyclerSearch.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = () -> searchFabTop.hide();
@@ -146,53 +210,18 @@ public class SearchFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        return view;
-    }
-
-    public void showEmptyView(boolean isEmpty) {
-        searchEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        ((MainActivity)getActivity()).fab_write.hide();
-        content_query.get().addOnCompleteListener(task -> {
-            searchList.clear();
-            if (task.isSuccessful()) {
-                for (QueryDocumentSnapshot document : task.getResult()) {
-                    searchList.add(document.toObject(Content.class));
-                }
-                fav_query.get().addOnCompleteListener(task1 -> {
-                    if (task1.isSuccessful()) {
-                        for (QueryDocumentSnapshot document : task1.getResult()) {
-                            searchList.add(document.toObject(Content.class));
-                        }
-                        searchAdapter.notifyDataSetChanged();
-                    }
-                });
-            }
-        });
-        searchView.requestFocus();
-        searchView.setQuery("", true);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                searchAdapter.getFilter().filter(newText);
-                return true;
-            }
-        });
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        ((MainActivity)getActivity()).drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        unlockMainActivityDrawer();
+    }
+
+    private void unlockMainActivityDrawer() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        }
     }
 }

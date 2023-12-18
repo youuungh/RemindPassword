@@ -49,9 +49,20 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         void getCallback(boolean value);
     }
 
+    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
+        @Override
+        public void handleOnBackPressed() {
+            getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    };
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        initCallback(context);
+    }
+
+    private void initCallback(Context context) {
         if (context instanceof Callback) {
             callback = (Callback) context;
         } else {
@@ -65,17 +76,14 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         callback = null;
     }
 
-    private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
-        @Override
-        public void handleOnBackPressed() {
-            getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-    };
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        setSharedAxisTransitions();
+    }
+
+    private void setSharedAxisTransitions() {
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
         setReturnTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
         setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
@@ -91,9 +99,28 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         }
         View view = inflater.inflate(R.layout.fragment_pass_check, container, false);
 
+        init(view);
+        setupToolbar(view);
+        setupTextViews(view);
+        setupButtons(view);
+
+        return view;
+    }
+
+    private void init(View view) {
+        pin_01 = view.findViewById(R.id.chk_pin_01);
+        pin_02 = view.findViewById(R.id.chk_pin_02);
+        pin_03 = view.findViewById(R.id.chk_pin_03);
+        pin_04 = view.findViewById(R.id.chk_pin_04);
+        tv_error = view.findViewById(R.id.pin_check_errorMsg);
+    }
+
+    private void setupToolbar(View view) {
         MaterialToolbar mToolbar = view.findViewById(R.id.pin_check_toolbar);
         mToolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStackImmediate());
+    }
 
+    private void setupTextViews(View view) {
         TextView tv_title = view.findViewById(R.id.tv_title);
         TextView tv_subtitle = view.findViewById(R.id.tv_subtitle);
         if (checkData) {
@@ -103,21 +130,15 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
             tv_title.setText("비밀번호 확인");
             tv_subtitle.setText("비밀번호 4자리를 다시 한번 입력하세요");
         }
+    }
 
-        pin_01 = view.findViewById(R.id.chk_pin_01);
-        pin_02 = view.findViewById(R.id.chk_pin_02);
-        pin_03 = view.findViewById(R.id.chk_pin_03);
-        pin_04 = view.findViewById(R.id.chk_pin_04);
-
-        for (int i=0; i<10; i++) {
+    private void setupButtons(View view) {
+        for (int i = 0; i < 10; i++) {
             buttons[i] = view.findViewById(buttons_id[i]);
             buttons[i].setOnClickListener(this);
         }
         ImageButton btn_clear = view.findViewById(R.id.chk_btn_clear);
         btn_clear.setOnClickListener(this);
-        tv_error = view.findViewById(R.id.pin_check_errorMsg);
-
-        return view;
     }
 
     @Override
@@ -172,42 +193,43 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         }
     }
 
-    private void clearNum(List<String> num_list) {
-        switch (num_list.size()) {
-            case 2:
-                pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
-                break;
-            case 1:
-                pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
-                break;
-            case 0:
-                pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
-                break;
+    private void clearNum(List<String> numList) {
+        int size = numList.size();
+        if (size > 0) {
+            switch (size) {
+                case 1:
+                    pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
+                    break;
+                case 2:
+                    pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
+                    break;
+                case 3:
+                    pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
+                    break;
+            }
         }
     }
 
-    private void passNum(List<String> num_list) {
-        if (num_list.size() == 0) {
-            pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
-            pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
-            pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
-            pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
-        } else {
-            switch (num_list.size()) {
+    private void passNum(List<String> numList) {
+        int size = numList.size();
+        if (size == 0) {
+            resetPinBackground();
+        } else if (size <= 4) {
+            switch (size) {
                 case 1:
-                    num01 = num_list.get(0);
+                    num01 = numList.get(0);
                     pin_01.setBackgroundResource(R.drawable.bg_color_oval);
                     break;
                 case 2:
-                    num02 = num_list.get(1);
+                    num02 = numList.get(1);
                     pin_02.setBackgroundResource(R.drawable.bg_color_oval);
                     break;
                 case 3:
-                    num03 = num_list.get(2);
+                    num03 = numList.get(2);
                     pin_03.setBackgroundResource(R.drawable.bg_color_oval);
                     break;
                 case 4:
-                    num04 = num_list.get(3);
+                    num04 = numList.get(3);
                     pin_04.setBackgroundResource(R.drawable.bg_color_oval);
                     confirmCode = num01 + num02 + num03 + num04;
 
@@ -221,6 +243,13 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
         }
     }
 
+    private void resetPinBackground() {
+        pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
+        pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
+    }
+
     private void reRegisterPassCode() {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Bundle bundle = getArguments();
@@ -228,14 +257,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                 String passCode = bundle.getString("NEW_PASSCODE");
                 if (passCode.equals(confirmCode)) {
                     Utils.savePassCode(requireContext(), confirmCode);
-                    FingerPassFragment fingerPassFragment = new FingerPassFragment();
-                    Bundle bundle_finger = new Bundle();
-                    bundle_finger.putBoolean("NEW_FINGERPRINT", true);
-                    fingerPassFragment.setArguments(bundle_finger);
-                    getParentFragmentManager().beginTransaction()
-                            .replace(R.id.layout_passCheck, fingerPassFragment)
-                            .addToBackStack(null)
-                            .commit();
+                    navigateToFingerPassFragment(true);
                 } else {
                     misMatchPassCode();
                 }
@@ -250,10 +272,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
                 String passCode = bundle.getString("PASSCODE");
                 if (passCode.equals(confirmCode)) {
                     Utils.savePassCode(requireContext(), confirmCode);
-                    FingerPassFragment fingerPassFragment = new FingerPassFragment();
-                    getParentFragmentManager().beginTransaction()
-                            .add(R.id.layout_passCheck, fingerPassFragment)
-                            .commit();
+                    navigateToFingerPassFragment(false);
                 } else {
                     misMatchPassCode();
                 }
@@ -266,16 +285,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     private void matchPassCode() {
         if (getPassCode().equals(confirmCode)) {
             if (checkData) {
-                setEnterTransition(null);
-                setReturnTransition(null);
-                PassCodeFragment passCodeFragment = new PassCodeFragment();
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("NEW_PASSWORD", true);
-                passCodeFragment.setArguments(bundle);
-                getParentFragmentManager().beginTransaction()
-                        .replace(R.id.layout_passCheck, passCodeFragment)
-                        .addToBackStack(null)
-                        .commit();
+                navigateToNewPassCodeFragment();
             } else {
                 callback.getCallback(true);
                 getParentFragmentManager().popBackStack();
@@ -292,10 +302,7 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     }
 
     private void clearPassCode() {
-        pin_01.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_02.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_03.setBackgroundResource(R.drawable.bg_grey_oval);
-        pin_04.setBackgroundResource(R.drawable.bg_grey_oval);
+        resetPinBackground();
         num_list.clear();
         confirmCode = "";
     }
@@ -303,6 +310,30 @@ public class PassCheckFragment extends Fragment implements View.OnClickListener 
     private String getPassCode() {
         SharedPreferences pref = requireContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
         return pref.getString("PASSCODE", "");
+    }
+
+    private void navigateToFingerPassFragment(boolean isNewFingerprint) {
+        FingerPassFragment fingerPassFragment = new FingerPassFragment();
+        Bundle bundle_finger = new Bundle();
+        bundle_finger.putBoolean("NEW_FINGERPRINT", isNewFingerprint);
+        fingerPassFragment.setArguments(bundle_finger);
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.layout_passCheck, fingerPassFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void navigateToNewPassCodeFragment() {
+        setEnterTransition(null);
+        setReturnTransition(null);
+        PassCodeFragment passCodeFragment = new PassCodeFragment();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("NEW_PASSWORD", true);
+        passCodeFragment.setArguments(bundle);
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.layout_passCheck, passCodeFragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override

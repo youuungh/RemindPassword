@@ -1,12 +1,7 @@
 package com.example.passwordmanager.view.navigation;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.biometric.BiometricPrompt;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,27 +9,25 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.PersistableBundle;
 import android.util.Log;
-import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.util.Utils;
-import com.example.passwordmanager.view.common.MainActivity;
+import com.example.passwordmanager.view.common.HomeActivity;
+import com.example.passwordmanager.view.user.FingerPassFragment;
 import com.example.passwordmanager.view.user.PassCheckFragment;
-import com.example.passwordmanager.view.user.PassCodeFragment;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import java.util.concurrent.Executor;
 
-public class SettingActivity extends AppCompatActivity {
+public class SettingActivity extends AppCompatActivity implements FingerPassFragment.Callback {
     private FirebaseAuth fAuth;
     private MaterialSwitch switch_finger;
     private boolean isEnable;
@@ -92,7 +85,7 @@ public class SettingActivity extends AppCompatActivity {
         });
 
         Button button_quit = findViewById(R.id.button_quit);
-        button_quit.setOnClickListener(v -> Utils.showSnack(findViewById(android.R.id.content), "클릭"));
+        button_quit.setOnClickListener(v -> showQuitDialog());
     }
 
     private void authenticateWithBiometric() {
@@ -113,6 +106,38 @@ public class SettingActivity extends AppCompatActivity {
         biometricPrompt.authenticate(promptInfo);
     }
 
+    @Override
+    public void getCallback(boolean value) {
+        if (value) {
+            isEnable = true;
+            switch_finger.setChecked(true);
+        }
+    }
+
+    private void showQuitDialog() {
+        View customView = getLayoutInflater().inflate(R.layout.quit_dialog, null);
+        CheckBox checkBoxClearData = customView.findViewById(R.id.checkbox_clear_data);
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.QuitAlertDialog)
+                .setView(customView)
+                .setIcon(R.drawable.ic_alert)
+                .setCancelable(false)
+                .setPositiveButton("확인", (dialog, which) -> {
+                    if (checkBoxClearData.isChecked()) {
+//                        clearPassCode();
+//                        clearBiometric();
+//                        fAuth.signOut();
+//                        navigateToHomeActivity();
+                        Utils.showSnack(findViewById(R.id.layout_setting), "삭제 완료");
+                        dialog.dismiss();
+                    } else {
+                        Utils.showSnack(findViewById(android.R.id.content), "삭제 동의에 선택해주세요");
+                    }
+                })
+                .setNegativeButton("취소", (dialog, which) -> {
+                    dialog.cancel();
+                });
+        builder.create().show();
+    }
 
     private String getPassCode() {
         SharedPreferences prefs = getApplicationContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
@@ -124,10 +149,24 @@ public class SettingActivity extends AppCompatActivity {
         return prefs.getBoolean("BIOMETRIC", false);
     }
 
+    private void clearPassCode() {
+        SharedPreferences pref = getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.clear();
+        editor.apply();
+    }
+
     private void clearBiometric() {
         SharedPreferences prefs = getSharedPreferences("BIOMETRIC_PREF", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.clear();
         editor.apply();
+    }
+
+    private void navigateToHomeActivity() {
+        Intent intent = new Intent(SettingActivity.this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
     }
 }

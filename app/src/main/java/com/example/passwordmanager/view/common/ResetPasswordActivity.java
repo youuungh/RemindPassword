@@ -30,10 +30,8 @@ public class ResetPasswordActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reset_password);
 
+        init();
         setupToolbar();
-
-        initializeUI();
-
         setupTextWatcher();
     }
 
@@ -44,7 +42,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
-    private void initializeUI() {
+    private void init() {
         edt_reset = findViewById(R.id.reset_email);
         edt_reset.requestFocus();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);

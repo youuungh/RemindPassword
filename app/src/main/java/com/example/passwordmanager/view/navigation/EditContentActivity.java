@@ -55,18 +55,12 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_content);
 
-        initializeViews();
-
-        initializeUI();
-
-        populateDataFromIntent();
-
+        init();
+        setupToolbar();
+        dataFromIntent();
         setEndIconClickListeners();
-
         setEditButtonClickListener();
-
         setOptionsButtonClickListener();
-
         setDecryptButtonClickListener();
     }
 
@@ -77,13 +71,13 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         getWindow().setReturnTransition(new MaterialElevationScale(false).setDuration(150));
     }
 
-    private void initializeUI() {
+    private void setupToolbar() {
         MaterialToolbar mToolbar = findViewById(R.id.content_edit_toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 
-    private void initializeViews() {
+    private void init() {
         tv_title = findViewById(R.id.tv_title);
         tv_id = findViewById(R.id.tv_id);
         tv_pw = findViewById(R.id.tv_pw);
@@ -93,7 +87,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
         button_decrypt = findViewById(R.id.button_decrypt);
     }
 
-    private void populateDataFromIntent() {
+    private void dataFromIntent() {
         tv_title.setKeyListener(null);
         tv_id.setKeyListener(null);
         tv_pw.setKeyListener(null);
@@ -203,11 +197,7 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
 
     private void handleDecryptButtonClick() {
         if (tv_pw.getText().length() != 0) {
-            if (getPassCode().length() != 0) {
-                showPassCheckFragment();
-            } else {
-                showPasscodeNotSetSnackbar();
-            }
+            showPassCheckFragment();
         } else {
             Utils.showSnack(findViewById(R.id.edit_screen), "비밀번호가 비어 있습니다");
         }
@@ -219,12 +209,6 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                 .add(android.R.id.content, passCheckFragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    private void showPasscodeNotSetSnackbar() {
-        Snackbar sb = Snackbar.make(findViewById(R.id.edit_screen), "먼저 비밀번호를 설정하세요", Snackbar.LENGTH_SHORT);
-        sb.setAction("설정", v -> startActivity(new Intent(this, SettingActivity.class)));
-        sb.show();
     }
 
     @Override
@@ -326,11 +310,6 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                 }
             }
         });
-    }
-
-    private String getPassCode() {
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("PASSCODE_PREF", Context.MODE_PRIVATE);
-        return pref.getString("PASSCODE", "");
     }
 
     @Override

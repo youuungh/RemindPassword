@@ -46,11 +46,15 @@ public class TrashFragment extends Fragment {
     private RelativeLayout trash_emptyView, trash_loadingView;
     private FloatingActionButton trash_fab_top;
     private boolean isSwitch = false;
-    private long mLastClickTime = 0;
+    private long lastClickTime = 0;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSharedAxisTransitions();
+    }
+
+    private void setSharedAxisTransitions() {
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
         setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
         setReenterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
@@ -61,46 +65,28 @@ public class TrashFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trash, container, false);
 
-        trash_emptyView = view.findViewById(R.id.trash_view_empty);
-        trash_loadingView = view.findViewById(R.id.trash_view_loading);
+        init(view);
+        setToolbarClickListener();
+        restoreSwitchState(savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.recycler_trash);
-        recyclerView.setHasFixedSize(true);
-
-        mToolbar = view.findViewById(R.id.trash_toolbar);
-        mToolbar.setNavigationOnClickListener(v -> ((MainActivity) getActivity()).drawerLayout.open());
-        mToolbar.inflateMenu(R.menu.menu_options);
-        mToolbar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.menu_column) {
-                toggleRecyclerViewLayout();
-            }
-            return false;
-        });
-
-        if (savedInstanceState == null) {
-            SharedPreferences prefer = getActivity().getSharedPreferences("TRASH_MENU_STATE", Context.MODE_PRIVATE);
-            isSwitch = prefer.getBoolean("SWITCH_DATA", true);
-            updateTrashMenuItem();
-        } else {
-            isSwitch = savedInstanceState.getBoolean("TRASH_MENU_STATE");
-            updateTrashMenuItem();
-        }
-
-        mToolbar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
-            if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return false;
-            mLastClickTime = SystemClock.elapsedRealtime();
-            showBottomSheetDialog();
-            return false;
-        });
-
-        trash_fab_top = ((MainActivity)getActivity()).fab_top;
         trash_fab_top.setOnClickListener(v -> {
             recyclerView.scrollToPosition(0);
             if (recyclerView.getVerticalScrollbarPosition() == 0)
                 trash_fab_top.hide();
         });
 
+
+        return view;
+    }
+
+    private void init(View view) {
+        trash_emptyView = view.findViewById(R.id.trash_view_empty);
+        trash_loadingView = view.findViewById(R.id.trash_view_loading);
+        mToolbar = view.findViewById(R.id.trash_toolbar);
+        trash_fab_top = ((MainActivity) requireActivity()).fab_top;
+
+        recyclerView = view.findViewById(R.id.recycler_trash);
+        recyclerView.setHasFixedSize(true);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler(Looper.getMainLooper());
             final Runnable runnable = () -> trash_fab_top.hide();
@@ -126,15 +112,42 @@ public class TrashFragment extends Fragment {
                 super.onScrolled(recyclerView, dx, dy);
             }
         });
-        return view;
     }
 
-    private void showEmptyView(boolean flag) {
-        trash_emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
+    private void setToolbarClickListener() {
+        mToolbar.setNavigationOnClickListener(v -> ((MainActivity) requireActivity()).drawerLayout.open());
+        mToolbar.inflateMenu(R.menu.menu_options);
+        configureOptionsMenu();
+        setOptionsMenuClickListener();
+    }
+
+    private void configureOptionsMenu() {
+        mToolbar.getMenu().getItem(0).setIcon(isSwitch ? R.drawable.ic_column_grid : R.drawable.ic_column_linear);
+    }
+
+    private void setOptionsMenuClickListener() {
+        mToolbar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
+            int id = item.getItemId();
+            if (id == R.id.menu_column) {
+                toggleRecyclerViewLayout();
+            }
+            return false;
+        });
+
+        mToolbar.getMenu().getItem(1).setOnMenuItemClickListener(item -> {
+            if (SystemClock.elapsedRealtime() - lastClickTime < 1000) return false;
+            lastClickTime = SystemClock.elapsedRealtime();
+            showBottomSheetDialog();
+            return false;
+        });
     }
 
     private void toggleRecyclerViewLayout() {
         isSwitch = !isSwitch;
+        updateRecyclerViewLayout();
+    }
+
+    private void updateRecyclerViewLayout() {
         if (isSwitch) {
             recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
             mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
@@ -144,14 +157,18 @@ public class TrashFragment extends Fragment {
         }
     }
 
-    private void updateTrashMenuItem() {
-        if (isSwitch) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-            mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+    private void restoreSwitchState(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            SharedPreferences prefer = requireActivity().getSharedPreferences("TRASH_MENU_STATE", Context.MODE_PRIVATE);
+            isSwitch = prefer.getBoolean("SWITCH_DATA", true);
         } else {
-            recyclerView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-            mToolbar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+            isSwitch = savedInstanceState.getBoolean("TRASH_MENU_STATE");
         }
+        updateRecyclerViewLayout();
+    }
+
+    private void showEmptyView(boolean flag) {
+        trash_emptyView.setVisibility(flag ? View.VISIBLE : View.GONE);
     }
 
     private void showBottomSheetDialog() {
@@ -181,7 +198,7 @@ public class TrashFragment extends Fragment {
         bottomSheetView.findViewById(R.id.option_delete).setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
             if (!options.getSnapshots().isEmpty()) {
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.CustomAlertDialog)
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.LogoutAlertDialog)
                         .setMessage("휴지통에 있는 모든 항목이\n완전히 삭제됩니다")
                         .setCancelable(false)
                         .setPositiveButton("삭제", (dialog, which) -> {
@@ -254,7 +271,7 @@ public class TrashFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        ((MainActivity)getActivity()).fab_write.hide();
+        ((MainActivity) requireActivity()).fab_write.hide();
         Query query = Utils.getTrashReference().orderBy("timestamp", Query.Direction.DESCENDING);
         query.get().addOnCompleteListener(task -> {
             trash_loadingView.setVisibility(View.GONE);
@@ -271,8 +288,8 @@ public class TrashFragment extends Fragment {
                 holder.trash_id.setText(trash.getId());
 
                 holder.trash_option.setOnClickListener(v -> {
-                    if (SystemClock.elapsedRealtime() - mLastClickTime < 1000) return;
-                    mLastClickTime = SystemClock.elapsedRealtime();
+                    if (SystemClock.elapsedRealtime() - lastClickTime < 1000) return;
+                    lastClickTime = SystemClock.elapsedRealtime();
                     BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
                     View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_item_bottom_sheet, getView().findViewById(R.id.tibs_container));
                     TextView item_title = bottomSheetView.findViewById(R.id.trash_option_title);
@@ -287,7 +304,7 @@ public class TrashFragment extends Fragment {
 
                     bottomSheetView.findViewById(R.id.trash_option_delete).setOnClickListener(v1 -> {
                         bottomSheetDialog.dismiss();
-                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.CustomAlertDialog)
+                        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getActivity(), R.style.LogoutAlertDialog)
                                 .setMessage("이 항목을 완전히 삭제할까요?")
                                 .setCancelable(false)
                                 .setPositiveButton("삭제", (dialog, which) -> {
@@ -317,6 +334,11 @@ public class TrashFragment extends Fragment {
                 return getSnapshots().size();
             }
         };
+
+        configureTrashAdapter();
+    }
+
+    private void configureTrashAdapter() {
         recyclerView.setAdapter(trash_adapter);
         trash_adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -344,7 +366,11 @@ public class TrashFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
-        SharedPreferences prefer = getActivity().getSharedPreferences("TRASH_MENU_STATE", Context.MODE_PRIVATE);
+        saveSwitchState();
+    }
+
+    private void saveSwitchState() {
+        SharedPreferences prefer = requireActivity().getSharedPreferences("TRASH_MENU_STATE", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefer.edit();
         editor.putBoolean("SWITCH_DATA", isSwitch).apply();
     }

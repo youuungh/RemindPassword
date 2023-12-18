@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -50,6 +52,10 @@ public class MainFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setSharedAxisTransitions();
+    }
+
+    private void setSharedAxisTransitions() {
         setEnterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
         setExitTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, false));
         setReenterTransition(new MaterialSharedAxis(MaterialSharedAxis.Z, true));
@@ -60,29 +66,18 @@ public class MainFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_main, container, false);
 
-        initializeViews(view);
-
+        init(view);
         setSearchBarClickListener();
-
-        if (savedInstanceState == null) {
-            SharedPreferences prefer = getActivity().getSharedPreferences("MAIN_MENU_STATE", Context.MODE_PRIVATE);
-            isSwitch = prefer.getBoolean("SWITCH_DATA", true);
-            onChangeMainMenuItem();
-        } else {
-            isSwitch = savedInstanceState.getBoolean("MAIN_MENU_STATE");
-            onChangeMainMenuItem();
-        }
+        restoreSwitchState(savedInstanceState);
 
         setExpandButtonClickListener();
-
         setFabButtonClickEvents();
-
-        initializeFirestoreAdapters();
+        initAdapters();
 
         return view;
     }
 
-    private void initializeViews(View view) {
+    private void init(View view) {
         main_empty_view = view.findViewById(R.id.main_view_empty);
         main_loading_view = view.findViewById(R.id.main_view_loading);
         appBarLayout = view.findViewById(R.id.main_layout_appbar);
@@ -91,31 +86,79 @@ public class MainFragment extends Fragment {
         rv_content = view.findViewById(R.id.rv_contents);
         search_bar = view.findViewById(R.id.main_searchbar);
         expand_button = view.findViewById(R.id.button_expand);
-        main_fab_write = ((MainActivity) getActivity()).fab_write;
-        main_fab_top = ((MainActivity) getActivity()).fab_top;
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null) {
+            main_fab_write = mainActivity.fab_write;
+            main_fab_top = mainActivity.fab_top;
+        }
     }
 
     private void setSearchBarClickListener() {
         search_bar.setNavigationOnClickListener(v -> ((MainActivity) getActivity()).drawerLayout.open());
-        search_bar.setOnClickListener(v -> {
-            main_fab_write.hide();
-            SearchFragment searchFragment = new SearchFragment();
-            getChildFragmentManager().beginTransaction()
-                    .add(R.id.layout_content, searchFragment).addToBackStack(null).commit();
-        });
+        search_bar.setOnClickListener(v -> openSearchFragment());
+        configureSearchBarMenu();
+    }
+
+    private void openSearchFragment() {
+        main_fab_write.hide();
+        SearchFragment searchFragment = new SearchFragment();
+        getChildFragmentManager().beginTransaction()
+                .add(R.id.layout_content, searchFragment).addToBackStack(null).commit();
+    }
+
+    private void configureSearchBarMenu() {
         search_bar.getMenu().clear();
         search_bar.inflateMenu(R.menu.menu_searchbar);
         search_bar.getMenu().getItem(0).setOnMenuItemClickListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.menu_column) {
-                toggleRecyclerViewLayout();
-            }
+            handleSearchBarMenuItemClick(item);
             return false;
         });
     }
 
+    private void handleSearchBarMenuItemClick(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_column) {
+            toggleRecyclerViewLayout();
+        }
+    }
+
+    private void toggleRecyclerViewLayout() {
+        isSwitch = !isSwitch;
+        updateRecyclerViewLayout();
+    }
+
+    private void updateRecyclerViewLayout() {
+        if (isSwitch) {
+            rv_content.setLayoutManager(new LinearLayoutManager(getContext()));
+            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
+        } else {
+            rv_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
+            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
+        }
+    }
+
+    private void restoreSwitchState(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            SharedPreferences prefer = getActivity().getSharedPreferences("MAIN_MENU_STATE", Context.MODE_PRIVATE);
+            isSwitch = prefer.getBoolean("SWITCH_DATA", true);
+        } else {
+            isSwitch = savedInstanceState.getBoolean("MAIN_MENU_STATE");
+        }
+        updateRecyclerViewLayout();
+    }
+
     private void setExpandButtonClickListener() {
         expand_button.setOnClickListener(v -> onExpandRecycler());
+    }
+
+    private void onExpandRecycler() {
+        if (rv_favorite.getVisibility() == View.GONE) {
+            rv_favorite.setVisibility(View.VISIBLE);
+            expand_button.setImageResource(R.drawable.ic_expand_up);
+        } else {
+            rv_favorite.setVisibility(View.GONE);
+            expand_button.setImageResource(R.drawable.ic_expand_down);
+        }
     }
 
     private void setFabButtonClickEvents() {
@@ -127,7 +170,7 @@ public class MainFragment extends Fragment {
         });
     }
 
-    private void initializeFirestoreAdapters() {
+    private void initAdapters() {
         // content
         Query mquery = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         mquery.get().addOnCompleteListener(task -> {
@@ -220,43 +263,12 @@ public class MainFragment extends Fragment {
         });
     }
 
-    private void onExpandRecycler() {
-        if (rv_favorite.getVisibility() == View.GONE) {
-            rv_favorite.setVisibility(View.VISIBLE);
-            expand_button.setImageResource(R.drawable.ic_expand_up);
-        } else {
-            rv_favorite.setVisibility(View.GONE);
-            expand_button.setImageResource(R.drawable.ic_expand_down);
-        }
-    }
-
     private void onChangeFavView(boolean flag) {
         cv_favorite.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
     private void onChangeEmptyView(boolean flag) {
         main_empty_view.setVisibility(flag ? View.VISIBLE : View.GONE);
-    }
-
-    private void onChangeMainMenuItem() {
-        if (isSwitch) {
-            rv_content.setLayoutManager(new LinearLayoutManager(getContext()));
-            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
-        } else {
-            rv_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
-            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
-        }
-    }
-
-    private void toggleRecyclerViewLayout() {
-        if (!isSwitch) {
-            rv_content.setLayoutManager(new LinearLayoutManager(getContext()));
-            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_grid);
-        } else {
-            rv_content.setLayoutManager(new GridLayoutManager(getContext(), 2));
-            search_bar.getMenu().getItem(0).setIcon(R.drawable.ic_column_linear);
-        }
-        isSwitch = !isSwitch;
     }
 
     @Override
@@ -275,6 +287,10 @@ public class MainFragment extends Fragment {
     @Override
     public void onPause() {
         super.onPause();
+        saveSwitchState();
+    }
+
+    private void saveSwitchState() {
         SharedPreferences prefer = getActivity().getSharedPreferences("MAIN_MENU_STATE", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = prefer.edit();
         editor.putBoolean("SWITCH_DATA", isSwitch).apply();

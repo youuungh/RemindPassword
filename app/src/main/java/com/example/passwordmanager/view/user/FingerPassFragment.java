@@ -27,12 +27,11 @@ import com.google.android.material.transition.platform.MaterialSharedAxis;
 import java.util.concurrent.Executor;
 
 public class FingerPassFragment extends Fragment {
+    private Callback callback;
     private boolean checkData;
 
-    @Override
-    public void onAttach(@NonNull Context context) {
-        super.onAttach(context);
-        requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+    public interface Callback {
+        void getCallback(boolean value);
     }
 
     private final OnBackPressedCallback onBackPressedCallback = new OnBackPressedCallback(true) {
@@ -40,6 +39,27 @@ public class FingerPassFragment extends Fragment {
         public void handleOnBackPressed() {
         }
     };
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        initCallback(context);
+    }
+
+    private void initCallback(Context context) {
+        if (context instanceof FingerPassFragment.Callback) {
+            callback = (Callback) context;
+        } else {
+            requireActivity().getOnBackPressedDispatcher().addCallback(this, onBackPressedCallback);
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        callback = null;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,7 +80,7 @@ public class FingerPassFragment extends Fragment {
         MaterialButton button_later = view.findViewById(R.id.button_later);
         button_later.setOnClickListener(v -> {
             if (checkData) {
-                getParentFragmentManager().popBackStackImmediate(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             } else {
                 Intent intent = new Intent(getActivity(), MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -85,9 +105,14 @@ public class FingerPassFragment extends Fragment {
             public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
                 super.onAuthenticationSucceeded(result);
                 Utils.saveBiometric(requireContext(), true);
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
+                if (checkData) {
+                    callback.getCallback(true);
+                    getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                } else {
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
             }
         });
         biometricPrompt.authenticate(promptInfo);

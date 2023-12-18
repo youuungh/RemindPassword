@@ -39,27 +39,8 @@ public class AddContentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_content);
 
+        initUI();
         setupToolbar();
-
-        TextInputLayout layout_pw = findViewById(R.id.content_layout_pw);
-        edt_title = findViewById(R.id.edt_title);
-        edt_id = findViewById(R.id.edt_id);
-        edt_pw = findViewById(R.id.edt_pw);
-        edt_memo = findViewById(R.id.edt_memo);
-        progressBar = findViewById(R.id.add_progressBar);
-
-        initializeUI();
-
-        if(label != null && !label.isEmpty()) {
-            isEdit = true;
-            edt_title.requestFocus();
-            layout_pw.setHint("새로운 비밀번호 설정");
-            configureEditToolbar();
-        } else {
-            edt_title.requestFocus();
-        }
-
-        button_save = findViewById(R.id.button_save);
         setupSaveButton();
     }
 
@@ -79,11 +60,28 @@ public class AddContentActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(view -> onBackPressed());
     }
 
-    private void initializeUI() {
+    private void initUI() {
+        TextInputLayout layout_pw = findViewById(R.id.content_layout_pw);
+        progressBar = findViewById(R.id.add_progressBar);
+        edt_title = findViewById(R.id.edt_title);
+        edt_id = findViewById(R.id.edt_id);
+        edt_pw = findViewById(R.id.edt_pw);
+        edt_memo = findViewById(R.id.edt_memo);
+        button_save = findViewById(R.id.button_save);
+
         edt_title.setText(getIntent().getStringExtra("title"));
         edt_id.setText(getIntent().getStringExtra("id"));
         edt_memo.setText(getIntent().getStringExtra("memo"));
         label = getIntent().getStringExtra("label");
+
+        if(label != null && !label.isEmpty()) {
+            isEdit = true;
+            edt_title.requestFocus();
+            layout_pw.setHint("새로운 비밀번호 설정");
+            configureEditToolbar();
+        } else {
+            edt_title.requestFocus();
+        }
     }
 
     private void configureEditToolbar() {

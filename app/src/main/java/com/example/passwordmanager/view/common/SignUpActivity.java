@@ -39,14 +39,11 @@ public class SignUpActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        setupToolbar();
-
         fAuth = FirebaseAuth.getInstance();
 
-        initializeUI();
-
+        init();
+        setupToolbar();
         setupTextWatcher();
-
         setupLoginTextView();
     }
 
@@ -56,15 +53,13 @@ public class SignUpActivity extends AppCompatActivity {
         mToolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
-    private void initializeUI() {
+    private void init() {
         layout_email = findViewById(R.id.signup_layout_email);
         layout_password = findViewById(R.id.signup_layout_password);
         layout_passCheck = findViewById(R.id.signup_layout_passCheck);
-
         edt_email = findViewById(R.id.signup_email);
         edt_password = findViewById(R.id.signup_password);
         edt_passCheck = findViewById(R.id.signup_passCheck);
-
         button = findViewById(R.id.signup_button);
         progressBar = findViewById(R.id.signup_progressBar);
     }
