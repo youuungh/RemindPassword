@@ -10,6 +10,7 @@
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -17,13 +18,12 @@
         android:supportsRtl="true"
         android:theme="@style/MainTheme"
         android:usesCleartextTraffic="true"
-        android:enableOnBackInvokedCallback="true"
         tools:targetApi="31">
         <activity
             android:name=".view.common.HomeActivity"
             android:exported="true"
-            android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,20 +34,20 @@
         <activity
             android:name=".view.common.LoginActivity"
             android:exported="true"
-            android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.common.SignUpActivity"
             android:exported="true"
-            android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.common.ResetPasswordActivity"
             android:exported="false"
-            android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.common.MainActivity"
@@ -67,8 +67,8 @@
         <activity
             android:name=".view.navigation.SettingActivity"
             android:exported="true"
-            android:theme="@style/MainTheme"
             android:screenOrientation="portrait"
+            android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -78,20 +78,20 @@ public class FingerPassFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_finger_pass, container, false);
 
         MaterialButton button_later = view.findViewById(R.id.button_later);
-        button_later.setOnClickListener(v -> {
-            if (checkData) {
-                getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-            } else {
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(intent);
-            }
-        });
+        button_later.setOnClickListener(v -> handleLaterButtonClick());
 
         MaterialButton button_finger = view.findViewById(R.id.button_finger);
         button_finger.setOnClickListener(v -> authenticateWithBiometric());
 
         return view;
+    }
+
+    private void handleLaterButtonClick() {
+        if (checkData) {
+            getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        } else {
+            navigateToMainActivity();
+        }
     }
 
     private void authenticateWithBiometric() {
@@ -109,12 +109,16 @@ public class FingerPassFragment extends Fragment {
                     callback.getCallback(true);
                     getParentFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                 } else {
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    navigateToMainActivity();
                 }
             }
         });
         biometricPrompt.authenticate(promptInfo);
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(getActivity(), MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }

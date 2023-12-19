@@ -6,15 +6,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,6 +33,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.transition.MaterialSharedAxis;
+import com.google.android.material.transition.platform.MaterialFade;
 import com.google.firebase.firestore.Query;
 
 public class MainFragment extends Fragment {
@@ -153,9 +153,11 @@ public class MainFragment extends Fragment {
 
     private void onExpandRecycler() {
         if (rv_favorite.getVisibility() == View.GONE) {
+            TransitionManager.beginDelayedTransition(cv_favorite, new MaterialFade());
             rv_favorite.setVisibility(View.VISIBLE);
             expand_button.setImageResource(R.drawable.ic_expand_up);
         } else {
+            TransitionManager.beginDelayedTransition(cv_favorite, new MaterialFade());
             rv_favorite.setVisibility(View.GONE);
             expand_button.setImageResource(R.drawable.ic_expand_down);
         }

@@ -7,6 +7,7 @@ import androidx.biometric.BiometricPrompt;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,50 +32,80 @@ import com.google.firebase.auth.FirebaseUser;
 public class SettingActivity extends AppCompatActivity implements FingerPassFragment.Callback {
     private FirebaseAuth fAuth;
     private MaterialSwitch switch_finger;
-    private boolean isEnable;
+    private boolean isBiometricEnabled;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
-        if (getBiometric()) {
-            isEnable = true;
-        } else {
-            isEnable = false;
-        }
 
+        initAuth();
+        setupToolbar();
+        setupPasswordSwitch();
+        setupBiometricSwitch();
+        setupChangePasswordButton();
+        setupQuitButton();
+        setupOpenGitHubButton();
+    }
+
+    private void initAuth() {
+        isBiometricEnabled = getBiometric();
         fAuth = FirebaseAuth.getInstance();
         FirebaseUser fUser = fAuth.getCurrentUser();
 
-        TextView tv_user = findViewById(R.id.tv_user);
-        if (fUser != null) tv_user.setText(fUser.getEmail());
+        TextView tvUser = findViewById(R.id.tv_user);
+        if (fUser != null) tvUser.setText(fUser.getEmail());
+    }
 
+    private void setupToolbar() {
         MaterialToolbar mToolbar = findViewById(R.id.setting_toolbar);
         setSupportActionBar(mToolbar);
         mToolbar.setNavigationOnClickListener(v -> onBackPressed());
+    }
 
-        MaterialSwitch switch_password = findViewById(R.id.switch_password);
-        if (getPassCode().length() != 0) {
-            switch_password.setChecked(true);
-        }
+    private void setupPasswordSwitch() {
+        MaterialSwitch switchPassword = findViewById(R.id.switch_password);
+        switchPassword.setChecked(getPassCode().length() != 0);
+    }
 
-        Log.d("getBiometric()", ""+getBiometric());
-        Log.d("isEnable", ""+isEnable);
+    private void setupBiometricSwitch() {
         switch_finger = findViewById(R.id.switch_finger);
         switch_finger.setChecked(getBiometric());
-
         switch_finger.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked && !isEnable) {
+            if (isChecked && !isBiometricEnabled) {
                 switch_finger.setChecked(false);
                 authenticateWithBiometric();
-            } else if (isEnable && !isChecked){
-                isEnable = false;
+            } else if (isBiometricEnabled && !isChecked) {
+                isBiometricEnabled = false;
                 clearBiometric();
             }
         });
+    }
 
-        Button button_password = findViewById(R.id.button_password);
-        button_password.setOnClickListener(v -> {
+    private void authenticateWithBiometric() {
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("지문 인증")
+                .setNegativeButtonText("취소")
+                .build();
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt(this, command ->
+                new Handler(Looper.getMainLooper()).post(command),
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                        super.onAuthenticationSucceeded(result);
+                        isBiometricEnabled = true;
+                        Utils.saveBiometric(getApplicationContext(), true);
+                        switch_finger.setChecked(true);
+                    }
+                });
+
+        biometricPrompt.authenticate(promptInfo);
+    }
+
+    private void setupChangePasswordButton() {
+        Button buttonPassword = findViewById(R.id.button_password);
+        buttonPassword.setOnClickListener(v -> {
             PassCheckFragment passCheckFragment = new PassCheckFragment();
             Bundle bundle = new Bundle();
             bundle.putBoolean("SET_PASSWORD", true);
@@ -84,35 +115,22 @@ public class SettingActivity extends AppCompatActivity implements FingerPassFrag
                     .addToBackStack(null)
                     .commit();
         });
-
-        Button button_quit = findViewById(R.id.button_quit);
-        button_quit.setOnClickListener(v -> showQuitDialog());
     }
 
-    private void authenticateWithBiometric() {
-        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
-                .setTitle("지문 인증")
-                .setNegativeButtonText("취소")
-                .build();
-
-        BiometricPrompt biometricPrompt = new BiometricPrompt(this, command -> new Handler(Looper.getMainLooper()).post(command), new BiometricPrompt.AuthenticationCallback() {
-            @Override
-            public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
-                super.onAuthenticationSucceeded(result);
-                isEnable = true;
-                Utils.saveBiometric(getApplicationContext(), true);
-                switch_finger.setChecked(true);
-            }
-        });
-        biometricPrompt.authenticate(promptInfo);
+    private void setupQuitButton() {
+        Button buttonQuit = findViewById(R.id.button_quit);
+        buttonQuit.setOnClickListener(v -> showQuitDialog());
     }
 
-    @Override
-    public void getCallback(boolean value) {
-        if (value) {
-            isEnable = true;
-            switch_finger.setChecked(true);
-        }
+    private void setupOpenGitHubButton() {
+        Button buttonDev = findViewById(R.id.button_dev);
+        buttonDev.setOnClickListener(v -> openGitHubPage());
+    }
+
+    private void openGitHubPage() {
+        String gitHubUrl = "https://github.com/youuungh";
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(gitHubUrl));
+        startActivity(intent);
     }
 
     private void showQuitDialog() {
@@ -123,23 +141,20 @@ public class SettingActivity extends AppCompatActivity implements FingerPassFrag
                 .setIcon(R.drawable.ic_alert)
                 .setCancelable(false)
                 .setPositiveButton("확인", null)
-                .setNegativeButton("취소", (dialog, which) -> {
-                    dialog.cancel();
-                });
+                .setNegativeButton("취소", (dialog, which) -> dialog.cancel());
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
-
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             if (checkBoxClearData.isChecked()) {
-//                        clearPassCode();
-//                        clearBiometric();
-//                        fAuth.signOut();
-//                        navigateToHomeActivity();
+                        clearPassCode();
+                        clearBiometric();
+                        fAuth.signOut();
+                        navigateToHomeActivity();
                 alertDialog.dismiss();
                 Utils.showSnack(findViewById(R.id.layout_setting), "삭제 완료");
             } else {
-                Utils.showToast(getApplicationContext(), "삭제 동의에 선택해주세요");
+                Utils.showToast(getApplicationContext(), "동의 여부를 선택하세요");
             }
         });
     }
@@ -173,5 +188,13 @@ public class SettingActivity extends AppCompatActivity implements FingerPassFrag
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void getCallback(boolean value) {
+        if (value) {
+            isBiometricEnabled = true;
+            switch_finger.setChecked(true);
+        }
     }
 }
