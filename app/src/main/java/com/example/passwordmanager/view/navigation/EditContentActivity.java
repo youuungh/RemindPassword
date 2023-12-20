@@ -122,6 +122,11 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             Bundle bundle = ActivityOptions.makeSceneTransitionAnimation(this).toBundle();
             intent.putExtra("title", tv_title.getText().toString());
             intent.putExtra("id", tv_id.getText().toString());
+            if (timeLeftInMillis != TIME_IN_MILLIS) {
+                intent.putExtra("pw", Utils.encodeBase64(tv_pw.getText().toString()));
+            } else {
+                intent.putExtra("pw", tv_pw.getText().toString());
+            }
             intent.putExtra("memo", tv_memo.getText().toString());
             intent.putExtra("label", label);
             intent.putExtra("favorite", favorite);

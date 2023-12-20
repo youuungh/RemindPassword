@@ -7,9 +7,13 @@ import androidx.core.view.WindowCompat;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
 import com.example.passwordmanager.R;
@@ -29,7 +33,8 @@ public class AddContentActivity extends AppCompatActivity {
     private TextInputEditText edt_title, edt_id, edt_pw, edt_memo;
     private MaterialButton button_save;
     private ProgressBar progressBar;
-    private String label;
+    private CheckBox checkBoxSaveData;
+    private String label, stored_pw;
     private boolean isEdit = false;
 
     @Override
@@ -61,13 +66,14 @@ public class AddContentActivity extends AppCompatActivity {
     }
 
     private void initUI() {
-        TextInputLayout layout_pw = findViewById(R.id.content_layout_pw);
-        progressBar = findViewById(R.id.add_progressBar);
+        LinearLayout layout_save_data = findViewById(R.id.layout_save_data);
         edt_title = findViewById(R.id.edt_title);
         edt_id = findViewById(R.id.edt_id);
         edt_pw = findViewById(R.id.edt_pw);
         edt_memo = findViewById(R.id.edt_memo);
         button_save = findViewById(R.id.button_save);
+        progressBar = findViewById(R.id.add_progressBar);
+        checkBoxSaveData = findViewById(R.id.checkbox_save_data);
 
         edt_title.setText(getIntent().getStringExtra("title"));
         edt_id.setText(getIntent().getStringExtra("id"));
@@ -77,7 +83,23 @@ public class AddContentActivity extends AppCompatActivity {
         if(label != null && !label.isEmpty()) {
             isEdit = true;
             edt_title.requestFocus();
-            layout_pw.setHint("새로운 비밀번호 설정");
+            stored_pw = Utils.decodeBase64(getIntent().getStringExtra("pw"));
+
+            if (!stored_pw.isEmpty()) {
+                layout_save_data.setVisibility(View.VISIBLE);
+                edt_pw.setEnabled(false);
+                edt_pw.setText(getIntent().getStringExtra("pw"));
+                checkBoxSaveData.setChecked(true);
+            }
+            checkBoxSaveData.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (!isChecked) {
+                    edt_pw.setText(null);
+                    edt_pw.setEnabled(true);
+                } else {
+                    edt_pw.setText(getIntent().getStringExtra("pw"));
+                    edt_pw.setEnabled(false);
+                }
+            });
             configureEditToolbar();
         } else {
             edt_title.requestFocus();
@@ -92,27 +114,30 @@ public class AddContentActivity extends AppCompatActivity {
     private void setupSaveButton() {
         button_save.setOnClickListener(view -> {
             hideSoftKeyboard();
-
-            String title = edt_title.getText().toString();
-            String id = edt_id.getText().toString();
-            String pw = edt_pw.getText().toString();
-            String memo = edt_memo.getText().toString();
-            Timestamp timestamp = Timestamp.now();
-            boolean favorite = getIntent().getBooleanExtra("favorite", false);
-
-            if (title.isEmpty()) {
-                Utils.showSnack(findViewById(R.id.add_screen), "제목을 입력하세요");
-                return;
-            }
-
-            Content content = new Content(title, title.toLowerCase(), id, Utils.encodeBase64(pw), memo, "", timestamp, favorite);
-
-            if (favorite) {
-                editFavToFirebase(content);
-            } else {
-                saveToFirebase(content);
-            }
+            processSaveButton();
         });
+    }
+
+    private void processSaveButton() {
+        String title = edt_title.getText().toString();
+        String id = edt_id.getText().toString();
+        String pw = checkBoxSaveData.isChecked() ? stored_pw : edt_pw.getText().toString();
+        String memo = edt_memo.getText().toString();
+        Timestamp timestamp = Timestamp.now();
+        boolean favorite = getIntent().getBooleanExtra("favorite", false);
+
+        if (title.isEmpty()) {
+            Utils.showSnack(findViewById(R.id.add_screen), "제목을 입력하세요");
+            return;
+        }
+
+        Content content = new Content(title, title.toLowerCase(), id, Utils.encodeBase64(pw), memo, "", timestamp, favorite);
+
+        if (favorite) {
+            editFavToFirebase(content);
+        } else {
+            saveToFirebase(content);
+        }
     }
 
     private void clearFocus() {

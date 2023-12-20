@@ -31,6 +31,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 public class FavoriteAdapter extends FirestoreRecyclerAdapter<Content, FavoriteAdapter.FavoriteViewHolder> {
     MainFragment context;
     private long mLastClickTime = 0;
+
     public FavoriteAdapter(@NonNull FirestoreRecyclerOptions<Content> options, MainFragment context) {
         super(options);
         this.context = context;
