@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.passwordmanager.view.navigation.AddContentActivity;
@@ -24,6 +25,7 @@ import com.example.passwordmanager.util.Utils;
 import com.example.passwordmanager.model.Content;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -69,6 +71,15 @@ public class FavoriteAdapter extends FirestoreRecyclerAdapter<Content, FavoriteA
 
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(v.getContext(), R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(v.getContext()).inflate(R.layout.content_item_bottom_sheet, v.findViewById(R.id.cibs_container));
+            bottomSheetDialog.setContentView(bottomSheetView);
+
+            View parent = (View) bottomSheetView.getParent();
+            CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) parent.getLayoutParams();
+            CoordinatorLayout.Behavior<View> behavior = params.getBehavior();
+
+            if (behavior instanceof BottomSheetBehavior) {
+                ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
 
             TextView item_title = bottomSheetView.findViewById(R.id.main_option_title);
             ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
@@ -104,8 +115,6 @@ public class FavoriteAdapter extends FirestoreRecyclerAdapter<Content, FavoriteA
                 DocumentReference trashPath = Utils.getTrashReference().document(label);
                 moveFirebaseDocument(favPath, trashPath);
             });
-
-            bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.show();
         });
     }

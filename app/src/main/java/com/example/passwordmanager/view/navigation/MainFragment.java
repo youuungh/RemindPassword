@@ -177,7 +177,7 @@ public class MainFragment extends Fragment {
         Query mquery = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
         mquery.get().addOnCompleteListener(task -> {
             main_loading_view.setVisibility(View.GONE);
-            onChangeEmptyView(mOptions.getSnapshots().isEmpty());
+            onChangeEmptyView();
         });
         mOptions = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(mquery, Content.class).build();
@@ -187,7 +187,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
                 super.onItemRangeInserted(positionStart, itemCount);
-                onChangeEmptyView(mOptions.getSnapshots().isEmpty());
+                onChangeEmptyView();
                 rv_content.scrollToPosition(0);
                 appBarLayout.setExpanded(true);
             }
@@ -195,7 +195,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
-                onChangeEmptyView(mOptions.getSnapshots().isEmpty());
+                onChangeEmptyView();
                 if (mOptions.getSnapshots().isEmpty()) appBarLayout.setExpanded(true);
             }
         });
@@ -203,9 +203,7 @@ public class MainFragment extends Fragment {
 
         // favorite
         Query fquery = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
-        fquery.get().addOnCompleteListener(task -> {
-            onChangeFavView(fOptions.getSnapshots().isEmpty());
-        });
+        fquery.get().addOnCompleteListener(task -> onChangeFavView(fOptions.getSnapshots().isEmpty()));
         fOptions = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(fquery, Content.class).build();
         favAdapter = new FavoriteAdapter(fOptions, this);
@@ -219,6 +217,7 @@ public class MainFragment extends Fragment {
                 }
                 onChangeFavView(fOptions.getSnapshots().isEmpty());
                 rv_content.scrollToPosition(0);
+                rv_favorite.scrollToPosition(0);
                 appBarLayout.setExpanded(true);
             }
 
@@ -227,6 +226,7 @@ public class MainFragment extends Fragment {
                 super.onItemRangeRemoved(positionStart, itemCount);
                 onChangeFavView(fOptions.getSnapshots().isEmpty());
                 if (fOptions.getSnapshots().isEmpty()) appBarLayout.setExpanded(true);
+                rv_favorite.scrollToPosition(0);
             }
         });
         favAdapter.notifyDataSetChanged();
@@ -269,8 +269,12 @@ public class MainFragment extends Fragment {
         cv_favorite.setVisibility(flag ? View.GONE : View.VISIBLE);
     }
 
-    private void onChangeEmptyView(boolean flag) {
-        main_empty_view.setVisibility(flag ? View.VISIBLE : View.GONE);
+    private void onChangeEmptyView() {
+        if (mOptions.getSnapshots().isEmpty() && fOptions.getSnapshots().isEmpty()) {
+            main_empty_view.setVisibility(View.VISIBLE);
+        } else {
+            main_empty_view.setVisibility(View.GONE);
+        }
     }
 
     @Override

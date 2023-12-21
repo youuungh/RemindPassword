@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -28,6 +29,7 @@ import com.example.passwordmanager.view.common.MainActivity;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -74,7 +76,6 @@ public class TrashFragment extends Fragment {
             if (recyclerView.getVerticalScrollbarPosition() == 0)
                 trash_fab_top.hide();
         });
-
 
         return view;
     }
@@ -174,6 +175,16 @@ public class TrashFragment extends Fragment {
     private void showBottomSheetDialog() {
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
         View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_bottom_sheet, getView().findViewById(R.id.tbs_container));
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        View parent = (View) bottomSheetView.getParent();
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) parent.getLayoutParams();
+        CoordinatorLayout.Behavior<View> behavior = params.getBehavior();
+
+        if (behavior instanceof BottomSheetBehavior) {
+            ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
+
         bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
             bottomSheetDialog.dismiss();
             if (!options.getSnapshots().isEmpty()) {
@@ -214,7 +225,6 @@ public class TrashFragment extends Fragment {
                 Utils.showSnack(getView().findViewById(R.id.recycler_trash), "휴지통이 비어 있습니다");
             }
         });
-        bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }
 
@@ -292,6 +302,16 @@ public class TrashFragment extends Fragment {
                     lastClickTime = SystemClock.elapsedRealtime();
                     BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(getActivity(), R.style.BottomSheetDialogTheme);
                     View bottomSheetView = LayoutInflater.from(getActivity().getApplicationContext()).inflate(R.layout.trash_item_bottom_sheet, getView().findViewById(R.id.tibs_container));
+                    bottomSheetDialog.setContentView(bottomSheetView);
+
+                    View parent = (View) bottomSheetView.getParent();
+                    CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) parent.getLayoutParams();
+                    CoordinatorLayout.Behavior<View> behavior = params.getBehavior();
+
+                    if (behavior instanceof BottomSheetBehavior) {
+                        ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
+                    }
+
                     TextView item_title = bottomSheetView.findViewById(R.id.trash_option_title);
                     item_title.setText(trash.getTitle());
 
@@ -317,7 +337,6 @@ public class TrashFragment extends Fragment {
                         builder.create();
                         builder.show();
                     });
-                    bottomSheetDialog.setContentView(bottomSheetView);
                     bottomSheetDialog.show();
                 });
             }

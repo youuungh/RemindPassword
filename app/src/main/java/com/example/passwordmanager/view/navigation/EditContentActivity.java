@@ -2,9 +2,10 @@ package com.example.passwordmanager.view.navigation;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.biometric.BiometricPrompt;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.app.ActivityOptions;
 import android.content.Context;
@@ -13,6 +14,8 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.SystemClock;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
@@ -24,12 +27,11 @@ import android.widget.TextView;
 
 import com.example.passwordmanager.R;
 import com.example.passwordmanager.util.Utils;
-import com.example.passwordmanager.view.common.SignUpActivity;
 import com.example.passwordmanager.view.user.PassCheckFragment;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.android.material.transition.platform.MaterialElevationScale;
@@ -144,6 +146,15 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
 
         BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.content_bottom_sheet, findViewById(R.id.cbs_container));
+        bottomSheetDialog.setContentView(bottomSheetView);
+
+        View parent = (View) bottomSheetView.getParent();
+        CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) parent.getLayoutParams();
+        CoordinatorLayout.Behavior<View> behavior = params.getBehavior();
+
+        if (behavior instanceof BottomSheetBehavior) {
+            ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
 
         ImageView iv_favorite = bottomSheetView.findViewById(R.id.iv_favorite);
         TextView tv_favorite = bottomSheetView.findViewById(R.id.tv_favorite);
@@ -192,20 +203,44 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             DocumentReference toPath = Utils.getTrashReference().document(label);
             moveFirebaseDocument(fromPath, toPath);
         });
-        bottomSheetDialog.setContentView(bottomSheetView);
         bottomSheetDialog.show();
     }
 
     private void setDecryptButtonClickListener() {
-        button_decrypt.setOnClickListener(v -> handleDecryptButtonClick());
+        button_decrypt.setOnClickListener(v -> {
+            if (tv_pw.getText().length() == 0) {
+                Utils.showSnack(findViewById(R.id.edit_screen), "비밀번호가 비어 있습니다");
+            } else {
+                handleDecryptButtonClick();
+            }
+        });
     }
 
     private void handleDecryptButtonClick() {
-        if (tv_pw.getText().length() != 0) {
-            showPassCheckFragment();
+        if (getBiometric()) {
+            authenticateWithBiometric();
         } else {
-            Utils.showSnack(findViewById(R.id.edit_screen), "비밀번호가 비어 있습니다");
+            showPassCheckFragment();
         }
+    }
+
+    private void authenticateWithBiometric() {
+        BiometricPrompt.PromptInfo promptInfo = new BiometricPrompt.PromptInfo.Builder()
+                .setTitle("지문 인증")
+                .setNegativeButtonText("취소")
+                .build();
+
+        BiometricPrompt biometricPrompt = new BiometricPrompt(this, command ->
+                new Handler(Looper.getMainLooper()).post(command),
+                new BiometricPrompt.AuthenticationCallback() {
+                    @Override
+                    public void onAuthenticationSucceeded(BiometricPrompt.AuthenticationResult result) {
+                        super.onAuthenticationSucceeded(result);
+                        getCallback(true);
+                    }
+                });
+
+        biometricPrompt.authenticate(promptInfo);
     }
 
     private void showPassCheckFragment() {
@@ -214,17 +249,6 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
                 .add(android.R.id.content, passCheckFragment)
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void getCallback(boolean value) {
-        if (value) {
-            tv_pw.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
-            tv_pw.setText(Utils.decodeBase64(tv_pw.getText().toString()));
-            startTimer();
-        } else {
-            resetTimer();
-        }
     }
 
     private void startTimer() {
@@ -335,6 +359,22 @@ public class EditContentActivity extends AppCompatActivity implements PassCheckF
             endTime = savedInstanceState.getLong("END_TIME");
             timeLeftInMillis = endTime - System.currentTimeMillis();
             startTimer();
+        }
+    }
+
+    private boolean getBiometric() {
+        SharedPreferences prefs = getApplicationContext().getSharedPreferences("BIOMETRIC_PREF", Context.MODE_PRIVATE);
+        return prefs.getBoolean("BIOMETRIC", false);
+    }
+
+    @Override
+    public void getCallback(boolean value) {
+        if (value) {
+            tv_pw.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            tv_pw.setText(Utils.decodeBase64(tv_pw.getText().toString()));
+            startTimer();
+        } else {
+            resetTimer();
         }
     }
 }

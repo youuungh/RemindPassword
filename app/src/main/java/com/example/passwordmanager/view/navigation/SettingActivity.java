@@ -1,5 +1,6 @@
 package com.example.passwordmanager.view.navigation;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
@@ -22,6 +23,8 @@ import com.example.passwordmanager.util.Utils;
 import com.example.passwordmanager.view.common.HomeActivity;
 import com.example.passwordmanager.view.user.FingerPassFragment;
 import com.example.passwordmanager.view.user.PassCheckFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
@@ -147,14 +150,22 @@ public class SettingActivity extends AppCompatActivity implements FingerPassFrag
         alertDialog.show();
         alertDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
             if (checkBoxClearData.isChecked()) {
-                        clearPassCode();
-                        clearBiometric();
-                        fAuth.signOut();
-                        navigateToHomeActivity();
+                QuitFirebaseAccount();
                 alertDialog.dismiss();
-                Utils.showSnack(findViewById(R.id.layout_setting), "삭제 완료");
             } else {
                 Utils.showToast(getApplicationContext(), "동의 여부를 선택하세요");
+            }
+        });
+    }
+
+    private void QuitFirebaseAccount() {
+        clearPassCode();
+        clearBiometric();
+        FirebaseUser fUser = fAuth.getCurrentUser();
+        fUser.delete().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Utils.showToast(getApplicationContext(), "계정이 완전히 삭제됨");
+                navigateToHomeActivity();
             }
         });
     }
