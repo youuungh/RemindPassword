@@ -1,6 +1,5 @@
 package com.example.passwordmanager.view.navigation;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
@@ -12,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -23,8 +21,6 @@ import com.example.passwordmanager.util.Utils;
 import com.example.passwordmanager.view.common.HomeActivity;
 import com.example.passwordmanager.view.user.FingerPassFragment;
 import com.example.passwordmanager.view.user.PassCheckFragment;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
@@ -137,7 +133,7 @@ public class SettingActivity extends AppCompatActivity implements FingerPassFrag
     }
 
     private void showQuitDialog() {
-        View customView = getLayoutInflater().inflate(R.layout.quit_dialog, null);
+        View customView = getLayoutInflater().inflate(R.layout.setting_quit_dialog, null);
         CheckBox checkBoxClearData = customView.findViewById(R.id.checkbox_clear_data);
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this, R.style.QuitAlertDialog)
                 .setView(customView)
