@@ -190,7 +190,7 @@ public class TrashFragment extends Fragment {
 
                 @Override
                 public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                    if (slideOffset >= 0.25) {
+                    if (slideOffset >= 0.85) {
                         ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_HIDDEN);
                     }
                 }

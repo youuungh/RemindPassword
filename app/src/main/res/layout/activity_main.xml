@@ -23,9 +23,9 @@
         android:paddingTop="25dp"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/menu_navigation"
-        app:itemHorizontalPadding="30dp"
-        app:itemVerticalPadding="20dp"
-        app:itemIconPadding="30dp"
+        app:itemHorizontalPadding="32dp"
+        app:itemVerticalPadding="16dp"
+        app:itemIconPadding="32dp"
         app:itemTextColor="@color/customTextColor"
         app:itemTextAppearance="@style/TextAppearance.Material3.TitleMedium"
         app:itemShapeFillColor="@drawable/menu_ripple">
@@ -34,7 +34,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:padding="30dp">
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:paddingBottom="16dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/nav_button"
