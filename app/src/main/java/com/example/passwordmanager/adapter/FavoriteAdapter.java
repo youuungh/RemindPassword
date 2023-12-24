@@ -79,6 +79,18 @@ public class FavoriteAdapter extends FirestoreRecyclerAdapter<Content, FavoriteA
 
             if (behavior instanceof BottomSheetBehavior) {
                 ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
+                ((BottomSheetBehavior) behavior).addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                    @Override
+                    public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    }
+
+                    @Override
+                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                        if (slideOffset >= 0.25) {
+                            ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_HIDDEN);
+                        }
+                    }
+                });
             }
 
             TextView item_title = bottomSheetView.findViewById(R.id.main_option_title);

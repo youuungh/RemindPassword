@@ -183,6 +183,18 @@ public class TrashFragment extends Fragment {
 
         if (behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
+            ((BottomSheetBehavior) behavior).addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                    if (slideOffset >= 0.25) {
+                        ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_HIDDEN);
+                    }
+                }
+            });
         }
 
         bottomSheetView.findViewById(R.id.option_restore).setOnClickListener(v -> {
