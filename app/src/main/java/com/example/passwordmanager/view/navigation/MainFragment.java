@@ -179,14 +179,9 @@ public class MainFragment extends Fragment {
                 .setQuery(mquery, Content.class).build();
         fOptions = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(fquery, Content.class).build();
-
-        mquery.get().addOnCompleteListener(task -> {
-            main_loading_view.setVisibility(View.GONE);
-            if (mOptions.getSnapshots().isEmpty() || !fOptions.getSnapshots().isEmpty()) {
-                main_empty_view.setVisibility(View.GONE);
-            }
-        });
+        mquery.get().addOnCompleteListener(task -> main_loading_view.setVisibility(View.GONE));
         fquery.get().addOnCompleteListener(task -> onChangeFavView(fOptions.getSnapshots().isEmpty()));
+        onChangeEmptyView();
 
         // content adapter
         mAdapter = new MainAdapter(mOptions, this);
@@ -275,13 +270,16 @@ public class MainFragment extends Fragment {
     }
 
     private void onChangeEmptyView() {
-        if (mOptions.getSnapshots().isEmpty() && fOptions.getSnapshots().isEmpty()) {
-            main_empty_view.setVisibility(View.VISIBLE);
-            disableScroll(search_bar);
-        } else {
-            main_empty_view.setVisibility(View.GONE);
-            enableScroll(search_bar);
-        }
+        new Handler(Looper.getMainLooper()).postDelayed(() -> {
+            main_loading_view.setVisibility(View.GONE);
+            if (mOptions.getSnapshots().isEmpty() && fOptions.getSnapshots().isEmpty()) {
+                disableScroll(search_bar);
+                main_empty_view.setVisibility(View.VISIBLE);
+            } else {
+                enableScroll(search_bar);
+                main_empty_view.setVisibility(View.GONE);
+            }
+        } ,200);
     }
 
     private void enableScroll(SearchBar searchBar) {
@@ -308,6 +306,12 @@ public class MainFragment extends Fragment {
         super.onStart();
         mAdapter.startListening();
         favAdapter.startListening();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        onChangeEmptyView();
     }
 
     @Override
