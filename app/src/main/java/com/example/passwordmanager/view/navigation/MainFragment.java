@@ -38,6 +38,7 @@ import com.google.firebase.firestore.Query;
 
 public class MainFragment extends Fragment {
     private FirestoreRecyclerOptions<Content> mOptions, fOptions;
+    private Query mquery, fquery;
     private MainAdapter mAdapter;
     private FavoriteAdapter favAdapter;
     private AppBarLayout appBarLayout;
@@ -173,14 +174,22 @@ public class MainFragment extends Fragment {
     }
 
     private void initAdapters() {
-        // content
-        Query mquery = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
-        mquery.get().addOnCompleteListener(task -> {
-            main_loading_view.setVisibility(View.GONE);
-            onChangeEmptyView();
-        });
+        mquery = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        fquery = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
         mOptions = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(mquery, Content.class).build();
+        fOptions = new FirestoreRecyclerOptions.Builder<Content>()
+                .setQuery(fquery, Content.class).build();
+
+        mquery.get().addOnCompleteListener(task -> {
+            main_loading_view.setVisibility(View.GONE);
+            if (mOptions.getSnapshots().isEmpty() || !fOptions.getSnapshots().isEmpty()) {
+                main_empty_view.setVisibility(View.GONE);
+            }
+        });
+        fquery.get().addOnCompleteListener(task -> onChangeFavView(fOptions.getSnapshots().isEmpty()));
+
+        // content adapter
         mAdapter = new MainAdapter(mOptions, this);
         mAdapter.setStateRestorationPolicy(RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY);
         mAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
@@ -201,11 +210,7 @@ public class MainFragment extends Fragment {
         });
         mAdapter.notifyDataSetChanged();
 
-        // favorite
-        Query fquery = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
-        fquery.get().addOnCompleteListener(task -> onChangeFavView(fOptions.getSnapshots().isEmpty()));
-        fOptions = new FirestoreRecyclerOptions.Builder<Content>()
-                .setQuery(fquery, Content.class).build();
+        // favorite adapter
         favAdapter = new FavoriteAdapter(fOptions, this);
         favAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
@@ -225,6 +230,7 @@ public class MainFragment extends Fragment {
             public void onItemRangeRemoved(int positionStart, int itemCount) {
                 super.onItemRangeRemoved(positionStart, itemCount);
                 onChangeFavView(fOptions.getSnapshots().isEmpty());
+                onChangeEmptyView();
                 if (fOptions.getSnapshots().isEmpty()) appBarLayout.setExpanded(true);
                 rv_favorite.scrollToPosition(0);
             }
@@ -272,9 +278,24 @@ public class MainFragment extends Fragment {
     private void onChangeEmptyView() {
         if (mOptions.getSnapshots().isEmpty() && fOptions.getSnapshots().isEmpty()) {
             main_empty_view.setVisibility(View.VISIBLE);
+            disableScroll(search_bar);
         } else {
             main_empty_view.setVisibility(View.GONE);
+            enableScroll(search_bar);
         }
+    }
+
+    private void enableScroll(SearchBar searchBar) {
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) searchBar.getLayoutParams();
+        params.setScrollFlags(AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL
+                | AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS_COLLAPSED);
+        searchBar.setLayoutParams(params);
+    }
+
+    private void disableScroll(SearchBar searchBar) {
+        AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) searchBar.getLayoutParams();
+        params.setScrollFlags(0);
+        searchBar.setLayoutParams(params);
     }
 
     @Override
