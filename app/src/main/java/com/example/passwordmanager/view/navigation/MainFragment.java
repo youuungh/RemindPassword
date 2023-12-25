@@ -38,7 +38,6 @@ import com.google.firebase.firestore.Query;
 
 public class MainFragment extends Fragment {
     private FirestoreRecyclerOptions<Content> mOptions, fOptions;
-    private Query mquery, fquery;
     private MainAdapter mAdapter;
     private FavoriteAdapter favAdapter;
     private AppBarLayout appBarLayout;
@@ -174,8 +173,8 @@ public class MainFragment extends Fragment {
     }
 
     private void initAdapters() {
-        mquery = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
-        fquery = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        Query mquery = Utils.getContentReference().orderBy("timestamp", Query.Direction.DESCENDING);
+        Query fquery = Utils.getFavoriteReference().orderBy("timestamp", Query.Direction.DESCENDING);
         mOptions = new FirestoreRecyclerOptions.Builder<Content>()
                 .setQuery(mquery, Content.class).build();
         fOptions = new FirestoreRecyclerOptions.Builder<Content>()
