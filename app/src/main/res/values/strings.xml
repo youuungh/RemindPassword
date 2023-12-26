@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Remind Password</string>
+    <string name="app_name">리마인드 패스워드</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="appTitle">Remind\nPassword</string>
