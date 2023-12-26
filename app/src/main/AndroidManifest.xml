@@ -20,7 +20,7 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".view.common.HomeActivity"
+            android:name="com.ninezero.remindpassword.view.common.HomeActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
@@ -32,47 +32,47 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".view.common.LoginActivity"
+            android:name="com.ninezero.remindpassword.view.common.LoginActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.common.SignUpActivity"
+            android:name="com.ninezero.remindpassword.view.common.SignUpActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.common.ResetPasswordActivity"
+            android:name="com.ninezero.remindpassword.view.common.ResetPasswordActivity"
             android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.common.MainActivity"
+            android:name="com.ninezero.remindpassword.view.common.MainActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.navigation.AddContentActivity"
+            android:name="com.ninezero.remindpassword.view.navigation.AddContentActivity"
             android:exported="true"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.navigation.EditContentActivity"
+            android:name="com.ninezero.remindpassword.view.navigation.EditContentActivity"
             android:exported="false"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".view.navigation.SettingActivity"
+            android:name="com.ninezero.remindpassword.view.navigation.SettingActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             android:theme="@style/MainTheme"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".view.common.MainActivity" />
+                android:value="com.ninezero.remindpassword.view.common.MainActivity" />
         </activity>
     </application>
 

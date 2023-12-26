@@ -36,7 +36,7 @@
                     android:layout_weight="1"
                     android:paddingStart="3dp"
                     android:paddingEnd="5dp"
-                    android:text="제목"
+                    android:text="@string/title"
                     android:textColor="@color/customTextColor"
                     android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
                     android:textStyle="bold"
@@ -61,7 +61,7 @@
                 android:layout_below="@id/linearlayout_title"
                 android:paddingStart="5dp"
                 android:paddingEnd="5dp"
-                android:text="메일"
+                android:text="@string/email"
                 android:textColor="@color/customTextColor"
                 android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
                 android:ems="12"
@@ -78,7 +78,7 @@
                 android:paddingEnd="8dp"
                 android:paddingTop="8dp"
                 android:gravity="end"
-                android:text="날짜"
+                android:text="@string/date"
                 android:textColor="@color/customTextColor"
                 android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
         </RelativeLayout>

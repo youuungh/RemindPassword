@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginTop="70dp"
-        android:text="Passwords\nManager"
+        android:text="@string/appTitle"
         android:textSize="45sp"
         android:textStyle="bold"
         android:textColor="@color/customTextColor"

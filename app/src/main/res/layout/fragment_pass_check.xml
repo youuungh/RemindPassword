@@ -40,14 +40,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="64dp"
-                android:text="비밀번호 확인"
+                android:text="@string/confirmPasswordTitle"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
             <TextView
                 android:id="@+id/tv_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="비밀번호 4자리를 다시 한번 입력하세요"
+                android:text="@string/confirmPasswordSubtitle"
                 android:textColor="@color/customHintColor"
                 android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
             <LinearLayout
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="비밀번호가 일치하지 않습니다"
+                android:text="@string/confirmPasswordAlert"
                 android:textColor="@color/errorMsg"
                 android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                 android:visibility="gone" />

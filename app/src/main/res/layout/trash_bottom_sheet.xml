@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:text="모두 복원"
+            android:text="@string/restoreAll"
             android:textColor="@color/customTextColor"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
     </LinearLayout>
@@ -64,7 +64,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:text="휴지통 비우기"
+            android:text="@string/deleteTrash"
             android:textColor="@color/error"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
     </LinearLayout>

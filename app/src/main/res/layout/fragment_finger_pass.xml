@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="생체인증을\n사용하시겠어요?"
+            android:text="@string/fingerPassTitle"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.Material3.HeadlineMedium" />
 
@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="생체인증을 이용해 보안을 강화하세요"
+            android:text="@string/fingerPassSubtitle"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"/>
     </LinearLayout>
 
@@ -59,7 +59,7 @@
             android:layout_weight="1"
             android:layout_marginRight="6dp"
             android:background="@drawable/rounded_later_button"
-            android:text="나중에 하기"
+            android:text="@string/later"
             android:textColor="@color/textHighlight"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             app:backgroundTint="@null"/>
@@ -71,7 +71,7 @@
             android:layout_weight="1"
             android:layout_marginLeft="6dp"
             android:background="@drawable/rounded_register_button"
-            android:text="사용하기"
+            android:text="@string/use"
             android:textColor="@color/white"
             android:textAppearance="@style/TextAppearance.Material3.TitleMedium"
             app:backgroundTint="@null"/>

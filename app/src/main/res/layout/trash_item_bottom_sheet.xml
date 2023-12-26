@@ -23,7 +23,7 @@
             android:layout_marginEnd="64dp"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
-            android:text="DATA"
+            android:text="@string/dialogTitle"
             android:textColor="@color/customTextColor"
             android:textStyle="bold"
             android:textAppearance="@style/TextAppearance.Material3.TitleLarge"
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:text="복원"
+            android:text="@string/restore"
             android:textColor="@color/customTextColor"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
     </LinearLayout>
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:text="삭제"
+            android:text="@string/delete"
             android:textColor="@color/error"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
     </LinearLayout>

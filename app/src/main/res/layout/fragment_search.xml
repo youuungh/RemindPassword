@@ -86,7 +86,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:paddingBottom="?attr/actionBarSize"
-            android:text="검색 결과가 없습니다"
+            android:text="@string/searchNoResult"
             android:textColor="@color/customHintColor"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
     </LinearLayout>

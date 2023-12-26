@@ -134,7 +134,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:text="항목이 없습니다"
+            android:text="@string/emptyTitle"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
 
         <TextView
@@ -144,7 +144,7 @@
             android:layout_marginTop="5dp"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:text="작성하려면 추가 버튼을 누르세요"
+            android:text="@string/emptySubtitle"
             android:textColor="@color/customHintColor"
             android:textAppearance="@style/TextAppearance.Material3.BodySmall"/>
     </RelativeLayout>

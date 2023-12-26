@@ -38,13 +38,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="64dp"
-                android:text="비밀번호 설정"
+                android:text="@string/setPasswordTitle"
                 android:textAppearance="@style/TextAppearance.Material3.TitleLarge" />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="32dp"
-                android:text="비밀번호 4자리를 설정하세요"
+                android:text="@string/setPasswordSubtitle"
                 android:textColor="@color/customHintColor"
                 android:textAppearance="@style/TextAppearance.Material3.TitleSmall" />
             <LinearLayout
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
-                android:text="이전에 사용한 비밀번호는 사용할 수 없습니다"
+                android:text="@string/setPasswordAlert"
                 android:textColor="@color/errorMsg"
                 android:textAppearance="@style/TextAppearance.Material3.TitleSmall"
                 android:visibility="gone" />

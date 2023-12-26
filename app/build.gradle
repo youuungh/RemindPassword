@@ -7,7 +7,7 @@ android {
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.passwordmanager"
+        applicationId "com.ninezero.remindpassword"
         minSdk 26
         targetSdk 33
         versionCode 1
@@ -27,7 +27,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    namespace 'com.example.passwordmanager'
+    namespace 'com.ninezero.remindpassword'
 }
 
 dependencies {

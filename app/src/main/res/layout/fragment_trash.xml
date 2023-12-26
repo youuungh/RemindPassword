@@ -76,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
-            android:text="휴지통이 비었습니다"
+            android:text="@string/emptyTrash"
             android:textAppearance="@style/TextAppearance.Material3.BodyLarge"/>
     </RelativeLayout>
 </RelativeLayout>

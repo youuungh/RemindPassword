@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:text="즐겨찾기에 추가"
+            android:text="@string/addFavorite"
             android:textColor="@color/customTextColor"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
     </LinearLayout>
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="32dp"
-            android:text="휴지통으로 이동"
+            android:text="@string/moveTrash"
             android:textColor="@color/customTextColor"
             android:textAppearance="@style/TextAppearance.Material3.LabelLarge"/>
     </LinearLayout>
