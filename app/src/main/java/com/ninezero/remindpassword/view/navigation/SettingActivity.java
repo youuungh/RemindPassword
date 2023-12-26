@@ -1,5 +1,6 @@
 package com.ninezero.remindpassword.view.navigation;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.biometric.BiometricPrompt;
@@ -14,8 +15,12 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.ninezero.remindpassword.R;
 import com.ninezero.remindpassword.util.Utils;
 import com.ninezero.remindpassword.view.common.HomeActivity;
@@ -31,6 +36,7 @@ import com.google.firebase.auth.FirebaseUser;
 public class SettingActivity extends AppCompatActivity implements FingerPassFragment.Callback {
     private FirebaseAuth fAuth;
     private MaterialSwitch switch_finger;
+    private RelativeLayout setting_loading_view;
     private boolean isBiometricEnabled;
 
     @Override
@@ -154,14 +160,27 @@ public class SettingActivity extends AppCompatActivity implements FingerPassFrag
         });
     }
 
+    private void onChangeLoadingView(boolean flag) {
+        setting_loading_view = findViewById(R.id.setting_view_loading);
+        setting_loading_view.setVisibility(flag ? View.VISIBLE : View.GONE);
+    }
+
     private void QuitFirebaseAccount() {
-        clearPassCode();
-        clearBiometric();
+        onChangeLoadingView(true);
         FirebaseUser fUser = fAuth.getCurrentUser();
-        fUser.delete().addOnCompleteListener(task -> {
-            Utils.showToast(getApplicationContext(), "계정이 완전히 삭제됨");
-            navigateToHomeActivity();
-        });
+        if (fUser != null) {
+            fUser.delete()
+                    .addOnCompleteListener(task -> {
+                        clearPassCode();
+                        clearBiometric();
+                        Utils.showToast(getApplicationContext(), "계정이 완전히 삭제됨");
+                        navigateToHomeActivity();
+                    })
+                    .addOnFailureListener(e -> {
+                        onChangeLoadingView(false);
+                        Utils.showToast(getApplicationContext(), "오류, 다시 시도하세요");
+                    });
+        }
     }
 
     private String getPassCode() {
