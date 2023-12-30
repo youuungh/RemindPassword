@@ -128,6 +128,11 @@ public class AddContentActivity extends AppCompatActivity {
             return;
         }
 
+        if (pw.isEmpty()) {
+            Utils.showSnack(findViewById(R.id.add_screen), "비밀번호를 입력하세요");
+            return;
+        }
+
         Content content = new Content(title, title.toLowerCase(), id, Utils.encodeBase64(pw), memo, "", timestamp, favorite);
 
         if (favorite) {
