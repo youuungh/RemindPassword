@@ -146,13 +146,13 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="15dp"
                     android:gravity="center|end"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     android:text="@string/resetPassword"
                     android:textColor="#49454f"/>
 
                 <View
                     android:layout_width="1dp"
-                    android:layout_height="15dp"
+                    android:layout_height="16dp"
                     android:layout_marginTop="1dp"
                     android:layout_gravity="center_vertical"
                     android:background="#ADA4A5"/>
@@ -163,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="15dp"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     android:layout_gravity="center|start"
                     android:text="@string/createAccount"
                     android:textColor="#49454f"/>
