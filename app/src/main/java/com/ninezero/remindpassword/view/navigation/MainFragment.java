@@ -233,7 +233,6 @@ public class MainFragment extends Fragment {
 
         rv_favorite.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         rv_favorite.setAdapter(favAdapter);
-        rv_content.setHasFixedSize(true);
         rv_content.setAdapter(mAdapter);
         rv_content.addOnScrollListener(new RecyclerView.OnScrollListener() {
             final Handler handler = new Handler(Looper.getMainLooper());
